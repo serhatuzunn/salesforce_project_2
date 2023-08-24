@@ -1,0 +1,64 @@
+<template>
+
+    <div class="acc-container">
+
+
+        <div title="Güncel Durum"></div>
+    
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="custom:custom98" size="small" alternative-text="Teslimat Raporu" title="Teslimat Raporu" ></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate" title="Teslimat Raporu">Teslimat Raporu</span>
+                                    </h1>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><br/>
+
+        <div style="height: 300px;" if:false={isWarning}>
+            <lightning-datatable
+                    key-field="id"
+                    data={cargoList}
+                    columns={detayColumns}>
+            </lightning-datatable>
+
+            
+        </div>    
+        <div if:true={isWarning}>
+            <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+                <span class="slds-assistive-text">warning</span>
+                <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small" title="Description of icon when needed">
+                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use>
+                </svg>
+                </span>
+                <h2>Siparişe ait teslimat bulunamadı.</h2>
+
+                </div>
+                        </div>
+
+        <template if:true={isLoading}>
+            <div class="spinner">
+              <lightning-spinner
+                alternative-text="Loading"
+                variant="brand"
+                size="large"
+              >
+              </lightning-spinner>
+            </div>
+          </template>
+        
+    </div>
+</template>

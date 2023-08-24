@@ -1,0 +1,9 @@
+<design:component>
+	<design:attribute name="ContentTitle" label="Topic Name" description="Name of the topic you want to add" />
+    <design:attribute name="DesiredTitle" label="Desired Name" description="Topic you want to show" />
+	<design:attribute name="ContentIcon" label="Icon Name" description="Eklemek istediğiniz iconu Lightning Design System üzerinden bulabilir ve icon class'ı adı ile ekleyebilirsiniz. örnek : utility:campaign" />
+    <design:attribute name="TitleShow"   label="Is Title Show?" description="Is Title Show ? " />
+    <design:attribute name="UseDesiredTitle"   label="Prefer Desired Title?" description="Prefer Desired Title? " />
+    <design:attribute name="Site" label="Site" datasource="Seçiniz,Vestel,Regal,Çeyiz" description=""/>
+
+</design:component>

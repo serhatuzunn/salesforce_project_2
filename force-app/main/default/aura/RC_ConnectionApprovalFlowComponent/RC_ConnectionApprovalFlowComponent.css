@@ -1,0 +1,105 @@
+.THIS{
+    font-family: 'Salesforce Sans';
+}
+.THIS .connections
+{
+    width: 100%;
+    overflow-x: scroll;
+}
+.THIS .page-title{
+    font-family: 'Salesforce Sans';
+}
+
+.THIS .padding {
+    padding : 5px;
+}
+.THIS .slds-form-element__label{
+    float:left;
+}
+.THIS .deleteIcon
+{
+    color:blueviolet;
+    margin-left:10px;
+    border: none;
+}
+.THIS .updateIcon
+{
+    color:lightcoral;
+    margin-left:10px;
+    border: none;
+}
+.THIS .approvalIcon
+{
+    color:red;
+    margin-left:10px;
+    border: none;
+}
+.THIS .slds-table thead th{
+        font-weight: bold;
+        background-color:#DF2027;
+        color:white;    
+        text-align: center;
+    height:20px;
+}
+.THIS .slds-table thead{
+    height:35px;
+}
+.THIS .slds-table tbody tr td{
+    text-align:center;
+    
+}
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: #DF2027;
+}
+.THIS .filter-button{
+    float : right;
+    background: #ffffff;
+    border: 1px solid #df2027;
+    box-sizing: border-box;
+    border-radius: 4px;
+    color: #df2027;
+}
+    
+.THIS .detail-button{
+	background: #DF2027;
+	color: white;
+    height: 32px;
+    border-radius: 4px;
+	font-family: 'Salesforce Sans';
+}
+    
+.THIS .showBox{
+    
+}
+.THIS .custom-box{
+	box-shadow: rgb(60 64 67 / 30%) 0px 1px 2px 0px, rgb(60 64 67 / 15%) 0px 1px 3px 1px;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.THIS .box-text{
+    white-space: nowrap;
+    width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	margin-left: 2rem;
+}
+.THIS .corporate-color{
+    font-weight: bold;
+    background-color:#DF2027;
+    }
+.THIS .fRight
+    {
+        float:right;
+    }
+@font-face{
+	font-family: 'Salesforce Sans';
+	src: url(/resource/gothambook);
+}
+@font-face{
+	font-family: 'Gotham-Light';
+	src: url(/resource/gothamlight);
+}
+        .THIS legend{
+    width: 2.5%;
+}

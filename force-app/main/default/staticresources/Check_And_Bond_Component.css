@@ -1,0 +1,231 @@
+.alert {
+  padding: 20px;
+  background-color: #9F6000;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.6s;
+  margin-bottom: 15px;
+}
+.cardHeader{
+  height: 19.6em;
+}
+
+.mrgTop{
+  margin-top : 20px !important;
+}
+
+.redHeader{
+  background-color: #df2027 !important;
+}
+
+.title{
+  font-size: 20px !important;
+  margin: 4px;
+  color: white;
+  font-weight: 400 !important;
+}
+
+.c-container {
+  background-color: #fff;
+  margin: 2px 0 20px 0;
+  height: max-content;
+  /* min-height: 700px !important; */
+  overflow: hidden;
+}
+
+.alert.warning {background-color: #DF2027;}
+
+.alert.info {background-color: #66b4f3;}
+
+.modalBox {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.dt-outer-container{
+  height: auto !important;
+}
+
+
+
+.slds-cell-fixed{
+  background: #DF2027;
+}
+
+.slds-th__action{    
+  background: #DF2027;
+  color: white;
+}
+
+.slds-th__action:hover{    
+  background: #DF2027;
+}
+
+.slds-th__action:focus{    
+  background: #DF2027;
+}
+
+.slds-th__action .slds-button{
+  color:white;
+}
+
+.slds-table_header-fixed_container{
+  height: 80% !important;
+}
+  
+.slds-cell-edit__button{
+  margin-right: 1rem;
+}
+
+.create-plan-button{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px;
+  color: #DF2027;
+  float: right;
+}
+
+.create-plan-button:hover{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px;
+  color: #DF2027;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}
+
+.calculate-button{
+  background: #DF2027;
+  height: 32px;
+  border-radius: 4px;
+  color: white;
+  border: 1px solid #DF2027;
+  float: right;
+}
+
+.calculate-button:hover{
+  background: #DF2027;
+  height: 32px;
+  border-radius: 4px;
+  color: white;
+  border: 1px solid #DF2027;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}
+
+.minHeight{
+  min-height: 340px;
+}
+
+.lightning-button-element button{
+  background: #DF2027;
+  height: 32px;
+  border-radius: 4px;
+  color: white;
+  margin-top: 1.4em;
+  margin-left: 1%;
+  border: 1px solid #DF2027;
+  float: right;
+}
+
+.innerTableDiv{
+  padding: 0.5em;
+}
+
+.lightning-button-element button:hover{
+  background: #DF2027;
+  height: 32px;
+  border-radius: 4px;
+  margin-top: 1.4em;
+  margin-left: 1%;
+  color: white;
+  border: 1px solid #DF2027;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+input:focus, select:focus{
+  border-color:#DF2027 !important;
+}
+
+.float-right-for-icon{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.bank-key-element{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-bottom: 10px;
+  color: var(--lwc-colorTextLabel,rgb(62, 62, 60));
+}
+
+.bank-key-input{
+  width: 92%;
+}
+
+.bank-key-input div{
+  float: right;
+  width: 72.3%;
+}
+
+.bordro-table{
+  margin-top: 1rem;
+}
+
+.corporate-color th{
+  font-weight: bold;
+  background-color:#DF2027 !important;
+  color:white !important;    
+  text-align: center;
+}
+
+.slds-modal__content{
+  background-color: #F8F8F8 !important;
+}
+
+.slds-p-around_large{
+  border: 1px solid lightgray;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.noTopMargin button{
+  margin-top: unset !important;
+  width: 100%;
+}
+
+.baglantiTablo th{
+  font-weight: bold !important;
+  background-color: rgb(247 82 88) !important; 
+  color: white !important; 
+  white-space: break-spaces !important;
+}
+
+.baglantiTablo td{
+  white-space: break-spaces !important;
+}
+
+.slds-modal__container header h2{
+  font-size: 1.6em;
+}
+
+.baglantiTablo{
+  width: 200%;
+}
+
+.checkboxCustom{
+  --sds-c-checkbox-color-background: white;
+  --sds-c-checkbox-color-border: black;
+  --sds-c-checkbox-color-border-checked: black;
+  --sds-c-checkbox-color-background-checked: white;
+  --sds-c-checkbox-mark-color-foreground: red;
+  --sds-c-checkbox-radius-border: 0.200rem;
+  --sds-c-checkbox-shadow: 0 0 1px gray;
+}

@@ -1,0 +1,305 @@
+<template>
+    <div class="c-container">
+        <template if:true={isLoading}>
+            <div class="spinner">
+              <lightning-spinner
+                alternative-text="Loading"
+                variant="brand"
+                size="large"
+              >
+              </lightning-spinner>
+            </div>
+          </template>
+
+        <template if:false={hidefilter}>
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid" style="border-bottom: 1px solid lightgray;background-color: #DF2027;color: white;padding: 7px;margin: 0;">
+                   <div class="slds-media">
+                      <div class="slds-media__figure">
+                        <span class="slds-assistive-text">DTS Bordro Hesap İşlemleri</span>
+                        <lightning-icon icon-name="standard:expense"></lightning-icon>
+                      </div>
+                      <div class="slds-media__body">
+                         <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate title"
+                                        title="DTS Bordro Hesap İşlemleri">DTS Bordro Hesap İşlemleri</span>
+                                </h1>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+                <footer class="slds-card__footer" style="padding-top: 0;">
+                    <fieldset class="slds-box slds-container slds-theme--default">
+                        <legend class="slds-text-heading_small slds-p-vertical_medium" align="left" style="width: auto;">
+                            Filtre
+                         </legend>
+                        <lightning-layout horizontal-align="spread">
+                            <lightning-layout-item  alignment-bump="left" size="6" padding="around-small">
+                                <lightning-radio-group class="textLeft" name="radioGroup" options={options} value={value} type="radio"
+                                    onchange={radioChange}>
+                                </lightning-radio-group>
+                            </lightning-layout-item>
+        
+                            <lightning-layout-item size="6" padding="around-small">
+                              <lightning-button icon-name="utility:search" class="lightning-button-element slds-float_right" label="Ara" variant="destructive" onclick={getBordroData}></lightning-button>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </fieldset>
+              </footer>
+             </article>
+             <br>
+            <!-- Filtre Alanı ALtında Çıkan Tablo-->
+            <template if:true={showBordroDatatable}>
+                <div class="slds-box">
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-5">
+                    <div class="slds-text-align_right"><i>* Para birimi TL'dir.</i></div>
+                    <div class="slds-text-align_right"><i>* Fiyatlara KDV dahildir.</i></div>
+                    <lightning-datatable key-field="Id" show-row-number-column hide-checkbox-column suppress-bottom-bar
+                        onrowaction={handleRowAction} data={bordroList} columns={mainBordrocolumns}>
+                    </lightning-datatable>
+                </div>
+                </div>
+            </template>
+
+        </template>
+
+        <!-- Bordroya Bağlı Faturaları Göster butonunun açtığı modal -->
+        <template if:true={showInvoiceModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large"
+                aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeModal}>
+                            <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                                <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Kapat</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Bordroya Bağlı Faturalar</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-text-align_right"><i>* Para birimi TL'dir.</i></div>
+                        <div class="slds-text-align_right"><i>* Fiyatlara KDV dahildir.</i></div>
+                        <lightning-datatable key-field="id" show-row-number-column hide-checkbox-column
+                            suppress-bottom-bar data={invoiceList} columns={invoiceDataColumns}></lightning-datatable>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Bordroya Bağlı Çekleri Göster butonunun açtığı modal -->
+        <template if:true={showChequeModal}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large"
+                aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeChequeModal}>
+                            <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                                <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Kapat</span>
+                        </button>
+                        <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Bordroya Bağlı Çekler</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <div class="slds-text-align_right"><i>* Para birimi TL'dir.</i></div>
+                        <div class="slds-text-align_right"><i>* Fiyatlara KDV dahildir.</i></div>
+                        <lightning-datatable key-field="id" show-row-number-column hide-checkbox-column
+                            suppress-bottom-bar data={chequeList} columns={chequeDataColumns}></lightning-datatable>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+
+        <template if:true={showOdemePlani}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium modalBox"
+                aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close" onclick={closeOdemePlanModal}>
+                            <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                                <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                            </svg>
+                            <span class="slds-assistive-text">Kapat</span>
+                        </button>
+                        <h2 id="modal-heading-03" class="slds-modal__title slds-hyphenate">Plan Hazırla</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_large" id="modal-content-id-3">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <div class="slds-card">
+                                    <div class="slds-p-around_large">
+                                        <table
+                                            class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                            <thead>
+                                                <tr class="slds-line-height_reset corporate-color">
+                                                    <th>Bordro Vade</th>
+                                                    <th>Bordro Tutar</th>
+
+                                                    <th>Hesaplanan Vade</th>
+                                                    <th>Hesaplanan Tutar</th>
+
+                                                    <th>Fark Gün</th>
+                                                    <th>Fark Tutar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        {planModel.bordro.RC_Average_Due_Date__c}
+                                                    </td>
+                                                    <td>
+                                                        <lightning-formatted-number
+                                                            value={planModel.bordro.RC_Amount__c}
+                                                            format-style="currency" currency-code="TRY"
+                                                            currency-display-as="symbol" maximum-fraction-digits="2">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                    <td>
+                                                        {planModel.hesaplananVade}
+                                                    </td>
+                                                    <td>
+                                                        <lightning-formatted-number value={planModel.hesaplananTutar}
+                                                            format-style="currency" currency-code="TRY"
+                                                            currency-display-as="symbol" maximum-fraction-digits="2">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                    <td>
+                                                        {planModel.farkVade}
+                                                    </td>
+                                                    <td>
+                                                        <lightning-formatted-number value={planModel.farkTutar}
+                                                            format-style="currency" currency-code="TRY"
+                                                            currency-display-as="symbol" maximum-fraction-digits="2">
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="slds-card">
+                                    <div class="slds-p-around_large" style="height: 207px;">
+                                        <table>
+                                            <tr>
+                                                <td style="font-weight: bold;width:15%;">Ödenecek Çek Sayısı</td>
+                                                <td>:</td>
+                                                <td>
+                                                    <lightning-input type="text" value={selectedChequeNum}
+                                                        name="selectedChequeNum" onchange={handleSearchElements}
+                                                        style="padding-bottom: 1rem;">
+                                                    </lightning-input>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: bold;">Ödeme Aralığı (Gün)</td>
+                                                <td>:</td>
+                                                <td>
+                                                    <lightning-input type="text" value={selectedMaturity}
+                                                        name="selectedMaturity" onchange={handleSearchElements}
+                                                        style="padding-bottom: 1rem;">
+                                                    </lightning-input>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3">
+                                                    <lightning-button class="lightning-button-element slds-float_right" label="Hesapla" variant="destructive" onclick={calculateOdemePlan}></lightning-button>
+
+                                                    <!-- <button
+                                                        class="slds-button slds-button_outline-brand create-plan-button"
+                                                        onclick={calculateOdemePlan}>Hesapla</button> -->
+
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="slds-card">
+                                    <div class="slds-p-around_large" style="margin-top: 1.2rem;">
+                                        <lightning-datatable key-field="RC_Payment_Plan_Number__c"
+                                            show-row-number-column hide-checkbox-column suppress-bottom-bar
+                                            onrowaction={handleRowAction} data={odemePlanList} columns={planColumns}
+                                            oncellchange={handleCellChange} draft-values={draftValues}>
+                                        </lightning-datatable>
+                                    </div>
+                                </div>
+                                <div class="slds-card">
+                                    <div class="slds-p-around_large" style="margin-top: 1.2rem;">
+                                        <lightning-input type="checkbox" data-id="cbxAccept"
+                                            label="Bordronun ödeme planının yukarıdaki şekilde değiştirilmesini onaylıyorum."
+                                            onchange={CbxAccept} disabled={isDisabledSendToSap}
+                                            field-level-help="Planı SAP'ye gönderebilmek için çalışmanızı kaydediniz.">
+                                        </lightning-input>
+
+                                    </div>
+                                </div>
+                                <div class="slds-card">
+                                    <div class="slds-var-p-top_large slds-p-around_large" style="min-height: 3.9rem;">
+
+                                        <template if:true={showSendSapButton}>
+                                            <lightning-button class="lightning-button-element slds-float_right" label="SAP
+                                            Gönder" variant="destructive" onclick={sendPlanToSap}></lightning-button>
+
+                                            <!-- <button class="slds-button slds-button_outline-brand calculate-button"
+                                                style="margin-right: 0.7rem;" onclick={}>SAP
+                                                Gönder</button> -->
+                                        </template>
+                                        <lightning-button class="lightning-button-element slds-float_right" label="Girdiğim Değerleri
+                                        Hesapla" variant="destructive" onclick={calculateModifiedPaymentPlan}></lightning-button>
+
+                                        <!-- <button class="slds-button slds-button_outline-brand calculate-button"
+                                            style="margin-right: 0.7rem;"
+                                            onclick={}></button> -->
+
+                                            <lightning-button class="lightning-button-element slds-float_right" label="Çalışmayı Kaydet
+                                            " variant="destructive" onclick={lockedPlan}></lightning-button>
+                                        <!-- <button class="slds-button slds-button_outline-brand create-plan-button"
+                                            style="margin-right: 0.7rem;" onclick={}>Çalışmayı Kaydet</button> -->
+                                    </div>
+                                </div>
+                                <div class="slds-card">
+                                    <div class="slds-p-around_large">
+                                        <strong>Ödemeyi kaç çekle yapmak istediğinizi ve ödemeler arası süreyi seçip
+                                            "Hesapla" tuşuna basınız.</strong>
+                                    </div>
+                                </div>
+                                <div class="slds-card">
+                                    <div class="slds-p-around_large">
+                                        <strong>
+                                            <p>Hesaplanan çek tutarları ve tarihleri üzerinde tablodan düzeltme
+                                                yapabilirsiniz.</p>
+                                            <p>Değiştirdiğiniz değerleri hesaplamak ve kontrol etmek için "Girdiğim
+                                                Değerleri Hesapla" tuşuna basınız.</p>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="slds-card">
+                                    <div class="slds-p-around_large">
+                                        <strong>Yaptığınız değişiklikleri geçici olarak kaydetmek için "Çalışmayı
+                                            Kaydet" tuşuna basınız.</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+
+    </div>
+
+
+
+
+</template>

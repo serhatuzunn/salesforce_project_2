@@ -1,0 +1,132 @@
+.THIS {
+     font-family: 'Salesforce Sans';
+}
+
+.THIS h1{    
+    text-align: left;
+    padding: 8px;
+}
+
+.THIS #dealerbonuscalcbonus{
+    width: 2.5%;
+}
+
+.THIS .slds-card__header{
+    background-color: #DF2027;
+	color: white;
+    padding: 7px;
+    margin: 0;
+}
+
+.THIS .slds-form-element{
+    text-align: left;
+}
+
+.THIS .slds-form-element__label{
+    font-size: 14px;
+}
+.THIS .page-title{
+    font-family: 'Salesforce Sans';
+    color: white;
+    font-weight: 400;
+}
+
+.THIS .form-box{
+
+}
+
+.THIS .search-button{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    float: right;
+    width: 100px;
+    margin-top: 1.4rem;
+}
+  
+.THIS .search-button button:hover{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    transform: translateY(-1px);
+    width: 100px;
+    margin-top: 1.4rem;
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+.THIS .slds-modal__container{
+    max-width:80rem !important;
+    width:80% !important;
+}
+
+.THIS .slds-form_stacked{
+    width: 40%;
+    margin-left: 30%;
+}
+
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: #DF2027;
+}
+    
+.THIS .lightning:layout{
+    height : 78px;
+}
+
+.THIS .buttons-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+    
+.THIS .buttons-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.THIS .slds-grid,.THIS .slds-box{
+    width: 100%;
+}
+.THIS input:focus, .THIS select:focus{
+    border-color:#DF2027 !important;
+}
+
+.THIS .slds-cell-fixed{
+    background: #DF2027;
+}
+
+.THIS .slds-th__action{    
+    background: #DF2027;
+    color: white;
+}
+
+.THIS .slds-th__action:hover{    
+    background: #DF2027;
+}
+.THIS .slds-th__action:focus{    
+    background: #DF2027;
+}
+
+.THIS .slds-th__action .slds-button{
+    color:white;
+}
+
+.THIS .slds-button_icon-bare{
+ display: none !important;
+} 
+    
+.THIS .slds-cell-fixed slds-has-button-menu{
+   width: 190px;
+}
+    
+@font-face{
+	font-family: 'Salesforce Sans';
+	src: url(/resource/gothambook);
+}
+@font-face{
+	font-family: 'Gotham-Light';
+	src: url(/resource/gothamlight);
+    }

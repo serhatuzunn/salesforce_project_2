@@ -1,0 +1,205 @@
+p {
+  font-family: "Salesforce Sans", Arial, sans-serif;
+  color: rgb(62, 62, 60);
+}
+
+input:focus, select:focus{
+  border-color:#DF2027 !important;
+}
+
+.lightning-button-element button{
+  margin-top: 0 !important;
+}
+
+.slds-card__footer{
+  text-align: left;
+}
+
+.card-style{
+  border: 1px solid lightgray;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.slds-text-heading_medium {
+  font-weight: bold;
+}
+
+.report-button-element button{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px !important;
+  color: #DF2027;
+}
+
+.slds-th__action{
+  height: auto !important;
+}
+
+input:focus, select:focus{
+  border-color:#DF2027 !important;
+}
+
+.slds-page-header{
+  background: white;
+  border-bottom: var(--lwc-borderWidthThin,1px) solid var(--lwc-colorBorder,#D4D4D4);
+}
+
+.slds-page-header__title{
+  margin-top: 5px;
+}
+
+.right-excel-button{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  margin-right: 1.3rem;
+}
+
+.slds-form-element__label{
+  float:left;
+}
+
+.slds-card__footer{
+  text-align: left;
+}
+
+.my-icon {
+  --sds-c-icon-color-foreground-default: white !important;
+}
+
+/* .slds-path__nav .slds-is-current:first-child{
+  border-color: #DF2027;
+} */
+
+.lightning-button-element button{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px !important;
+  color: #DF2027;
+  float: right;
+  width: 100px;
+  margin-top: 0rem;
+}
+
+.lightning-button-element button:hover{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px !important;
+  color: #DF2027;
+  transform: translateY(-1px);
+  width: 100px;
+  margin-top: 0rem;
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+.lightning-excel-button button{
+  background: white;
+  border-radius: 4px !important;
+  color: black;
+  box-sizing: border-box;
+  border: 1px solid black;
+  width: 100px;
+}
+
+.lightning-excel-button button:hover{
+  background: white;
+  border-radius: 4px !important;
+  color: black;
+  box-sizing: border-box;
+  border: 1px solid black;
+  width: 100px;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);               
+}
+
+.lightning-cancel-button{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px !important;
+  color: #DF2027;
+}
+
+.lightning-cancel-button:hover{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px !important;
+  color: #DF2027;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);       
+}
+
+.lightning-report-button button{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px !important;
+  color: #DF2027;
+}
+
+.lightning-report-button button:hover{
+  background: #FFFFFF;
+  border: 1px solid #DF2027;
+  box-sizing: border-box;
+  border-radius: 4px !important;
+  color: #DF2027;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);       
+}
+
+.slds-cell-fixed{
+  background: #DF2027;
+}
+
+.slds-th__action{    
+  background: #DF2027;
+  color: white;
+}
+
+.slds-th__action:hover{    
+  background: #DF2027;
+}
+
+.slds-th__action:focus{    
+  background: #DF2027;
+}
+
+.slds-th__action .slds-button{
+  color:white;
+}
+
+.slds-table_header-fixed_container{
+  height: 80% !important;
+}
+
+.slds-th__action .slds-button_icon{
+  color: black;
+}
+
+.slds-cell-edit__button{
+  margin-right: 1rem;
+}
+
+.responsive-gutters{
+  width: 200%;
+}
+
+@media screen and (max-width: 600px) {
+  fieldset{
+      min-width: 100%;
+  }
+  .responsive-gutters{
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+  }
+  .responsive-form-element{
+      width: 100%;
+  }
+}

@@ -1,0 +1,67 @@
+<aura:component controller="RC_SubeYaratController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <aura:html tag="style">
+        .slds-modal__close{
+        display: none;
+        }       
+    </aura:html>
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" /> 
+    
+    <aura:attribute name="loading" 	type="boolean" default="false"/>
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="subeYaratResponse" type="boolean" default="false"/>
+    <aura:attribute name="subeYaratAccountId" type="String" default=""/>
+    
+    <div title="Şube Yarat Sonuç"></div>
+    
+    <aura:if isTrue="{!v.loading}">
+        
+        <div class="slds-spinner--brand slds-spinner">
+            <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+        </div>
+        
+        <aura:set attribute="else">
+            <aura:if isTrue="{!v.subeYaratResponse}">
+                
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName="utility:success" size="small" alternativeText="Şube Yarat Sonuç" title="Şube Yarat Sonuç" />
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate" title="Şube Sil Sonuç">Şube oluşturuldu.</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><br/>
+                
+                <aura:set attribute="else">
+                    <ui:message title="Uyarı" severity="warning" closable="false">
+                        Şube Oluştur HATA!
+                    </ui:message>
+                </aura:set>
+                
+            </aura:if> 
+            
+            <div class="modalClose">
+                <div class="modalCloseButton">
+                    <lightning:button variant="brand" onclick="{!c.handleCloseModal}" iconName="utility:close" label="Kapat" />
+
+                </div>
+            </div>
+            
+            
+        </aura:set>
+        
+    </aura:if>
+    
+</aura:component>

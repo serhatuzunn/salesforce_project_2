@@ -1,0 +1,153 @@
+<template>
+    <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-opportunity">
+                            <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                                <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#report"></use>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span>Reports</span>
+                                    <span class="slds-page-header__title slds-truncate" title="All Folders">All Folders</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+                <div class="slds-page-header__controls">
+                  <div class="slds-page-header__control">
+                    <ul class="slds-button-group-list">
+                      <li>
+                        <button class="slds-button slds-button_neutral" title="New Report" onclick={navigateNext}>New Report</button>
+                      </li>
+                      <li>
+                        <button class="slds-button slds-button_neutral" title="New Folder" onclick={openFolderModal}>New Folder</button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="slds-page-header__row slds-page-header__row_gutters">
+            <div class="slds-page-header__col-details">
+                <ul class="slds-page-header__detail-row">
+                    <lightning-datatable
+                        key-field="id"
+                        data={reportList}
+                        columns={columns}
+                        hide-checkbox-column
+                        default-sort-direction={defaultSortDirection}
+                        sorted-direction={sortDirection}
+                        sorted-by={sortedBy}
+                        onsort={onHandleSort}
+                        onrowaction={handleRowClick}>
+                    </lightning-datatable>
+                </ul>
+            </div>  
+        </div>
+    </div>
+
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+           <div class="slds-modal__container" style="max-height : 100%;" >
+              <header class="slds-modal__header">
+                 <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                       <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Close</span>
+                 </button>
+              </header>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <div class="slds-page-header__row">
+                    <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-opportunity">
+                                    <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#report"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-page-header__name">
+                                    <div class="slds-page-header__name-title">
+                                        <h1>
+                                            <span>{detailData.folderName}</span>
+                                            <span class="slds-page-header__title slds-truncate" title="All Folders">Related Reports</span>
+                                            <span>{detailDataSize}</span>
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </br></br>
+
+                <lightning-datatable key-field="id" show-row-number-column hide-checkbox-column suppress-bottom-bar 
+                    data={detailData.relatedReportList} columns={detailColumn}>
+                </lightning-datatable>
+              </div>
+              <footer class="slds-modal__footer">
+                 <button class="slds-button slds-button_destructive" onclick={closeModal} title="Cancel">Cancel</button>
+              </footer>
+           </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+     </template>
+
+     <template if:true={isFolderModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container" style="max-height : 100%;" >
+               <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                     <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                     </svg>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+               </header>
+               <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                 <div class="slds-page-header__row">
+                     <div class="slds-page-header__col-title">
+                         <div class="slds-media">
+                             <div class="slds-media__body">
+                                 <div class="slds-page-header__name">
+                                     <div class="slds-page-header__name-title">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <lightning-input name="folderLabel" required label="Folder Label" onchange={handleSearchElements}></lightning-input>
+                                            </div>
+                                          </div>
+                                          <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <lightning-input name="folderUniqueName" required label="Folder Unique Name" onchange={handleSearchElements}></lightning-input>
+                                            </div>
+                                          </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+               </div>
+               <footer class="slds-modal__footer">
+                  <button class="slds-button slds-button_destructive" onclick={closeModal} title="Cancel">Cancel</button>
+                  <button class="slds-button slds-button_success" onclick={saveFolder} title="Save">Save</button>
+               </footer>
+            </div>
+         </section>
+         <div class="slds-backdrop slds-backdrop_open"></div>
+     </template>
+</template>

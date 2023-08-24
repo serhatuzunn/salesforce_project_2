@@ -1,0 +1,292 @@
+<aura:component controller="RC_DealerBonusCalculatorController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">	
+    
+    <!--Attributes-->
+    <aura:attribute name="loading" type="boolean" default="false"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="bonusType" type="String" />
+    <aura:attribute name="selectedBonusType" type="String" />
+    <aura:attribute name="bonusTypeList" type="List" default="[                                                                
+                                                              {'label': 'Bayi Ciro Prim', 'value': 'dealerBonus'},
+                                                              {'label': 'Bayi Mağaza Prim', 'value': 'dealerBonusStore'},
+                                                              {'label': 'Bayiden Sevk Prim', 'value': 'dealerBonusShipment'}]"/>
+    
+    <aura:attribute name="strStartDate" type="String"/>
+    <aura:attribute name="strEndDate" type="String"/>
+    
+    <aura:attribute name="visibleDealerBonusShipment" type ="boolean"/>
+    <aura:attribute name="visibleDealerBonus" type ="boolean"/>
+    <aura:attribute name="visibleDealerBonusStore" type ="boolean"/>
+    <aura:attribute name="visibleDealerBonusPeriod" type ="boolean"/>
+    
+    <aura:attribute name="bonusDealerShipmentFilterList" type="RC_DealerBonusCalculatorController.initWrapper"/>
+    <aura:attribute name="columnListShipment" type="List" default="[]"/>
+    <aura:attribute name="dataListShipment" type="List" default="[]"/>
+    <aura:attribute name="columnListShipmentDetail" type="List" default="[]"/>
+    <aura:attribute name="dataListShipmentDetail" type="List" default="[]"/>
+    
+    <aura:attribute type="Object" name="draftValues"  default="[]"/>
+    <aura:attribute type="Object" name="draftValuesStore"  default="[]"/>
+    <aura:attribute type="Object" name="draftValuesShipment"  default="[]"/>
+    
+    <aura:attribute name="bonusDealerFilterList" type="RC_DealerBonusCalculatorController.DealerShipmentBonusDT"/>
+    <aura:attribute name="bonusDealerFilterStoreList" type="RC_DealerBonusCalculatorController.DealerShipmentBonusDT"/>
+    <aura:attribute name="columnListStore" type="List" default="[]"/>
+    <aura:attribute name="dataListStore" type="List" default="[]"/>
+    <aura:attribute name="columnList" type="List" default="[]"/>
+    <aura:attribute name="dataList" type="List" default="[]"/>
+    
+    <aura:attribute name="periodTypeList" type="List" default="[                                                                
+                                                               {'label': 'Ocak-Şubat-Mart 1. Dönem', 'value': '1'},
+                                                               {'label': 'Nisan-Mayıs-Haziran 2. Dönem', 'value': '2'},
+                                                               {'label': 'Temmuz-Ağustos-Eylül 3. Dönem', 'value': '3'},
+                                                               {'label': 'Ekim-Kasım-Aralık 4. Dönem', 'value': '4'}]"/>
+    <aura:attribute name="DateFilterTypeList" type="List" default="[                                                                
+                                                                   {'label': 'Tarih Aralığı', 'value': 'dateRange'},
+                                                                   {'label': 'Period', 'value': 'period'}]"/>
+    
+    <aura:attribute name="selectedPeriodType" type="String" />    
+    <aura:attribute name="dateControl" type="boolean" default="true"/>
+    <aura:attribute name="selectedPreYear" type="String" />
+    <aura:attribute name="preYearList" type="List" default="[]"/>
+    
+    <aura:attribute name="isModalOpenShipment" type="boolean" default="false"/>
+    <aura:attribute name="modalHeaderText" type="String" default="Bayiden Sevk Prim Detayı"/>
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="force:refreshView" action="{!c.clickFilter}" />
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    
+    
+    <!-- PAGE HEADER -->
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="standard:scan_card" alternativeText="Bayi Prim - Bayiden Sevk Prim"/>
+            <span class="page-title" style="font-size:18px;padding-left:10px;">Bayi Prim - Bayiden Sevk Prim</span>     
+        </aura:set>
+        <aura:set attribute="footer">
+            <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+                <ui:message severity="error" closable="true" class="slds-hide" aura:id="errorMsg">
+                    {!v.message}
+                </ui:message>
+                <legend id="dealerbonuscalcbonus" class="slds-text-heading_small slds-p-vertical_medium" align="left" >Filtre</legend>
+                
+                
+                <lightning:layout multipleRows="true" verticalAlign="end">
+                    <lightning:layoutItem size="12" smallDeviceSize="10" mediumDeviceSize="8" largeDeviceSize="12"
+                                          padding="around-small">
+                        
+                        
+                        <div class="slds-grid slds-gutters slds-wrap">                    
+                            <div class="slds-col slds-x-small-size_3-of-3 slds-large-size_1-of-3">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">            
+                                        <lightning:select aura:id="bonusType" name="bonusType" label="Prim Türü" 
+                                                          value="{!v.selectedBonusType}" 
+                                                          onchange="{!c.handleSelectedBonusType}"
+                                                          required="true" >
+                                            <aura:iteration items="{!v.bonusTypeList}" var="option">
+                                                <option text="{!option.label}" value="{!option.value}"/>
+                                            </aura:iteration>
+                                        </lightning:select>   
+                                    </div>  
+                                </div>
+                            </div>
+                            
+                            <aura:if isTrue="{!v.selectedBonusType!='dealerBonusShipment'}">            
+                                <div class="slds-col slds-x-small-size_3-of-3 slds-large-size_1-of-3">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">                            
+                                            <lightning:select aura:id="periodType" name="periodType" label="Dönem" 
+                                                              value="{!v.selectedPeriodType}" 
+                                                              onchange="{!c.handleSelectedPeriodType}"                                           >
+                                                <aura:iteration items="{!v.periodTypeList}" var="option">
+                                                    <option text="{!option.label}" value="{!option.value}"/>
+                                                </aura:iteration>
+                                            </lightning:select>                                    
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-x-small-size_3-of-3 slds-large-size_1-of-3">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <lightning:select aura:id="preYear" name="preYear" label="Önceki Yıl" 
+                                                              value="{!v.selectedPreYear}" 
+                                                              onchange="{!c.handleSelectedPreYear}"                                           >
+                                                <aura:iteration items="{!v.preYearList}" var="option">
+                                                    <option text="{!option.label}" value="{!option.value}"/>
+                                                </aura:iteration>
+                                            </lightning:select>                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </aura:if>
+                            <aura:if isTrue="{!v.selectedBonusType=='dealerBonusShipment'}"> 
+                                <div class="slds-col slds-size_1-of-3">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">  
+                                            <lightning:input aura:id="startDate" type="date" name="startDate" label="Başlangıç Tarihi" value="{!v.strStartDate}" required="true" ></lightning:input>
+                                        </div></div></div>
+                                <div class="slds-col slds-size_1-of-3">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">  
+                                            <lightning:input aura:id="endDate" type="date" name="endDate" label="Bitiş Tarihi" value="{!v.strEndDate}" required="true" ></lightning:input>
+                                        </div></div></div>
+                            </aura:if>
+                        </div> 
+                        
+                        
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_3-of-3">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control right-align">  
+                                        <lightning:button label="Ara" class="slds-m-top_medium search-button" iconName="utility:search" iconPosition="left" onclick="{! c.clickFilter }" />
+                                    </div></div></div>     
+                        </div>               
+                        
+                        
+                        
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </fieldset>
+        </aura:set>
+    </lightning:card>
+    
+    <!-- / PAGE HEADER -->
+    
+    
+    
+    <br/>
+    
+    <aura:if isTrue="{!v.visibleDealerBonusShipment}">
+        <aura:if isTrue="{!v.selectedBonusType=='dealerBonusShipment'}">
+            <div class="slds-card" style="height: 600px; width:100%;">
+                
+                <div align="right">
+                    <p><i>*  Faturanın vadesi fatura tarihi + 90 gün olacaktır.</i></p>
+                    <p><i>** Fatura ayın son gününe kadar kesilmiş olmalıdır.</i></p>
+                </div>
+                <div class="slds-scrollable_x slds-m-around_small">                        
+                    <lightning:datatable aura:id="linesTableShipment"
+                                         data="{!v.dataListShipment }" 
+                                         columns="{!v.columnListShipment }" 
+                                         keyField="PERIOD"
+                                         errors="{! v.errors }"
+                                         draftValues="{!v.draftValuesShipment}"
+                                         suppressBottomBar="false"
+                                         hideCheckboxColumn="true" 
+                                         selectedRows="{!v.selectedRowsShipment}"    
+                                         onrowselection="{!c.UpdateSelectedRowsShipment}"
+                                         showRowNumberColumn="true"
+                                         onsave="{!c.onSaveShipment}"
+                                         onrowaction="{! c.handleRowShipmentAction }"/>  
+                    <br/><br/>
+                    
+                </div>     
+            </div>
+        </aura:if>
+        
+    </aura:if>
+    
+    <aura:if isTrue="{!v.visibleDealerBonusStore}">
+        <aura:if isTrue="{!v.selectedBonusType=='dealerBonusStore'}">     
+            <div class="slds-card">
+                
+                <div class="slds-scrollable_x slds-m-around_small">                        
+                    <lightning:datatable aura:id="linesTableStore"
+                                         data="{!v.dataListStore }" 
+                                         columns="{!v.columnListStore }" 
+                                         keyField="PERIOD"
+                                         errors="{! v.errors }"
+                                         draftValues="{!v.draftValuesStore}"
+                                         suppressBottomBar="false"
+                                         hideCheckboxColumn="true" 
+                                         selectedRows="{!v.selectedRowsStore}"    
+                                         onrowselection="{!c.UpdateSelectedRowsStore}"
+                                         showRowNumberColumn="true"
+                                         onsave="{!c.onSaveStore}"
+                                         onrowaction="{! c.handleRowStoreAction }"/>  
+                    <br/><br/> 
+                </div>        
+            </div>
+        </aura:if>
+        
+        
+    </aura:if>
+    
+    <aura:if isTrue="{!v.visibleDealerBonus}">
+        <aura:if isTrue="{!v.selectedBonusType=='dealerBonus'}">  
+            <div class="slds-card">
+                
+                <div class="slds-scrollable_x slds-m-around_small">                        
+                    <lightning:datatable aura:id="linesTable"
+                                         data="{!v.dataList }" 
+                                         columns="{!v.columnList }" 
+                                         keyField="PERIOD"
+                                         errors="{! v.errors }"
+                                         draftValues="{!v.draftValues}"
+                                         suppressBottomBar="false"
+                                         hideCheckboxColumn="true" 
+                                         selectedRows="{!v.selectedRows}"    
+                                         onrowselection="{!c.UpdateSelectedRows}"
+                                         showRowNumberColumn="true"
+                                         onsave="{!c.onSave}"
+                                         onrowaction="{! c.handleRowStore }"/>  
+                    <br/><br/>
+                </div>      
+            </div>
+        </aura:if>
+        
+    </aura:if>
+    
+    <div class="slds-m-around_xx-large">                    
+        <!--Parçalı Ödeme ve Detay kısmını açan modal-popup -->  
+        <aura:if isTrue="{!v.isModalOpenShipment}">                        
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">                                  
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.modalHeaderText}</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium">                                    
+                    </div>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p>                                        
+                            <div  class="slds-scrollable_x" style="height:560px; width:auto">
+                                
+                                <lightning:datatable aura:id="linesTableShipmentDetail"
+                                                     data="{!v.dataListShipmentDetail }" 
+                                                     columns="{!v.columnListShipmentDetail }"                                                                 
+                                                     errors="{! v.errors }"
+                                                     keyField="NAME1"
+                                                     draftValues="{!v.draftValuesPartialPayment}"
+                                                     wrap-text-max-lines="10"
+                                                     hideCheckboxColumn="true"
+                                                     suppressBottomBar="true"
+                                                     selectedRows="{!v.selectedRows}"
+                                                     oncellchange="{!c.handlecellchange}"
+                                                     maxRowSelection="{!v.maxRowSelection}"
+                                                     onrowselection="{!c.getSelectedAccName}"
+                                                     showRowNumberColumn="true"/>
+                            </div>
+                            
+                        </p>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button iconName="utility:close"
+                                          variant="neutral"
+                                          label="Kapat"
+                                          title="Kapat"
+                                          onclick="{! c.closeModel }"/>                                    
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </div>
+</aura:component>

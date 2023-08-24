@@ -1,0 +1,317 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-spinner if:true={isLoading} alternative-text="Loading" size="small"></lightning-spinner>
+    <div class="c-container">
+        <div class="slds-page-header slds-m-bottom_x-large redHeader">
+            <div class="slds-page-header__row">
+              <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                  <div class="slds-media__figure">
+                    <span class="slds-assistive-text">Bağlantı Bordro Oluşturma</span>
+                    <lightning-icon icon-name="standard:expense"></lightning-icon>
+                  </div>
+                  <div class="slds-media__body">
+                    <div class="slds-page-header__name">
+                      <div class="slds-page-header__name-title">
+                        <h1>
+                          <span class="slds-page-header__title slds-truncate title" title="Bağlantı Bordro Oluşturma">Bağlantı Bordro Oluşturma</span>
+                        </h1>
+                      </div>
+                    </div>
+        
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <article class="slds-box">
+            <lightning-layout>
+                <!--<lightning-layout-item size="2"  padding="around-small"><span>Bağlantı Dönemi</span></lightning-layout-item>-->
+                <span style="display:inline-flex; align-items:center;">Bağlantı Dönemi</span>
+                <lightning-layout-item size="3"  padding="around-small">
+                    <lightning-combobox
+                    name="progress"
+                    value={selectedConnectionPeriod}
+                    variant = "label-hidden" 
+                    placeholder="Bağlantı Durumu"
+                    options={connectionPeriodOptions}
+                    onchange={cbxChange} ></lightning-combobox>
+                </lightning-layout-item>
+                <span style="display:inline-flex; align-items:center; margin-left:15px;">Çek Türü</span>
+                <lightning-layout-item size="4" padding="around-small" style="padding-left: 5px;padding-top:16px;">
+                    <lightning-radio-group name="radioGroup"
+                    options={radioButtonOptions}
+                    value={selectedRadioButton}
+                    type="radio"
+                    class="radio-class"
+                    onchange={radioChange}></lightning-radio-group>
+                </lightning-layout-item>
+            </lightning-layout>
+    
+            <lightning-layout>
+                <lightning-layout-item size="12" padding="around-small">
+                    <div class="slds-scrollable">
+                        <table class="slds-table slds-table_bordered slds-table_col-bordered slds-table_fixed-layout">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th style="text-align: center; width:5%;" class="slds-cell-wrap" scope="col">
+                                        <div class="">
+                                            <!--<lightning-input type="checkbox" label=" "
+                                                onchange={cbxSelectAll}></lightning-input>-->
+                                        </div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate ">Bayi Kodu</div>
+                                    </th>
+                                    <th class="slds-is-resizable" scope="col">
+                                        <div class="slds-truncate">Bayi Adı</div>
+                                        <!--<div class="slds-resizable">
+                                            <input type="range" min="20" max="1000" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-602" tabindex="0" />
+                                            <span class="slds-resizable__handle" onmousedown={calculateWidth} ondrag={setNewWidth}>
+                                            </span>
+                                        </div>-->
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col" >
+                                        <div class="slds-truncate">Kredi Kontrol</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col">
+                                        <div class="slds-truncate">Dönem</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col">
+                                        <div class="slds-truncate">Ödeme Koşulu</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col">
+                                        <div class="slds-truncate">Açıklama</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col">
+                                        <div class="slds-truncate">Çek Türü</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col">
+                                        <div class="slds-truncate">Vade</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col">
+                                        <div class="slds-truncate">Tutar</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col">
+                                        <div class="slds-truncate">Onay Geçmişi</div>
+                                    </th>
+                                    <th class="slds-cell-wrap" scope="col" style="width:5%;">
+                                        <div class="">İşlem</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={tableDataList} for:item="data" for:index="index">
+                                    <tr key={data.Id} class="slds-hint-parent">
+                                        <td style="text-align: center;" data-label="" class="slds-cell-wrap">
+                                            <div class="slds-truncate">
+                                                <lightning-input type="checkbox" label=" "
+                                                    data-id="cbx" id={data.Id} data-value={data.Id}
+                                                    onchange={cbxOnChange}>
+                                                </lightning-input>
+                                            </div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate" title="">{data.RC_Account__r.RC_SAP_ID__c}</div>
+                                        </td>
+                                        <td data-label="" class="slds-cell-wrap">
+                                            <div class="slds-truncate" title={data.RC_Account__r.Name}>{data.RC_Account__r.Name}</div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate">{data.RC_KKA__c}</div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate">{data.RC_Term_ID__r.RC_Payment_Form__c} / {data.RC_Term_ID__r.RC_Comments__c }</div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate">{data.RC_Payment_Term__c}</div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate">{data.RC_Comments__c}</div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate">{data.RC_Bordro_Types__c} - {data.bordroTypeDesc}</div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-date-time value={data.RC_Average_Due_Date__c} year="numeric" month="2-digit" day="2-digit"></lightning-formatted-date-time>
+                                            </div>
+                                        </td>
+                                        <td data-label="" style="text-align: center;" class="slds-cell-wrap">
+                                            <div class="slds-truncate">
+                                                <lightning-formatted-number value={data.RC_Amount__c} format-style="currency"
+                                                currency-code="TRY" currency-display-as="symbol" maximum-fraction-digits="2">
+                                              </lightning-formatted-number>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell-wrap">
+                                            <div class="slds-truncate"  style="text-align: center;"> 
+                                                <a data-value={data.Id} onclick={showDetail}>Onay Geçmişi</a>
+                                            </div>
+                                        </td>
+                                        <td class="slds-cell-wrap">
+                                            <div class=""  style="text-align:center">
+                                                <lightning-button-icon icon-name="action:remove"  data-value={data.Id} variant="bare" title="İptal" onclick={openCancelModal}></lightning-button-icon>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+    
+            <lightning-layout horizontal-align="right">
+                <lightning-layout-item size="12" padding="around-small" >
+                    <lightning-button-icon icon-name="utility:left"  variant="bare" title="İlk" onclick={first}></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:chevronleft"  variant="bare"  title="Önceki" onclick={previous}></lightning-button-icon>
+                    <span class="slds-var-p-horizontal_x-small">
+                        Sayfa {currentPage} / {totalPage}
+                    </span>
+                    <span class="slds-var-p-horizontal_x-small">
+                        {totalRecord} Kayıt
+                    </span>
+                    <lightning-button-icon icon-name="utility:chevronright"  variant="bare"  title="Sonraki" onclick={next}></lightning-button-icon>
+                    <lightning-button-icon icon-name="utility:right" variant="bare"  title="Son" onclick={last}></lightning-button-icon>
+                    <lightning-button
+                        label="Onayla"
+                        onclick={openApproveModal}
+                        class="lightning-button-element slds-m-around_small"
+                    ></lightning-button>
+                </lightning-layout-item>
+            </lightning-layout>
+        </article>
+    </div>
+
+    <template if:true={showHistoryModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-04" class="slds-var-p-around_large slds-hyphenate modalHeader">Bordro Onay Geçmişi
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_large" id="modal-content-id-4">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                        aria-labelledby="element-with-table-label other-element-with-table-label">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" style="text-align:left;" title="Opportunity Name">Bayi Kodu</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" style="text-align:left;" title="Account Name">Onaylayan Kullanıcı</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" style="text-align:left;" title="Close Date">İşlem Tarihi</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" style="text-align:left;" title="Stage">Onaylama Durumu</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" style="text-align:left;" title="Stage">Açıklama</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={historyDataList} for:item="child">
+                                <tr class="slds-hint-parent" key={child.Id}>
+                                    <td data-label="Account Name">
+                                        <div class="slds-truncate" title="Cloudhub">
+                                            {child.RC_Bordro_Entry_Id__r.RC_Account__r.RC_SAP_ID__c}
+                                        </div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div class="slds-truncate" title="4/14/2015">
+                                            {child.CreatedBy.Name}
+                                        </div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <lightning-formatted-date-time value={child.CreatedDate} year="numeric"
+                                            day="2-digit" month="2-digit">
+                                        </lightning-formatted-date-time>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div class="slds-truncate">
+                                            {child.RC_Approval_Status__r.RC_Text__c}
+                                        </div>
+                                    </td>
+                                    <td data-label="Confidence">
+                                        <div class="slds-truncate">
+                                            {child.RC_Description__c}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="İptal"
+                        onclick={closeModal}
+                        data-key="history"
+                        class="lightning-button-element slds-m-around_small"
+                    >
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showApproveModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open  slds-modal_small">
+            <div class="slds-modal__container approve-modal">
+                <div class="slds-modal__content slds-p-around_medium">
+                    <p>Bordroları onaylamak istediğinize emin misiniz?</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Evet"
+                        onclick={approveBordo}
+                        class="lightning-button-element slds-m-around_small"
+                    >
+                    </lightning-button>
+                    <lightning-button
+                        label="İptal"
+                        onclick={closeApproveModal}
+                        class="lightning-button-element slds-m-around_small"
+                    >
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showCancelModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open  slds-modal_small">
+            <div class="slds-modal__container approve-modal approve-modal">
+                <div class="slds-modal__content slds-p-around_medium" >
+                    <p>Bordroyu iptal etmek istediğinize emin misiniz?</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Evet"
+                        onclick={cancelBordro}
+                        class="lightning-button-element slds-m-around_small"
+                    >
+                    </lightning-button>
+                    <lightning-button
+                    label="İptal"
+                    onclick={closeCancelModal}
+                    class="lightning-button-element slds-m-around_small"
+                    >
+                     </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+</template>

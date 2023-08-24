@@ -1,0 +1,14 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <lightning:card>
+        
+        <lightning:tabset>
+            <lightning:tab label="Hediye Çeki" class="bold">
+                <div class="padding">
+                    <c:RC_GetGiftVoucherComponent/></div>
+            </lightning:tab>
+            <lightning:tab  label="İndirim Kodu" title="2nd tab extended title">
+                <div class="padding">
+                    <c:RC_GetVestelCellComponent/></div>
+            </lightning:tab>
+        </lightning:tabset></lightning:card>
+</aura:component>

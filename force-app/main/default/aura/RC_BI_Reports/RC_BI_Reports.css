@@ -1,0 +1,44 @@
+.THIS{
+    font-family: 'Salesforce Sans';
+}
+
+.THIS .slds-media{
+    align-items: center;
+}
+
+.THIS .table-report-title{
+    font-weight: bold;
+}
+
+.THIS .slds-button_success{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px;
+    color: #DF2027;
+    font-weight: bold;
+    height: 45px;
+}
+
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: white;
+    background-color: transparent;
+}
+
+.THIS .eye-icon{
+	margin-right: 10px;
+    --sds-c-icon-color-foreground-default: #DF2027;
+}
+    
+.THIS .slds-card__header{
+    border-bottom: 1px solid lightgray;
+    background-color: #DF2027;
+	color: white;
+    padding: 7px;
+    margin: 0;
+}
+@media only screen and (min-width: 768px){
+        .THIS .cCiroRaporlari .slds-button_success {
+            font-size: 12px;
+        }
+    }

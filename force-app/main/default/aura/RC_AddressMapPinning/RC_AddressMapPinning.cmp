@@ -1,0 +1,10 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="vfHost" type="String" default="vestel--vtsbxqa.lightning.force.com"/>
+    <aura:attribute name="sObjectName" type="String" />
+    <aura:attribute name="recordId" type="String" />    
+    <aura:attribute name="address" type="String" />    
+    <lightning:card title="Click on the map to add markers." iconName="action:map">
+        <iframe aura:id="vfFrame" class="map" src="{!'https://' + v.vfHost + '/apex/RC_AddressMapPinning?recordId=' + v.recordId + '&amp;objectName=' + v.sObjectName }"></iframe> 
+    </lightning:card>
+</aura:component>

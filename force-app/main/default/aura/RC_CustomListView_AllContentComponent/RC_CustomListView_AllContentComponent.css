@@ -1,0 +1,127 @@
+.THIS .row{
+    list-style: none;
+    padding: 0;
+}
+.THIS .col-lg-4{
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+}
+.THIS .title {
+  font-size: 26px;
+  margin: 20px 0;
+  text-align: center;
+}
+.THIS .my-icon{
+    --sds-c-icon-color-foreground-default: white;
+}
+
+.THIS .listContent{
+    display: flex;
+    background-color:#df2027; 
+    height:254px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.THIS .slds-grid{
+    margin-top: -2px;
+}
+
+.THIS #headerDiv{
+    font-size:16px;height:50px;border-top-left-radius:8px;border-top-right-radius:8px;margin:-4px; text-align:center;
+}
+
+.THIS h2 {
+    color:white; font-size:22px;font-weight:600;
+}
+
+.THIS .col{
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.THIS .col-anchor{
+    display: table;
+    border-bottom: solid 2px #df2027;
+    margin: 16px 0;
+    min-height: 390px;
+    width: 100%;
+    border: 1px solid lightgrey;
+    border-bottom: solid 2px #df2027;
+	border-radius: 5px;
+    /*border: var(--lwc-borderWidthThin,1px) solid var(--lwc-colorBorderInput,rgb(221, 219, 218));*/
+    /*box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;*/
+	transition: box-shadow .3s;
+}
+
+.THIS .col-anchor:hover{
+	box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;             
+}                
+
+.THIS .col-img{
+    width: 100%;
+    height: auto;
+	/*border-bottom: solid 2px #df2027;*/
+}
+
+.THIS .col-def-img{
+    width: 50%;
+    height: auto;
+	/*border-bottom: solid 2px #df2027;*/
+}
+
+.THIS #imageDiv{
+    min-height: 256px;
+}
+
+.THIS .shortdesc{
+    float: left;
+    width: 100%;
+    text-align: left;
+    height: 100px;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #000;
+    position: relative;
+	background: white;
+}
+.THIS .detail-btn{
+    position: absolute;
+    right: 20px;
+    bottom: -20px;
+    background-color: #df2027;
+    color: #fff;
+    line-height: 25px;
+    height: 40px;
+    border-radius: 4px;
+    padding: 0 15px;
+    letter-spacing: 2px;
+    font-size: 14px;
+    transition: all .5s cubic-bezier(.77,0,.175,1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+	font-size:12px;
+    font-weight: 600;
+}
+.THIS .clearfix{
+    clear: both;
+    min-height: 1px;
+    display: block;
+}
+    
+.THIS .title-cls{
+        display:none;
+    }
+.THIS  .clsTitle{
+        border-bottom: 1px solid lightgray;
+        background-color: #df2027;
+        color: white;
+        margin-top: -22px;
+        padding:10px;
+    }

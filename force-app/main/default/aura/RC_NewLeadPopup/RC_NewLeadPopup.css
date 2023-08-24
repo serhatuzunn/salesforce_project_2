@@ -1,0 +1,21 @@
+.THIS .modalBody
+{
+    width: 70%;
+    max-width: 950px;
+    min-width: 480px;
+}
+.THIS .slds-radio
+{
+    height: 35px;
+}
+.THIS .slds-form-element
+{
+    float: right;
+    text-align: left;
+    width: 65%;
+}
+.THIS .slds-modal__container
+{
+    width: 100% !important;
+    max-width: 41rem !important;
+}

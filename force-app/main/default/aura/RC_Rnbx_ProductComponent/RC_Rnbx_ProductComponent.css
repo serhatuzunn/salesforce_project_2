@@ -1,0 +1,121 @@
+.THIS{
+    font-family: 'Gotham-Medium';
+}
+
+.THIS .page-title{
+    font-family: 'Gotham-Medium'
+}
+
+.THIS .padding {
+    padding : 5px;
+}
+
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: white;
+}
+.THIS .filter-button{
+    float : right;
+    background: #ffffff;
+    border: 1px solid #df2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #df2027;
+}
+.THIS .button-elm{
+            padding-top: 2rem;
+    }
+.THIS .detail-button{
+	background: #DF2027;
+	color: white;
+    height: 32px;
+    border-radius: 4px !important;
+	font-family: 'Gotham-Medium';
+}
+    
+.THIS .showBox{
+    
+}
+.THIS .custom-box{
+	box-shadow: rgb(60 64 67 / 30%) 0px 1px 2px 0px, rgb(60 64 67 / 15%) 0px 1px 3px 1px;
+    background-color: #ffffff;
+    padding: 5px;
+	height: 285px;
+}
+    
+.THIS .right-align{
+        text-align: center;
+}
+
+.THIS .box-text{
+        height: 50px;
+    }
+  
+@font-face{
+	font-family: 'Gotham-Medium';
+	src: url(/resource/gothambook);
+}
+@font-face{
+	font-family: 'Gotham-Light';
+	src: url(/resource/gothamlight);
+}
+.THIS legend{
+    width: 2.5%;
+}
+    
+.THIS .slds-form-element__label{
+        float: left;
+    }
+    
+.THIS .slds-card__header{
+    border-bottom: 1px solid lightgray;
+    background-color: #DF2027;
+	color: white;
+    padding: 7px;
+    margin: 0;
+}
+    
+.THIS .slds-card__footer{
+  padding-top: 0;
+}
+
+.THIS .slds-card__body{
+        padding: 25px;
+}
+    
+    
+@media screen and (max-width: 600px) {
+	.THIS fieldset{
+          min-width: 100%;
+     }
+	.THIS .slds-grid{
+     	display: flex;
+    	flex-direction: column;
+	}
+    .THIS .left-align{
+        width: 100%;
+    }
+    .THIS .list-button{
+        margin-top: 1rem; 
+    }
+    .THIS .query-button{
+        margin-top: 1rem; 
+    }
+    .THIS .variant-button{
+        margin-top: 1rem; 
+    }
+    .THIS .filter-button{
+        margin-top: 1rem;
+     }
+    .THIS .right-align{
+		text-align: center;
+        padding-left: 5px;
+        justify-content: center;
+        width: 100%; 
+    }
+    .THIS .right-align img{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+      }
+}

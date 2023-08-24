@@ -1,0 +1,149 @@
+<aura:component controller="RC_PdfPrintOptionsController"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="selectedPdf" type="string" />
+    <aura:attribute name="selectedPdfLabel" type="string" />
+    <aura:attribute name="showErrorMessage" type="boolean" default="false" />
+    <aura:attribute name="emptyQuoteConditions" type="string" />
+    <aura:attribute name="isShow" type="boolean" default="false" />
+    <aura:attribute name="canalName" type="string"/>
+    <aura:attribute name="activeVPO" type="boolean" default="false"/>
+    <aura:attribute name="activeKamu" type="boolean" default="false"/>
+    <aura:attribute name="activeOther" type="boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.getData}"/>
+    <aura:attribute name="languageRadio" default="TR" type="String"/>
+    
+    
+ 
+    <lightning:layout horizontalAlign="center" multipleRows="false">
+        <lightning:layoutItem padding="around-small">
+            <lightning:verticalNavigationSection label="Vestel Teklif Çıktıları">
+                
+                
+                    <aura:if isTrue="{!v.activeVPO == true}">
+                        
+                        <aura:if isTrue="{!v.languageRadio == 'ENG'}">
+                        <lightning:verticalNavigationItemIcon label="{!v.canalName}"
+                                                      name="RC_VestelQuotePdf"
+                                                      iconName="doctype:pdf" 
+                                                      onclick="{!c.handlePdfSelection}"/>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.languageRadio == 'TR'}">
+                        <lightning:verticalNavigationItemIcon label="{!v.canalName}"
+                                                      name="RC_VestelQuotePdf"
+                                                      iconName="doctype:pdf" 
+                                                      onclick="{!c.handlePdfSelection}"/>
+                        </aura:if>
+                	</aura:if>
+                
+                    <aura:if isTrue="{!v.activeKamu == true }">
+                        <aura:if isTrue="{!v.languageRadio == 'ENG'}">
+                             <lightning:verticalNavigationItemIcon label="{!v.canalName}"
+                                                      name="RC_VestelQuoteKamuPdf"
+                                                      iconName="doctype:pdf" 
+                                                      onclick="{!c.handlePdfSelection}"/>
+                        </aura:if>
+                        <aura:if isTrue="{!v.languageRadio == 'TR'}">
+                        <lightning:verticalNavigationItemIcon label="{!v.canalName}"
+                                                      name="RV_VestelQuoteKamuPdf"
+                                                      iconName="doctype:pdf" 
+                                                      onclick="{!c.handlePdfSelection}"/>
+                        </aura:if>
+                	</aura:if>
+                
+                   <aura:if isTrue="{!v.activeOther == true }"> 
+                       <aura:if isTrue="{!v.languageRadio == 'ENG'}">
+                           <lightning:verticalNavigationItemIcon label="{!v.canalName}"
+                                                      name="RC_NonVestelQuotePdf"
+                                                      iconName="doctype:pdf" 
+                                                      onclick="{!c.handlePdfSelection}"/>
+                       </aura:if>
+                       <aura:if isTrue="{!v.languageRadio == 'TR'}">
+                       <lightning:verticalNavigationItemIcon label="{!v.canalName}"
+                                                      name="RC_NonVestelQuotePdf"
+                                                      iconName="doctype:pdf" 
+                                                      onclick="{!c.handlePdfSelection}"/>
+                       </aura:if>
+                	</aura:if>
+                
+                
+            </lightning:verticalNavigationSection>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    
+    
+        <lightning:layout horizontalAlign="center" multipleRows="false">
+        <lightning:layoutItem padding="around-small">
+            <lightning:verticalNavigationSection label="Teklif PDF Dil Seçimi">
+                
+                
+     <fieldset class="slds-form-element">
+         <!-- <legend class="slds-form-element__legend slds-form-element__label"><abbr class="slds-required" title="required">*</abbr>Zorunlu Alan</legend> -->
+  		<div class="slds-form-element__control">
+    		<div class="slds-radio_button-group">
+      			<span class="slds-button slds-radio_button">
+        		<input type="radio" name="pdfLanguage" id="example-unique-id-115" value="TR" onchange="{!c.onLanguageRadio}" checked="true"/>
+        		<label class="slds-radio_button__label" for="example-unique-id-115">
+          		<span class="slds-radio_faux">Türkçe</span>
+        		</label>
+      			</span>
+                
+      			<span class="slds-button slds-radio_button">
+        		<input type="radio" name="pdfLanguage" id="example-unique-id-116" value="ENG" onchange="{!c.onLanguageRadio}"  />
+        		<label class="slds-radio_button__label" for="example-unique-id-116">
+          		<span class="slds-radio_faux">İngilizce</span>
+        		</label>
+      			</span>
+    		</div>
+  		</div>
+	</fieldset>
+                
+                
+            </lightning:verticalNavigationSection>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <lightning:layout horizontalAlign="center" multipleRows="true">
+        <lightning:layoutItem padding="around-small" size="12">
+            <center>
+                <p>Seçilen PDF: {!v.selectedPdfLabel}</p> 
+            </center>
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem padding="around-small" size="12">
+            <center>
+                <lightning:button name="View" label="Görüntüle" iconName="utility:preview" onclick="{!c.handleNavigate}" />
+                <lightning:button name="Save" label="Teklife Kaydet" iconName="utility:download" onclick="{!c.handleNavigate}" />
+            </center>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="around-small" size="12">
+            <center>
+                <aura:if isTrue="{!v.showErrorMessage}">
+                    <ui:message title="Error" severity="error" closable="true">
+                        PDF seçiniz!
+                    </ui:message>
+                </aura:if>
+            </center>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <aura:if isTrue="{!v.isShow}">
+        <lightning:layout horizontalAlign="center" multipleRows="true" >
+            <lightning:layoutItem padding="around-small" size="12">
+                <center>
+                    <p>Aşağıdaki alanlar boş, yine de görüntülemek istiyor musunuz? </p> 
+                    <p>{!v.emptyQuoteConditions}</p>
+                </center>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="12">
+                <center>
+                    <lightning:button name="View" label="Evet" iconName="utility:check" onclick="{!c.handleConfirmedNavigate}" />
+                    <lightning:button name="Hayır" label="Hayır" iconName="utility:close" onclick="{!c.handleCloseNavigate}"  />
+                </center>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </aura:if>
+
+</aura:component>

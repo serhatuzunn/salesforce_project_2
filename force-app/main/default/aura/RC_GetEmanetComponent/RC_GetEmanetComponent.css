@@ -1,0 +1,321 @@
+.THIS{
+   /* font-family: 'Salesforce Sans';*/
+}
+
+.THIS .page-title{
+    /*font-family: 'Gotham-Medium'*/
+}
+
+.THIS .height{
+    min-height: 17rem;
+}
+.THIS .left-align {
+    text-align: left;
+}
+.THIS .right-align {
+    text-align: right;
+    padding-left: 5px;
+}
+
+.THIS .padding {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.THIS .buttonHeader{
+    float: left;
+}
+.THIS .slds-modal__container{
+    width:100% !important;
+}
+.THIS .underline{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.THIS .colour
+{
+    background-color:#53565A;
+    color: white;
+}
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: #DF2027;
+}
+
+.THIS .my-icon{
+    color: #DF2027;
+}
+.THIS .slds-table_bordered tbody td{
+        text-align:center !important;
+    }
+    .THIS .slds-table_bordered tbody tr th{
+        text-align:center !important;
+    }
+.THIS    .slds-modal__container{ 
+     height : 100%; width: auto; max-width: 80%; max-height:80%; 
+   } 
+.THIS   .modal-body{ 
+     height : 60vh !important; 
+     max-height: 60vh !important; 
+   } 
+.THIS   .slds-modal__footer{ 
+     display: inline !important; 
+   }
+
+.THIS .slds-dueling-list__column .slds-form-element__label{
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: #080707 !important;
+}
+
+.THIS p{
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: -2.5em;
+    color: #080707;
+}
+
+.THIS .slds-input:focus{
+    border: 1px solid #df2027;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+.THIS .slds-input{
+    background-color: white;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    cursor: text;
+    min-height: 32px;
+}
+        .THIS .margin{
+        margin-top: 4px;
+    }
+    .THIS .corporate-color{
+        font-weight: bold;
+        background-color:#DF2027;
+        color:white;
+        height: 32px;
+    }
+.THIS .productCodeDiv{
+        margin-top: 25px;
+    }
+
+.THIS .slds-card__header-title .slds-text-heading_small{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+            
+.THIS .slds-size_4-of-12{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;     
+}
+            
+.THIS .list-button{
+	background: #FFFFFF; 
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px;
+    color: #DF2027;
+	/*font-family: 'Gotham-Medium';*/
+}
+ .THIS .variant-button{
+	background: #c9c7c5;
+    border: 1px solid #C9C7C5;
+    box-sizing: border-box;
+    border-radius: 4px;
+    color: #FFFFFF;
+	/*font-family: 'Gotham-Medium';*/
+}           
+.THIS .button-margin
+{    
+    margin-top: 22px  !important;
+    margin: 0 auto;
+    display: block;        
+}    
+.THIS .query-button{
+    background: #DF2027;
+    height: 32px;
+    border-radius: 4px;
+	/*font-family: 'Gotham-Medium';*/
+}
+            
+.THIS .query-button:hover{
+   transform: translateY(-1px);
+   box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}
+
+.THIS .list-button:hover{
+   transform: translateY(-1px);
+   box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}
+.THIS .variant-button:hover{
+   transform: translateY(-1px);
+   box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}            
+.THIS .slds-form-element__label{
+   margin-bottom: 1rem;
+}
+            
+.THIS .slds-is-selected, .THIS .slds-is-selected:focus{
+	background-color: #DF2027;       
+}
+.THIS .slds-grid{
+    display: flex;
+}
+.THIS .select2{
+    margin-top: 1rem;
+}
+
+.THIS .select2-container--focus {
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+.THIS .select2-container--default.select2-container--focus .select2-selection--multiple {
+	border: none;    
+}
+
+.THIS .select2-container--default .select2-selection--multiple .select2-selection__choice{
+    background-color: #DF2027; 
+    color:white;
+}
+    
+.THIS .select2-selection__choice__remove{
+	color:white !important;
+}
+    
+.THIS .slds-table{
+	/*font-family: 'Gotham-Medium'; */  
+
+}
+    
+.THIS .table-border{
+    border: 1px solid lightgray;
+    padding: 15px;  
+	border-radius: 5px;
+}
+    
+.THIS .slds-table tbody .corporate-color:hover{
+    /*background-color: #e4002b !important;
+    color: white !important;*/
+}
+    
+.THIS .slds-modal__content .slds-table .corporate-color{
+         font-weight: bold;
+        background-color:#DF2027;
+        color:white;
+        height: 32px;
+}
+.THIS .delete-button{
+        height:20px;
+    }
+
+.THIS .slds-form-element__label{
+	/*font-family: 'Gotham-Medium';*/
+	font-size: 13px;
+}
+    
+.THIS .slds-dueling-list__options{
+    /*font-family: 'Gotham-Medium';*/
+	font-size: 13px;
+}
+    
+.THIS .slds-form-element{
+    /*font-family: 'Gotham-Medium';*/
+	font-size: 13px;  
+}
+    
+.THIS .slds-button{
+	font-family: 'Salesforce Sans';
+}
+.THIS .slds-border{
+    text-align:center;    
+    } 
+.THIS .slds-table thead th{
+        font-weight: bold;
+        background-color:#DF2027;
+        color:white;    
+        text-align: center;
+}
+    
+.THIS .variant-elements{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+    
+.THIS .icon-button{
+    border: none; 
+    zoom: 1.3;
+}
+ .THIS .modalCls
+    {
+        padding-left:20%;
+        width:75%;
+    }
+@media screen and (min-device-width : 280px) and (max-device-width : 720px) {
+    .THIS .body{
+        width:100%;
+        min-height:100%;
+    }
+	.THIS fieldset{
+          min-width: 100%;
+     }
+    .THIS .slds-backdrop{
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+    .THIS .p{
+        margin-top: -.5em;
+    }
+    .THIS {
+            font-size:8px !important;
+        }
+    .THIS .slds-grid{
+        flex-direction: column;
+    }
+    .THIS .modalCls{
+        width:100% !important;
+        padding-left:0;
+    }
+    .THIS .padding {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    }
+	
+    .THIS .slds-size_4-of-12{
+        min-width: 100% !important;
+        min-height: 17rem;
+        
+    }
+    .THIS .left-align{
+        width: 100%;
+    }
+    .THIS .list-button{
+        margin-top: 1rem; 
+    }
+    .THIS .query-button{
+        margin-top: 1rem; 
+        height:36px;
+    }
+    .THIS .variant-button{
+        margin-top: 1rem; 
+    }
+    .THIS .slds-form-element{
+            font-size:10px !important;
+        }
+    .THIS .right-align{
+		text-align: right;
+        padding-left: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%; 
+    }
+    .THIS .slds-card__footer{
+            padding:inherit !important;
+        }
+}

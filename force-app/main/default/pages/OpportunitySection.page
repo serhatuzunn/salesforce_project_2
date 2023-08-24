@@ -1,0 +1,5 @@
+<apex:page standardController="Opportunity">
+    <apex:includeLightning />
+    <p style="color:red; font-size:15px">Fırsat Para Biriminiz:{!Opportunity.CurrencyISOCode}</p>
+     <p style="color:red; font-size:15px">Fırsat Fiyat Rehberiniz:{!Opportunity.Pricebook2.Name}</p>
+</apex:page>

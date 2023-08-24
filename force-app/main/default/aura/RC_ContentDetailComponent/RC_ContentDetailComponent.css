@@ -1,0 +1,202 @@
+.THIS .row{
+    list-style: none;
+    padding: 0;
+}
+.THIS .center {
+  display: block;
+  margin-left: auto;
+  margin-top: 4%;
+  margin-right: auto;
+  width: 50%;
+}
+
+.THIS .href-button{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    float: right;
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    padding: 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.THIS .fLeft{
+    border:none;
+}
+
+.THIS .lightning-button-element{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    float: right;
+    max-width: 240px;
+    margin-top: 0rem;
+}
+
+.THIS  .lightning-button-element:hover{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    max-width: 240px;
+    color: #DF2027;
+    transform: translateY(-1px);
+    margin-top: 0rem;
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+.THIS  .lightning-excel-button{
+    background: white;
+    border-radius: 4px !important;
+    max-width: 240px;
+    color: black;
+    box-sizing: border-box;
+    border: 1px solid #999;
+}
+
+.THIS .lightning-excel-button:hover{
+    background: white;
+    border-radius: 4px !important;
+    color: black;
+    box-sizing: border-box;
+    max-width: 240px;
+    border: 1px solid #999;
+    transform: translateY(-1px);
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);               
+}
+
+.THIS .cut-text { 
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    width: 160px; 
+    height: 2.2em; 
+    white-space: nowrap;
+    font-style:italic;
+    color:red;
+  }
+
+.THIS #documentsBody{
+    align-items: center;
+    margin: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction:row;
+}
+
+.THIS .slds-button button{
+    margin: 8px;
+    width: 15rem;
+    border-radius: 8px !important;
+}
+
+.THIS .container {
+    max-width: 1300px !important;
+    background-color: white !important; 
+    border-radius: 8px;
+    box-shadow: rgb(0 0 0 / 24%) 0 3px 8px;
+    border: 1px solid #d8dde6;
+    margin: 10px 0 20px 0;
+}
+
+.THIS #cardHeading{
+    background-color: #DF2027;
+    height: 8em;
+    width: 100%;
+    border-radius: 4px;
+}
+
+.THIS #cardImg{
+    margin-top: 5%;
+}
+
+.THIS #cardBody{
+    margin: 2%;
+    font-size: 16px;
+}
+.THIS .page-section {
+    border: solid 1px #ccc;
+    padding: 1rem;
+}
+.THIS .page-header,
+.THIS .page-footer {
+    height: 50px;
+}
+.THIS .page-main {
+    background: #f8f8f8;
+}
+.THIS .page-left,
+.THIS .page-right {
+    background: #f0efef;
+}
+
+@media only screen and (max-width:768px){
+    .THIS .center {
+      width: 100%;
+	}
+}
+
+.THIS .col-img{
+    width: 100%;
+    height: auto;
+	/*border-bottom: solid 2px #df2027;*/
+}
+
+.THIS .col-def-img{
+    width: 50%;
+    height: auto;
+	/*border-bottom: solid 2px #df2027;*/
+}
+
+.THIS #imageDiv{
+    min-height: 256px;
+}
+
+.THIS #containerDiv{
+    background-color: white !important; 
+    border-radius: 4px;
+    box-shadow: rgb(0 0 0 / 24%) 0 3px 8px !important;
+    border: 1px solid #d8dde6 !important;
+}
+
+.THIS .listContent{
+    display: flex;
+    background-color:#df2027; 
+    height:254px;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 360px;
+    padding-top: 30px;
+    margin-top: 4%;
+}
+
+.THIS .container {
+    border-radius: 4px !important;
+}
+
+.THIS #iconCol{
+    min-width: 100px;
+    display: flex;
+    align-items: baseline;
+    margin: 1%;
+}
+
+.THIS #headerDiv{
+    font-size: 16px;
+    text-align: center;
+    font-weight: 600;
+    color: white;
+    height:50px;
+    margin:-4px; 
+}

@@ -1,0 +1,711 @@
+<aura:component controller="RC_SD_GetStockComponentController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <!--jQuery and Select2 plugin library-->
+    <ltng:require styles="{! $Resource.select2 + '/select2-4.0.3/dist/css/select2.min.css'}" 
+                  scripts="{!join(',', 
+                           $Resource.jquery224 ,  
+                           $Resource.select2 + '/select2-4.0.3/dist/js/select2.js')
+                           }" afterScriptsLoaded="{!c.scriptsLoaded}"/>
+    
+    <ltng:require styles="{!$Resource.select2CustomCSS}" />
+    
+    <ltng:require scripts="{!$Resource.RC_FileSaver}" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" /> 
+    <aura:handler name="init" value="{!this}" action="{!c.Init3}" /> 
+    <aura:handler name="init" value="{!this}" action="{!c.Init2}" /> 
+    
+    <aura:attribute name="loading" 	type="boolean" default="false"/>
+    
+    <aura:attribute name="pageCount" type="Integer" default="1"/>
+    <aura:attribute name="selectedPage" type="Integer" default="1"/>
+    
+     <aura:attribute name="SasKalanAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="SasMiktarAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="SatStokAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="VestelStokAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="UreticiStokAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="TesMikAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="TahditsizAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="KayarOrtAltToplam" type="Integer" default="0"/>
+     <aura:attribute name="BlokeStokAltToplam" type="Integer" default="0"/>
+    
+    
+    <aura:attribute name='TOPLAMSASKALAN' type = 'Integer' default = '0'></aura:attribute>
+    <aura:attribute name="GetInitResponse" type="RC_SD_GetStockComponentController.InitWrapper"/>
+    <aura:attribute name="SelectedWarehousePlaceList" type="RC_SD_GetStockComponentController.SelectedWarehousePlace"/>
+    <aura:attribute name="AllStockResponse" type="RC_SD_GetStockComponentController.StockWrapper"/>
+    <aura:attribute name="FilterStockResponse" type="RC_SD_GetStockComponentController.StockWrapper"/>
+ 
+    
+    <aura:attribute name="stokStatu" type="boolean" default="false"/>
+    <aura:attribute name="SASStatu" type="boolean" default="false"/>
+    <aura:attribute name="SlidingAverageRole" type="boolean" default="false"/>
+    
+    <aura:attribute name="dagilimBilgileriDetay" type="boolean" default="false"/>
+    <aura:attribute name="dagilimBilgileriResponse" type="RC_SD_GetStockParser.DAGILIM_BILGILERI"/>
+    
+    <aura:attribute name="blokeStokDetay" type="boolean" default="false"/>
+    <aura:attribute name="blokeStokDetayResponse" type="RC_SD_GetStockParser.BLOKE_STOK_DETAY"/>
+    
+    <aura:attribute name="teslimatBilgileri" type="boolean" default="false"/>
+    <aura:attribute name="teslimatBilgileriResponse" type="RC_SD_GetStockParser.TESLIMAT_DETAY"/>
+    
+    <aura:attribute name="showMaterialInfo" type="boolean" default="false"/>
+    <aura:attribute name="showSASKalanInfo" type="boolean" default="false"/>
+    
+    <aura:attribute name="AllMaterialStockResponse" type="RC_SD_GetStockComponentController.MaterialInfoWrapper"/>
+    <aura:attribute name="showMaterialInfoResponse" type="RC_SD_GetStockComponentController.MaterialInfoWrapper"/>
+    
+    <aura:attribute name="saskalanDetay" type="boolean" default="false"/>
+    <aura:attribute name="saskalanResponse" type="RC_GetStockMaterialInfoParser.SASKALAN"/>
+    
+    <aura:attribute name="listDepoYeri" type="List" default="[]"/>
+    <aura:attribute name="selectedDepoYeri" type="List" default="[]"/>
+    
+    <aura:attribute name="listUretimYeri" type="List" default="[]"/>
+    <aura:attribute name="selectedUretimYeri" type="List" default="[]"/>
+    
+    <aura:attribute name="productCodes" type="RC_OpportunitiesStockComponentController.ProductCodeWrapper"/>
+    
+    
+    <aura:attribute name="variantName" type="string" default=""/>
+    <aura:attribute name="variantList" type="RC_Stock_Variant__c[]" default="[]"/>
+    <aura:attribute name="createVariantModal" type="boolean" default="false"/>
+    <aura:attribute name="variantListModal" type="boolean" default="false"/>
+    <aura:attribute name="userVariantList" type="List" default="[]"	/>
+    <aura:attribute name="selectedVariant" type="RC_Stock_Variant__c"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>   
+    </aura:if>
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="utility:builder" class="my-icon" size="medium" alternativeText="{!$Label.c.Stock_Report}" title="{!$Label.c.Stock_Report}" />
+            <span class="page-title" style="font-size:15px;padding-left:10px;">{!$Label.c.Stock_Report}</span>     
+        </aura:set>
+        <aura:set attribute="footer">
+            <div style="box-sizing: border-box;">
+                <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+                    <legend class="slds-text-heading_small slds-p-vertical_medium" align="left">
+                        Filtre
+                    </legend>
+                    <lightning:layout>
+                          <lightning:layoutItem size="11" class="left-align padding">
+                              <b><i>*Variant tanımlama işlemleri için ekran üzerinden seçimlerinizi yaptıktan sonra "Variant Ekle" butonuna tıklayınız.</i></b>
+                        </lightning:layoutItem>
+                     <lightning:layoutItem size="1" class="right-align padding">
+                         <lightning:button class="slds-button slds-button_neutral colour list-button"  label="Variant Listesi" title="Variant Listesi" onclick="{!c.openVariantList }" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:layout>  
+                        <lightning:layoutItem size="4" class="left-align padding">
+                            <lightning:dualListbox aura:id="uretimYeriDrp" name="uretimYeriDrp" onchange="{!c.selectedUretimYeriDrp}" 
+                                                   
+                                                   sourceLabel="Üretim Yeri"
+                                                   selectedLabel="Seçilenler"
+                                                   options="{! v.listUretimYeri }"
+                                                   value="{! v.selectedUretimYeri }"/>
+                            
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" class="left-align padding">
+                            <lightning:dualListbox aura:id="depoYeriDrp" name="depoYeriDrp" 
+                                                   
+                                                   sourceLabel="Depo Yeri"
+                                                   selectedLabel="Seçilenler"
+                                                   options="{! v.listDepoYeri }"
+                                                   value="{! v.selectedDepoYeri }"/>
+                            
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" class="left-align padding">
+                            <div class="slds-form-element productCodeDiv">  
+                                <label for="id_label_single">
+                                    {!$Label.c.Product_Code}
+                                    <select style="width:100%" id="picklist" class="select2Class productCodeCss" multiple="multiple">
+                                        <aura:iteration items="{!v.GetInitResponse.InitResponseModel.SelectedProductCodeList}" var="opts">
+                                            <option selected="selected" value="{!opts.Value}"> {!opts.Value} </option>
+                                        </aura:iteration> 
+                                    </select>
+                                </label>
+                            </div>
+                            <br/>
+                            
+                            <div class="slds-form-element">  
+                                <label for="id_label_single">
+                                    {!$Label.c.Brand}
+                                    <select style="width:100%" id="picklist" class="select2Class brandCss" multiple="multiple">
+                                        <aura:iteration items="{!v.GetInitResponse.InitResponseModel.BrandList}" var="opts">
+                                            <option selected="{!opts.Selected}" value="{!opts.Value}"> {!opts.ApiName} </option>
+                                        </aura:iteration>     
+                                    </select>
+                                </label>
+                            </div>
+                            <br/>
+                            
+                            <div class="slds-form-element">  
+                                <label for="id_label_single">
+                                    {!$Label.c.Mal_Grubu}
+                                    <select style="width:100%" id="picklist" class="select2Class goodsGroupCss" multiple="multiple">
+                                        <aura:iteration items="{!v.GetInitResponse.InitResponseModel.GoodsGroupList}" var="opts">
+                                            <option selected="{!opts.Selected}" value="{!opts.Name}"> {!opts.Value} </option>
+                                        </aura:iteration>     
+                                    </select>
+                                </label>
+                                
+                            </div>
+                            
+                        </lightning:layoutItem>
+                    </lightning:layout> 
+                    <br/>   
+                    <lightning:layout>
+                        <lightning:layoutItem size="12" class="right-align padding">
+                            
+                            
+                            <aura:if isTrue="{!not(empty(v.FilterStockResponse.StockResponseModel.StockItemList))}">
+                                <lightning:button iconName="utility:download" label="Dışa Aktar" onclick="{! c.downloadStockTable }"></lightning:button>
+                            </aura:if>
+                            <lightning:button class="slds-button slds-button_neutral colour variant-button"  label="Variant Ekle" iconName="utility:add" title="Variant Ekle" onclick="{! c.openVariantModal }" />
+                            <lightning:button class="slds-button slds-button_neutral colour query-button"  label="SAS Sorgula" title="{!$Label.c.Stock}" onclick="{! c.MaterialhandleClick }" />
+                            <lightning:button class="slds-button slds-button_neutral colour list-button"  label="Ara" iconName="utility:search" title="{!$Label.c.Stock}" onclick="{! c.handleClick }" />
+                          
+                        </lightning:layoutItem>
+                    </lightning:layout>  
+                </fieldset>  
+                <br/>
+                <lightning:layout>
+                    <lightning:layoutItem size="12">
+                        
+                        <aura:if isTrue="{!v.stokStatu}">
+                            <br/><br/>
+                            <aura:if isTrue="{!(not(v.FilterStockResponse.StockResponseModel.StockItemList==null))}">
+                            <div class="slds-scrollable_x" style="width:100%;">
+                                 <lightning:layout>
+                        <lightning:layoutItem size="12" class="right-align padding">
+
+                      
+                                <lightning:button iconName="utility:search" label="Filtreleri Sorgula" onclick="{!c.filtreHandleClick }"></lightning:button>
+                     
+                        </lightning:layoutItem>
+                    </lightning:layout>  
+                                
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">     
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Product_Code}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Product_Name}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Production_Location}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Warehouse_Location}</div>  
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Product_Group}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Brand}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Mal_Grubu}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Salable_Stock}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Marketing_Stock}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Manufacturer_Stock}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Delivery_Amount}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Unlimited_Amount}</div>
+                                            </td>
+  										 <aura:if isTrue="{!v.SlidingAverageRole}">
+                                            <!-- Kayar Ortalama Fiyat !-->
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Sliding_Average_Price}</div>
+                                            </td>
+                                            </aura:if>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Blocked_Stock_Total}</div>
+                                            </td>
+                                            <td data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Distribution_Information}</div>
+                                            </td>                            
+                                        </tr>
+                                    </thead>
+                                      <tbody>
+                                        
+                                            <tr>
+                                                
+                                                <td>   <lightning:input  aura:id="IV_MALZEMEKOD" class="opened-filter-input"/></td>   
+                                                <td>   <lightning:input  aura:id="IV_MALZEMEAD" class="opened-filter-input"/></td>
+                                                <td> </td>
+                                                <td> </td>
+                                                <td>   <lightning:input  aura:id="IV_MALGRUP" class="opened-filter-input"/></td>  
+                                                <td> </td>
+                                                <td> </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>                                
+                                                <td></td>
+                                                <aura:if isTrue="{!v.SlidingAverageRole}">
+                                                <td></td>
+                                                </aura:if>
+                                                <td></td>
+                                                <td></td>
+                                                
+                                            </tr>
+                                      
+                                    </tbody>
+                                    <tbody>
+                                        <aura:iteration items="{!v.FilterStockResponse.StockResponseModel.StockItemList}" var="StockItem">
+                                            <tr>
+                                                
+                                                <td>
+                                                    <div class="slds-truncate underline" title="" data-id="{!StockItem.MATNR}" onclick="{!c.showMaterialInfoPopup}">
+                                                        {!StockItem.MATNR}
+                                                    </div>
+                                                </td>   
+                                                
+                                                
+                                                <td>{!StockItem.MALZEME_TANIM}</td>
+                                                <td>{!StockItem.WERKS}</td>
+                                                <td>{!StockItem.LGORT}</td>
+                                                <td>{!StockItem.MAL_TANIM}</td>  
+                                                <td>{!StockItem.MARKA}</td>
+                                                <td>{!StockItem.MAL_GRUBU}</td>
+                                                <td>{!StockItem.SAT_STOK}</td>
+                                                <td>{!StockItem.VESTEL_STOK}</td>
+                                                <td>{!StockItem.URETICI_STOK}</td>
+                                                <td>
+                                                    <div class="slds-truncate underline" title="" data-id="{!StockItem.MATNR + '-' + StockItem.LGORT + '-' + StockItem.WERKS}" onclick="{!c.showTeslimatBilgileriPopUp}">
+                                                        {!StockItem.TES_MIK}
+                                                    </div>
+                                                </td>                                
+                                                <td><lightning:formattedNumber value="{!StockItem.TAHDITSIZ}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></td>
+                                                
+                                                  <!-- Kayar Ortalama Fiyat !-->
+                                                <aura:if isTrue="{!v.SlidingAverageRole}">
+                                               		 <td>
+                                                         <lightning:formattedNumber value="{!StockItem.KAYAR_ORT_FIYAT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                                                    </td>
+                                                </aura:if>
+                                                
+                                                <td>
+                                                    <div class="slds-truncate underline" title="" data-id="{!StockItem.MATNR + '-' + StockItem.LGORT + '-' + StockItem.WERKS}" onclick="{!c.showBlokeStokDetayPopUp}">
+                                                        {!StockItem.BLOKE_STOK_TOPLAM}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <aura:if isTrue="{!StockItem.DAGILIM_BILGILERI.item[0].BOLGE != ''}">
+                                                        <lightning:buttonIcon size="medium" iconName="utility:summary"  class="my-icon icon-button"  value="{!StockItem.MATNR + '-' + StockItem.LGORT+ '-' + StockItem.WERKS}"  title="{!$Label.c.Show}" onclick="{! c.showDagilimBilgileriPopUp }" />
+                                                    </aura:if>
+                                                </td>
+                                                
+                                            </tr>
+                                        </aura:iteration>       
+                                    </tbody>
+                                    
+                                    <tbody>
+                                        
+                                            <tr>
+                                                
+                                                <td><b>{!$Label.c.Subtotals}</b></td>   
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>  
+                                                <td></td>
+                                                <td></td>
+                                                <td><b>{!v.SatStokAltToplam}</b></td>
+                                                <td><b>{!v.VestelStokAltToplam}</b></td>
+                                                <td><b>{!v.UreticiStokAltToplam}</b></td>
+                                                <td><b>{!v.TesMikAltToplam}</b></td>                                
+                                              <aura:if isTrue="{!v.SlidingAverageRole}">
+                                                <td><b>TRY <lightning:formattedNumber value="{!v.TahditsizAltToplam}" currencyCode="TRY" minimumFractionDigits="2" currencyDisplayAs="code" style="decimal"  /></b></td>
+                                                </aura:if>
+                                                <td><b>TRY <lightning:formattedNumber value="{!v.KayarOrtAltToplam}" currencyCode="TRY" minimumFractionDigits="2" currencyDisplayAs="code" style="decimal"  /></b></td>
+                                                <td><b>{!v.BlokeStokAltToplam}</b></td>
+                                                <td></td>
+                                                
+                                            </tr>
+                                      
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            
+                            <br/>
+                            
+                            <div class="slds-align_absolute-center">
+                                <lightning:button class="slds-button slds-button_neutral" label="{!$Label.c.previous}" title="{!$Label.c.previous}" onclick="{! c.previousClick }" />
+                                <div style="margin-left:5px; margin-right:5px">
+                                    <lightning:formattedNumber value="{! v.selectedPage}" />&nbsp;/
+                                    <lightning:formattedNumber value="{! v.pageCount}" />
+                                </div>
+                                <lightning:button class="slds-button slds-button_neutral"  label="{!$Label.c.next}" title="{!$Label.c.next}" onclick="{! c.nextClick }" />
+                            </div>
+                            </aura:if>
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.SASStatu}">
+                            <br/><br/>
+                            <div class="slds-scrollable_x" style="width:100%;">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">     
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.Product_Code}</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.EBELP}</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.EBELN}</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.KMONTH}</div>  
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.GLTRP}</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.GSTRP}</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.EINDT}</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.SASMIKTAR}</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">{!$Label.c.SASKALAN}</div>
+                                            </th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.AllMaterialStockResponse.MaterialInfoResponseModel.MaterialInfoItemList}" var="material">
+                                            <tr>
+                                                
+                                                <td>{!material.MATNR}</td>
+                                                <td>{!material.EBELP}</td>
+                                                <td>{!material.EBELN}</td>
+                                                <td>{!material.KMONTH}</td>
+                                                <td>{!material.GLTRP}</td>
+                                                <td>{!material.GSTRP}</td>
+                                                <td>{!material.EINDT}</td>
+                                                <td>{!material.SASMIKTAR}</td>
+                                                <td>
+                                                <div class="slds-truncate underline" title="" data-id="{!material.MATNR + '-' + material.EBELN}" onclick="{!c.showSASKalanPopUp}">
+                                                      {!material.SASKALANMIKTAR}
+                                                    </div>
+                                                
+                                                </td>
+                                                
+                                            </tr>
+                                        </aura:iteration>   
+                                    </tbody>
+                                    
+                                     <tbody>
+                                        
+                                            <tr>
+                                                
+                                                <td><b>{!$Label.c.Subtotals}</b></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td><b>{!v.SasMiktarAltToplam}</b></td>
+                                                <td><b>{!v.SasKalanAltToplam}</b></td>                                        
+                                                
+                                            </tr>
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br/>
+                            
+                            
+                        </aura:if>
+                        
+                        
+                        
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </div>  
+        </aura:set>
+    </lightning:card>
+    
+    <aura:if isTrue="{!v.dagilimBilgileriDetay}">
+                <div title="{!$Label.c.Distribution_Information_Detail}">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon variant="border-filled" onclick="{!c.hideDagilimBilgileriPopUp}" size="large" iconName="utility:close" class="fLeft buttonHeader"/>
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Distribution_Information_Detail}</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium slds-scrollable_y slds-scrollable_x" id="modal-content-id-1">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">
+                                            <th class="slds-border"><b>{!$Label.c.Region}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Region_Description}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Rate}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Region_Distribution_Stock}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Region_Usage_Stock}</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.dagilimBilgileriResponse.item}" var="dagilim">
+                                            <tr>
+                                                <td>{!dagilim.BOLGE}</td>
+                                                <td>{!dagilim.BOLGE_TANIM}</td>
+                                                <td>{!dagilim.ORAN}</td>
+                                                <td>{!dagilim.BOLGE_DAGILIM_STOK}</td>
+                                                <td>{!dagilim.BOLGE_KULL_STOK}</td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+    <aura:if isTrue="{!v.createVariantModal}">
+                <div title="{!$Label.c.Blocked_Stock_Detail}">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1"  class="slds-modal slds-fade-in-open modalCls">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon variant="border-filled" onclick="{!c.hideVariantModal}" size="large" iconName="utility:close" class="fLeft buttonHeader"/>
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Variant Ekle</h2>
+                            </header>
+                               <div class="slds-modal__content slds-p-around_medium slds-scrollable_y slds-scrollable_x" id="modal-content-id-1"> 
+                            <lightning:layout class="variant-elements">
+                                <lightning:layoutItem size="5">
+                                    <lightning:input value="{!v.variantName}" placeholder="Variant Adı"></lightning:input>
+                                </lightning:layoutItem>
+                            <lightning:layoutItem size="3">
+                                    <lightning:button  class="slds-button slds-button_neutral colour variant-button button-margin"  label="Kaydet" title="Kaydet" onclick="{! c.createVariant }"></lightning:button>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+    <aura:if isTrue="{!v.variantListModal}">
+                <div title="Variant Listesi">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-02" aria-modal="true" aria-describedby="modal-content-id-2"  class="slds-modal slds-fade-in-open modalCls">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon variant="border-filled" onclick="{!c.hideVariantList}" size="large" iconName="utility:close" class="fLeft buttonHeader"/>
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Variant Listesi</h2>
+                            </header>
+							                            <div class="slds-modal__content slds-p-around_medium slds-scrollable_y slds-scrollable_x" id="modal-content-id-1">               
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">
+                                            <th class="slds-border"><b>Variant Adı</b></th>
+                                            <th class="slds-border"><b>Seç</b></th>
+                                            <th class="slds-border"><b>Sil</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.userVariantList}" var="variantItem">
+                                            <tr>
+                                                <td>{!variantItem.Name}  </td>
+                                                <td><lightning:buttonIcon class="my-icon icon-button" iconName="utility:answer"  value="{!variantItem.Id}" onclick="{! c.setVariantItem }"></lightning:buttonIcon></td>
+                                                <td><lightning:buttonIcon class="my-icon icon-button" iconName="utility:delete"  value="{!variantItem.Id}" onclick="{! c.deleteVariantItem }"></lightning:buttonIcon></td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+	<aura:if isTrue="{!v.blokeStokDetay}">
+                <div title="{!$Label.c.Blocked_Stock_Detail}">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon variant="border-filled" onclick="{!c.hideBlokeStokDetayPopUp}" size="large" iconName="utility:close" class="fLeft buttonHeader"/>
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Blocked_Stock_Detail}</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium slds-scrollable_y slds-scrollable_x" id="modal-content-id-1">               
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">
+                                            <th class="slds-border"><b>{!$Label.c.Customer_Number}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Customer_Name}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Blockage_Additional_Date}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Blocked_Stock}</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.blokeStokDetayResponse.item}" var="bloke">
+                                            <tr>
+                                                <td>{!bloke.MUSTERI_NO}</td>
+                                                <td>{!bloke.MUSTERI_AD}</td>
+                                                <td>{!bloke.BLOKAJ_EK_TARIH}</td>
+                                                <td>{!bloke.BLOKE_STOK}</td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+	<aura:if isTrue="{!v.teslimatBilgileri}">
+                <div title="{!$Label.c.Delivery_Information}">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon variant="border-filled" onclick="{!c.hideTeslimatBilgileriPopUp}" size="large" iconName="utility:close" class="fLeft buttonHeader"/>
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Delivery_Information}</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium slds-scrollable--y slds-scrollable_x" id="modal-content-id-1">               
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">
+                                            <th class="slds-border"><b>{!$Label.c.Order_No}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Order_Pen}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Product_Code}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Warehouse_Location}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Production_Location}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Customer_Number}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Customer_Name}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.Open_Amount}</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.teslimatBilgileriResponse.item}" var="teslimat">
+                                            <tr>
+                                                <td>{!teslimat.SIPARIS_NO}</td>
+                                                <td>{!teslimat.SIPARIS_KALEM}</td>
+                                                <td>{!teslimat.MATNR}</td>
+                                                <td>{!teslimat.LGORT}</td>
+                                                <td>{!teslimat.WERKS}</td>
+                                                <td>{!teslimat.MUSTERI_NO}</td>
+                                                <td>{!teslimat.MUSTERI_AD}</td>
+                                                <td>{!teslimat.ACIK_MIKTAR}</td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+   	<aura:if isTrue="{!v.showMaterialInfo}">
+                <div title="{!$Label.c.Material_Information}">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon variant="border-filled" onclick="{!c.hideshowMaterialInfoPopup}" size="large" iconName="utility:close" class="fLeft buttonHeader"/>
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Material_Information}</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium slds-scrollable--y slds-scrollable_x" id="modal-content-id-1">               
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">
+                                            <th class="slds-border"><b>{!$Label.c.Product_Code}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.EBELP}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.EBELN}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.KMONTH}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.GLTRP}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.GSTRP}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.EINDT}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.SASMIKTAR}</b></th>
+                                            <th class="slds-border"><b>{!$Label.c.SASKALAN}</b></th>
+                                          
+                                        </tr> 
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.showMaterialInfoResponse.MaterialInfoResponseModel.MaterialInfoItemList}" var="material">
+                                            <tr>
+                                                <td>{!material.MATNR}</td>
+                                                <td>{!material.EBELP}</td>
+                                                <td>{!material.EBELN}</td>
+                                                <td>{!material.KMONTH}</td>
+                                                <td>{!material.GLTRP}</td>
+                                                <td>{!material.GSTRP}</td>
+                                                <td>{!material.EINDT}</td>
+                                                <td>{!material.SASMIKTAR}</td>
+                                                <td>
+                                                <div class="slds-truncate underline" title="" data-id="{!material.MATNR + '-' + material.EBELN}" onclick="{!c.showSASKalanPopUp}">
+                                                      {!material.SASKALANMIKTAR}
+                                                    </div>
+                                                
+                                                </td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+    <aura:if isTrue="{!v.showSASKalanInfo}">
+                <div title="{!$Label.c.Material_Information}">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning:buttonIcon variant="border-filled" onclick="{!c.hideSASKalanBilgileriPopUp}" size="large" iconName="utility:close" class="fLeft buttonHeader"/>
+                                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Material_Information}</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium slds-scrollable--y slds-scrollable_x" id="modal-content-id-1">               
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">
+                                           <th class="slds-border"><b>{!$Label.c.WERK}</b></th>
+                                           <th class="slds-border"><b>{!$Label.c.LGORT}</b></th>
+                                           <th class="slds-border"><b>{!$Label.c.MENGE}</b></th>
+                                  
+
+                                        </tr> 
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.saskalanResponse.item}" var="saskalan">
+                                           <tr>
+                                                   <td><b>{!saskalan.WERKS}</b></td>
+                                                   <td><b>{!saskalan.LGORT}</b></td>
+                                                   <td><b>{!saskalan.MENGE}</b></td>
+               								 </tr>
+                                       </aura:iteration>
+ 
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+    
+    
+</aura:component>

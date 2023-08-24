@@ -1,0 +1,2467 @@
+<apex:page extensions="RC_CreditAnalysisFormPDFController" standardController="RC_Credit_Analysis_Form__c" standardStylesheets="false" renderAs="pdf" applyBodyTag="false" applyHtmlTag="false" showHeader="false" title="Kredi Analiz Formu PDF" language="en_US">
+    <head>
+        <style type="text/css">
+            @page
+            {
+            margin-top:5%; 
+            margin-left: 3%;
+            margin-right:3%;
+            margin-bottom:10%;           
+            size: A4;
+            background-size: auto;       
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-color: white;  
+            
+            @top-left{
+            content: element(top-left-div);
+            }
+            
+            @top-center{
+            content: element(top-center-div);
+            }
+            
+            @top-right{           
+            content: element(top-right-div);
+            }
+            
+            @bottom-left{
+            content: element(bottom-left-div);
+            }
+            
+            @bottom-center{
+            content: element(bottom-center-div);
+            }
+            
+            @bottom-right{
+            content: element(bottom-right-div);
+            }
+            }
+            
+            .top-left-div{
+            position: running(top-left-div);
+            text-align: left;     
+            }
+            
+            .top-center-div{
+            position: running(top-center-div);
+            text-align: center;
+            }
+            
+            .top-right-div{
+            position: running(top-right-div);               
+            text-align: right;
+            }
+            
+            .bottom-left-div{
+            position: running(bottom-left-div);   
+            text-align: left;
+            }
+            
+            .bottom-center-div{
+            position: running(bottom-center-div);
+            text-align: center;
+            }
+            
+            .bottom-right-div{
+            position: running(bottom-right-div);
+            text-align: right;
+            }
+            
+            .pagenumber:before{
+            content: counter(page);
+            }
+            
+            .pagecount:before{
+            content: counter(pages);
+            }
+            
+            table, td, th {
+            border: 1px solid black;
+            padding-left: 5px;
+            padding-right: 5px;
+            }
+            
+            table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            }
+        </style>
+        <div class="top-left-div"></div>
+        <div class="top-center-div"></div>
+        <div class="top-right-div"></div>
+        
+        <div class="bottom-left-div">
+            <div style="font-family: Arial Unicode MS  !important;font-size:12px; margin-top:0px; color:#A9A9A9;">
+                Kredi ve Risk Yönetim Müdürlüğü
+            </div>
+            <div style="font-family: Arial Unicode MS  !important;font-size:12px; margin-top:0px; color:#A9A9A9;">
+                Firma Analiz Raporu
+            </div>
+        </div>
+        <div class="bottom-center-div"></div>
+        <div class="bottom-right-div">
+            <div style="font-size:11px; margin-top:0px;">
+                Page <span style="font-size:13px" class="pagenumber"/> of <span style="font-size:13px" class="pagecount"/>
+            </div>
+        </div>
+    </head>
+    <body style="font-family: Arial Unicode MS  !important;">
+        <table style="width:100%;">
+            <tr>
+                <td style="width:50%; text-align:center; font-size:20px;" rowspan="7">{!creditAnalysisFormRec.CreatedBy.Name}</td>
+            </tr>
+            <tr>
+                <td style="width:30%; font-size:12px;">KOD</td>
+                <td style="width:20%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Account_Code__c != null}">
+                        {!creditAnalysisFormRec.RC_Account_Code__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Account_Code__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:30%; font-size:12px;">STATÜ/SATIŞ KANALI</td>
+                <td style="width:20%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Statu_Satis_Kanali__c != null}">                    
+                        {!creditAnalysisFormRec.RC_Statu_Satis_Kanali__c} 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Statu_Satis_Kanali__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:30%; font-size:12px;">BAYİ OLUŞ TARİHİ</td>
+                <td style="width:20%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Bayi_Olus_Tarihi__c != null}"> 
+                        <apex:outputText value="{0, date, dd'.'MM'.'yyyy}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Bayi_Olus_Tarihi__c}" />
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Bayi_Olus_Tarihi__c == null}"> -</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:30%; font-size:12px;">RAPOR TARİH</td>
+                <td style="width:20%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Rapor_Tarihi__c != null}">
+                        <apex:outputText value="{0, date, dd'.'MM'.'yyyy}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Rapor_Tarihi__c}" />
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Rapor_Tarihi__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:30%; font-size:12px;">SON KREDİ DEĞERLEME TARİHİ</td>
+                <td style="width:20%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Son_Kredi_Degerleme__c != null}">
+                        <apex:outputText value="{0, date, dd'.'MM'.'yyyy}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Son_Kredi_Degerleme__c}" />
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Son_Kredi_Degerleme__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:30%; font-size:12px;">RİSK PERFORMANSI</td>
+                <td style="width:20%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Risk_Performansi__c != null}">
+                        {!creditAnalysisFormRec.RC_Risk_Performansi__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Risk_Performansi__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:25%; font-size:12px;">İş Merkezi</td>
+                <td style="width:75%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_is_merkezii__c != null}">
+                        {!creditAnalysisFormRec.RC_is_merkezii__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_is_merkezii__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Şube</td>
+                <td style="width:75%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Sube__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Sube__c}" escape="false"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Sube__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Kuruluş Tarihi</td>
+                <td style="width:75%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kurulus_Tarihi__c != null}">
+                        <apex:outputText value="{0, date, dd'.'MM'.'yyyy}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Kurulus_Tarihi__c}" />
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kurulus_Tarihi__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Sicil No</td>
+                <td style="width:75%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Sicil_No__c != null}">
+                        {!creditAnalysisFormRec.RC_Sicil_No__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Sicil_No__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+             <tr>
+                <td style="width:25%; font-size:12px;">Vergi No</td>
+                <td style="width:75%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Vergi_No__c != null}">
+                        {!creditAnalysisFormRec.RC_Vergi_No__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Vergi_No__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Firma Sahibi / Temsil / Süre</td>
+                <td style="width:75%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Firma_Sahibi_Temsil_Sure__c != null}">
+                        {!creditAnalysisFormRec.RC_Firma_Sahibi_Temsil_Sure__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Firma_Sahibi_Temsil_Sure__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:50%; font-size:12px; background-color:#003365; color:#ffffff;" colspan="2">Ortaklık Yapısı</td>
+                <td style="width:50%; font-size:12px; background-color:#003365; color:#ffffff;" colspan="2">İştirak Bilgileri</td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Kayıtlı Sermaye</td>
+                <td style="width:25%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kayitli_Sermaye__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Kayitli_Sermaye__c}"/>
+                        </apex:outputText>
+                        TL
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kayitli_Sermaye__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:50%; font-size:12px;" colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">{!creditAnalysisFormRec.CreatedBy.Name}</td>
+                <td style="width:25%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kayitli_Sermaye__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Kayitli_Sermaye__c}"/>
+                        </apex:outputText>
+                        TL
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kayitli_Sermaye__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:50%; font-size:12px;" colspan="2"></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px;" colspan="2">&nbsp;</td>
+                <td style="width:50%; font-size:12px;" colspan="2"></td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:28%; font-size:12px; background-color:#003365; color:#ffffff;">Vestel ile çalışma bilgileri</td>
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Yil__c != null}">
+                            <apex:param value="{!item.RC_Yil__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Yil__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>
+            </tr>
+            <tr>
+                <td style="width:28%; font-size:12px;">Ciro</td>
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Ciro__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Ciro__c}"/>
+                            </apex:outputText>
+                            TL
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Ciro__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>
+            </tr>
+            <tr>
+                <td style="width:28%; font-size:12px;">Risk</td>
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Risk__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Risk__c}"/>
+                            </apex:outputText>
+                            TL
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Risk__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>
+            </tr>
+            <tr>
+                <td style="width:28%; font-size:12px;">Çalışma Vadesi (Gün)</td>
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Calisma_Vadesi__c != null}">
+                            <apex:param value="{!item.RC_Calisma_Vadesi__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Calisma_Vadesi__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>
+            </tr>
+            <tr>
+                <td style="width:28%; font-size:12px;">Vadesi Geçmiş Alacak</td> 
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Vadesi_Gecmis_Alacak__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Vadesi_Gecmis_Alacak__c}"/>
+                            </apex:outputText>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Vadesi_Gecmis_Alacak__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>                
+            </tr>
+            <tr>
+                <td style="width:28%; font-size:12px;">K.sız Çek / Protestolu Senet</td>
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Karsiliksiz_Cek_Protestolu_Senet__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Karsiliksiz_Cek_Protestolu_Senet__c}"/>
+                            </apex:outputText>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Karsiliksiz_Cek_Protestolu_Senet__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>
+            </tr>
+            <tr>
+                <td style="width:28%; font-size:12px;">Temdit </td>
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Temdit__c != null}">
+                            <apex:param value="{!item.RC_Temdit__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Temdit__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>
+            </tr>
+            <tr>
+                <td style="width:28%; font-size:12px;">DTS KMH Takip </td>
+                <apex:repeat var="item" value="{!vestelWorkInfoList}">
+                    <td style="width:18%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_DTS_KMH_Takip__c != null}">
+                            <apex:param value="{!item.RC_DTS_KMH_Takip__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_DTS_KMH_Takip__c == null}">-</apex:outputText>
+                    </td>
+                </apex:repeat>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:40%; font-size:12px; background-color:#003365; color:#ffffff;">Teminat ve Limit Bilgileri</td>
+                <td style="width:30%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Limit</td>
+                <td style="width:30%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Teminat</td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px; background-color:#A9A9A9;">Toplam Limit</td>
+                <td style="width:60%; font-size:12px; background-color:#A9A9A9; text-align:center;" colspan="2">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Toplam_Limit__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Toplam_Limit__c}"/>
+                        </apex:outputText>
+                        TL
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Toplam_Limit__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px;">Açık Kredi</td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Acik_Kredi_Limit__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Acik_Kredi_Limit__c}"/>
+                        </apex:outputText>
+                        TL
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Acik_Kredi_Limit__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Acik_Kredi_Teminat__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Acik_Kredi_Teminat__c}"/>
+                        </apex:outputText>
+                        TL
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Acik_Kredi_Teminat__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px;">Kefalet Kredisi</td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kefalet_Kredisi_Limit__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Kefalet_Kredisi_Limit__c}"/>
+                        </apex:outputText>
+                        TL             
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kefalet_Kredisi_Limit__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kefalet_Kredisi_Teminat__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Kefalet_Kredisi_Teminat__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kefalet_Kredisi_Teminat__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px;">Banka Teminat Mektubu</td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Banka_Teminat_Mektubu_Limit__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Banka_Teminat_Mektubu_Limit__c}"/>
+                        </apex:outputText>
+                        TL  
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Banka_Teminat_Mektubu_Limit__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Banka_Teminat_Mektubu_Teminat__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Banka_Teminat_Mektubu_Teminat__c}"/>
+                        </apex:outputText>
+                        TL  
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Banka_Teminat_Mektubu_Teminat__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px;">İpotek</td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ipotek_Limit__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Ipotek_Limit__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ipotek_Limit__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ipotek_Teminat__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Ipotek_Teminat__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ipotek_Teminat__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px;">Müşteri Çek / Senet</td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Musteri_Cek_Senet_Limit__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Musteri_Cek_Senet_Limit__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Musteri_Cek_Senet_Limit__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:30%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Musteri_Cek_Senet_Teminat__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Musteri_Cek_Senet_Teminat__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Musteri_Cek_Senet_Teminat__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#ffffff;" colspan="2">Moralite</td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px;">K.sız Çek / Protestolu Sene</td>
+                <td style="width:60%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Karsiliksiz_Cek_Protestolu_Senet__c != null}">
+                        {!creditAnalysisFormRec.RC_Karsiliksiz_Cek_Protestolu_Senet__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Karsiliksiz_Cek_Protestolu_Senet__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:40%; font-size:12px;">Piyasa Bilgisi</td>
+                <td style="width:60%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.Piyasa_Bilgisi__c != null}">
+                        {!creditAnalysisFormRec.Piyasa_Bilgisi__c}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.Piyasa_Bilgisi__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#ffffff; height:50px;">Findeks Rapor Özeti</td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Findeks_Rapor_Ozeti__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Findeks_Rapor_Ozeti__c}" escape="false" style="font-size:12px !important;"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Findeks_Rapor_Ozeti__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:25%; font-size:12px; background-color:#003365; color:#ffffff;">Diğer Sektör İş Bilgileri</td>
+                <td style="width:15%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Cari Yıl Ciro</td>
+                <td style="width:15%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Önceki Yıl Ciro</td>
+                <td style="width:15%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Çalışma Süresi</td>
+                <td style="width:15%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Teminat Türü</td>
+                <td style="width:15%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Teminat Tutarı</td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">{!creditAnalysisFormRec.RC_Diger_Sektor_Bilgileri__c}</td>
+                <td style="width:15%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Cari_Yil_Ciro__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Cari_Yil_Ciro__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Cari_Yil_Ciro__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:15%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Inceki_Yil_Ciro__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Inceki_Yil_Ciro__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Inceki_Yil_Ciro__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:15%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Calisma_Suresi__c != null}">
+                        <apex:param value="{!creditAnalysisFormRec.RC_Calisma_Suresi__c}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Calisma_Suresi__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:15%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Teminat_Turu__c != null}">
+                        <apex:param value="{!creditAnalysisFormRec.RC_Teminat_Turu__c}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Teminat_Turu__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:15%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Teminat_Tutari__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Teminat_Tutari__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Teminat_Tutari__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff;">Çalıştığı Bankalar</td>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff;">Kullandığı Ürün</td>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff;">Limit</td>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff;">Risk</td>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff;">Teminat</td>
+            </tr>
+            <apex:repeat var="item" value="{!bankInfoList}">
+                <tr>
+                    <td style="width:20%; font-size:12px;">
+                        <apex:outputText rendered="{!item.RC_Banka_Adi__c != null}">
+                            <apex:param value="{!item.RC_Banka_Adi__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Banka_Adi__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:20%; font-size:12px;">
+                        <apex:outputText rendered="{!item.RC_Kullandigi_Urunler__c != null}">
+                            <apex:param value="{!item.RC_Kullandigi_Urunler__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Kullandigi_Urunler__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:20%; font-size:12px;">
+                        <apex:outputText rendered="{!item.RC_Limit__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Limit__c}"/>
+                            </apex:outputText>
+                            TL 
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Limit__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:20%; font-size:12px;">
+                        <apex:outputText rendered="{!item.RC_Risk__c != null}">
+                            <apex:param value="{!item.RC_Risk__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Risk__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:20%; font-size:12px;">
+                        <apex:outputText rendered="{!item.RC_Teminat__c != null}">
+                            <apex:param value="{!item.RC_Teminat__c}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Teminat__c == null}">-</apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>
+            <tr>
+                <td style="width:20%; font-size:12px;">&nbsp;</td>
+                <td style="width:20%; font-size:12px;">&nbsp;</td>
+                <td style="width:20%; font-size:12px;">&nbsp;</td>
+                <td style="width:20%; font-size:12px;">&nbsp;</td>
+                <td style="width:20%; font-size:12px;">&nbsp;</td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#A9A9A9;" colspan="5">&nbsp;</td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#ffffff;" colspan="8">G.resmi Veriler</td>
+            </tr>
+            <tr>
+                <td style="width:18%; font-size:12px;">Ciro (cari dönem)</td>
+                <td style="width:14%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ciro_Cari_Donem__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Ciro_Cari_Donem__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ciro_Cari_Donem__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:20%; font-size:12px;">Kredi Kartlı Satış %</td>
+                <td style="width:12%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.Kredi_Kartl_Sat__c != null}">
+                        %
+                        <apex:param value="{!creditAnalysisFormRec.Kredi_Kartl_Sat__c}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.Kredi_Kartl_Sat__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:15%; font-size:12px;">Çalışan Sayısı</td>
+                <td style="width:15%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Calisan_Sayisi__c != null}">
+                        <apex:param value="{!creditAnalysisFormRec.RC_Calisan_Sayisi__c}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Calisan_Sayisi__c != null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:18%; font-size:12px;">Ciro (önceki dönem)</td>
+                <td style="width:14%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.Ciro_Onceki_Donem__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.Ciro_Onceki_Donem__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.Ciro_Onceki_Donem__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:20%; font-size:12px;">Kredi Kartı Çalışma Şekli</td>
+                <td style="width:12%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kredi_Kartli_Calisma_Sekli__c != null}">
+                        <apex:param value="{!creditAnalysisFormRec.RC_Kredi_Kartli_Calisma_Sekli__c}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kredi_Kartli_Calisma_Sekli__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:15%; font-size:12px;">Aylık Sabit Gider</td>
+                <td style="width:15%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Aylik_Sabit_Gider__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Aylik_Sabit_Gider__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Aylik_Sabit_Gider__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:18%; font-size:12px;">Alacak</td>
+                <td style="width:14%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Alacak__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Alacak__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Alacak__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:20%; font-size:12px;">Geciken Alacak</td>
+                <td style="width:12%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Geciken_Alacak__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Geciken_Alacak__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Geciken_Alacak__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:15%; font-size:12px;"></td>
+                <td style="width:15%; font-size:12px;"></td>
+            </tr>
+            <tr>
+                <td style="width:18%; font-size:12px;">Borç</td>
+                <td style="width:14%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Borc__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Borc__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Borc__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:20%; font-size:12px;">Kanuni Takip Alacağı</td>
+                <td style="width:12%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kanuni_Takip_Alacagi__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Kanuni_Takip_Alacagi__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Kanuni_Takip_Alacagi__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:15%; font-size:12px;"></td>
+                <td style="width:15%; font-size:12px;"></td>
+            </tr>
+            <tr>
+                <td style="width:18%; font-size:12px;">Stok</td>
+                <td style="width:14%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Stok__c != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditAnalysisFormRec.RC_Stok__c}"/>
+                        </apex:outputText>
+                        TL 
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Stok__c == null}">-</apex:outputText>
+                </td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:20%; font-size:12px;"></td>
+                <td style="width:12%; font-size:12px;"></td>
+                <td style="width:3%; font-size:12px; background-color:#003365; color:#ffffff;"></td>
+                <td style="width:15%; font-size:12px;"></td>
+                <td style="width:15%; font-size:12px;"></td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#A9A9A9;font-style:italic;" colspan="8">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_G_Resmi_Veri_Ozeti__c != null}"><apex:param value="{!creditAnalysisFormRec.RC_G_Resmi_Veri_Ozeti__c}"/></apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_G_Resmi_Veri_Ozeti__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:23%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Bilanço Bilgileri (TL)</td>
+                <td style="width:10%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil1 != null}">
+                        <apex:param value="{!bilancoWrapperItem.yil1}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">%</td>
+                <td style="width:13%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Değişim(%)</td>
+                <td style="width:10%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil2 != null}">
+                        <apex:param value="{!bilancoWrapperItem.yil2}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">%</td>
+                <td style="width:13%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Değişim(%)</td>
+                <td style="width:10%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil3 != null}">
+                        {!bilancoWrapperItem.yil3}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">%</td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; background-color:#A9A9A9;">Aktif Toplam</td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.aktifToplam1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.aktifToplam1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.aktifToplam1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">100%</td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 != null && bilancoWrapperItem.aktifToplam2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.aktifToplam1 / bilancoWrapperItem.aktifToplam2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 == null || bilancoWrapperItem.aktifToplam2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.aktifToplam2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.aktifToplam2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.aktifToplam2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">100%</td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 != null && bilancoWrapperItem.aktifToplam3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.aktifToplam2 / bilancoWrapperItem.aktifToplam3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 == null || bilancoWrapperItem.aktifToplam3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.aktifToplam3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.aktifToplam3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.aktifToplam3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">100%</td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; background-color:#A9A9A9;">Dönen Varlıklar</td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.donenVarliklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.donenVarliklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.donenVarliklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 != null && bilancoWrapperItem.aktifToplam1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar1 / bilancoWrapperItem.aktifToplam1)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 == null || bilancoWrapperItem.aktifToplam1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 != null && bilancoWrapperItem.donenVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.donenVarliklar1 / bilancoWrapperItem.donenVarliklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 == null || bilancoWrapperItem.donenVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.donenVarliklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.donenVarliklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.donenVarliklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 != null && bilancoWrapperItem.aktifToplam2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar2 / bilancoWrapperItem.aktifToplam2)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 == null || bilancoWrapperItem.aktifToplam2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 != null && bilancoWrapperItem.donenVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.donenVarliklar2 / bilancoWrapperItem.donenVarliklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 == null || bilancoWrapperItem.donenVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.donenVarliklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.donenVarliklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.donenVarliklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 != null && bilancoWrapperItem.aktifToplam3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar3 / bilancoWrapperItem.aktifToplam3)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 == null || bilancoWrapperItem.aktifToplam3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Hazır Değerler</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.hazirDegerler1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.hazirDegerler1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.hazirDegerler1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 != null && bilancoWrapperItem.donenVarliklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.hazirDegerler1 / bilancoWrapperItem.donenVarliklar1)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 == null || bilancoWrapperItem.donenVarliklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.hazirDegerler2 != null && bilancoWrapperItem.hazirDegerler2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.hazirDegerler1 / bilancoWrapperItem.hazirDegerler2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.hazirDegerler2 == null || bilancoWrapperItem.hazirDegerler2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.hazirDegerler2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.hazirDegerler2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.hazirDegerler2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 != null && bilancoWrapperItem.donenVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.hazirDegerler2 / bilancoWrapperItem.donenVarliklar2)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 == null || bilancoWrapperItem.donenVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.hazirDegerler3 != null && bilancoWrapperItem.hazirDegerler3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.hazirDegerler2 / bilancoWrapperItem.hazirDegerler3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.hazirDegerler3 == null || bilancoWrapperItem.hazirDegerler3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.hazirDegerler3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.hazirDegerler3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.hazirDegerler3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 != null && bilancoWrapperItem.donenVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.hazirDegerler3 / bilancoWrapperItem.donenVarliklar3)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 == null || bilancoWrapperItem.donenVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Ticari Alacaklar</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariAlacaklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 != null && bilancoWrapperItem.donenVarliklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariAlacaklar1 / bilancoWrapperItem.donenVarliklar1)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 == null || bilancoWrapperItem.donenVarliklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklar2 != null && bilancoWrapperItem.ticariAlacaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ticariAlacaklar1 / bilancoWrapperItem.ticariAlacaklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklar2 == null || bilancoWrapperItem.ticariAlacaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariAlacaklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 != null && bilancoWrapperItem.donenVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariAlacaklar2 / bilancoWrapperItem.donenVarliklar2)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 == null || bilancoWrapperItem.donenVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklar3 != null && bilancoWrapperItem.ticariAlacaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ticariAlacaklar2 / bilancoWrapperItem.ticariAlacaklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklar3 == null || bilancoWrapperItem.ticariAlacaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariAlacaklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 != null && bilancoWrapperItem.donenVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariAlacaklar3 / bilancoWrapperItem.donenVarliklar3)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 == null || bilancoWrapperItem.donenVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Şüpheli Ticari Alacaklar</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.supheliTicariAlacaklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.supheliTicariAlacaklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.supheliTicariAlacaklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 != null && bilancoWrapperItem.donenVarliklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.supheliTicariAlacaklar1 / bilancoWrapperItem.donenVarliklar1)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 == null || bilancoWrapperItem.donenVarliklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.supheliTicariAlacaklar2 != null && bilancoWrapperItem.supheliTicariAlacaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.supheliTicariAlacaklar1 / bilancoWrapperItem.supheliTicariAlacaklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.supheliTicariAlacaklar2 == null || bilancoWrapperItem.supheliTicariAlacaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.supheliTicariAlacaklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.supheliTicariAlacaklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.supheliTicariAlacaklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 != null && bilancoWrapperItem.donenVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.supheliTicariAlacaklar2 / bilancoWrapperItem.donenVarliklar2)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 == null || bilancoWrapperItem.donenVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.supheliTicariAlacaklar3 != null && bilancoWrapperItem.supheliTicariAlacaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.supheliTicariAlacaklar2 / bilancoWrapperItem.supheliTicariAlacaklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.supheliTicariAlacaklar3 == null || bilancoWrapperItem.supheliTicariAlacaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.supheliTicariAlacaklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.supheliTicariAlacaklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.supheliTicariAlacaklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 != null && bilancoWrapperItem.donenVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.supheliTicariAlacaklar3 / bilancoWrapperItem.donenVarliklar3)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 == null || bilancoWrapperItem.donenVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Stoklar</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.stoklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.stoklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.stoklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 != null && bilancoWrapperItem.donenVarliklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.stoklar1 / bilancoWrapperItem.donenVarliklar1)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar1 == null || bilancoWrapperItem.donenVarliklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.stoklar2 != null && bilancoWrapperItem.stoklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.stoklar1 / bilancoWrapperItem.stoklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.stoklar2 == null || bilancoWrapperItem.stoklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.stoklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.stoklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.stoklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{IF((bilancoWrapperItem.donenVarliklar2 != null && bilancoWrapperItem.donenVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.stoklar2 / bilancoWrapperItem.donenVarliklar2)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar2 == null || bilancoWrapperItem.donenVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.stoklar3 != null && bilancoWrapperItem.stoklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.stoklar2 / bilancoWrapperItem.stoklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.stoklar3 == null || bilancoWrapperItem.stoklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.stoklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.stoklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.stoklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 != null && bilancoWrapperItem.donenVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.stoklar3 / bilancoWrapperItem.donenVarliklar3)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.donenVarliklar3 == null || bilancoWrapperItem.donenVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; background-color:#A9A9A9;">Duran Varlıklar</td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.duranVarliklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.duranVarliklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.duranVarliklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 != null && bilancoWrapperItem.aktifToplam1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.duranVarliklar1 / bilancoWrapperItem.aktifToplam1)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 == null || bilancoWrapperItem.aktifToplam1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar2 != null && bilancoWrapperItem.duranVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.duranVarliklar1 / bilancoWrapperItem.duranVarliklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar2 == null || bilancoWrapperItem.duranVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.duranVarliklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.duranVarliklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.duranVarliklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 != null && bilancoWrapperItem.aktifToplam2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.duranVarliklar2 / bilancoWrapperItem.aktifToplam2)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 == null || bilancoWrapperItem.aktifToplam2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar3 != null && bilancoWrapperItem.duranVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.duranVarliklar2 / bilancoWrapperItem.duranVarliklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar3 == null || bilancoWrapperItem.duranVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.duranVarliklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.duranVarliklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.duranVarliklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 != null && bilancoWrapperItem.aktifToplam3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.duranVarliklar3 / bilancoWrapperItem.aktifToplam3)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 == null || bilancoWrapperItem.aktifToplam3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Ticari Alacaklar</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar1 != null && bilancoWrapperItem.duranVarliklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariAlacaklarduranVarliklar1 / bilancoWrapperItem.duranVarliklar1)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar1 == null || bilancoWrapperItem.duranVarliklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklarduranVarliklar2 != null && bilancoWrapperItem.ticariAlacaklarduranVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ticariAlacaklarduranVarliklar1 / bilancoWrapperItem.ticariAlacaklarduranVarliklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklarduranVarliklar2 == null || bilancoWrapperItem.ticariAlacaklarduranVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar2 != null && bilancoWrapperItem.duranVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariAlacaklarduranVarliklar2 / bilancoWrapperItem.duranVarliklar2)}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar2 == null || bilancoWrapperItem.duranVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklarduranVarliklar3 != null && bilancoWrapperItem.ticariAlacaklarduranVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ticariAlacaklarduranVarliklar2 / bilancoWrapperItem.ticariAlacaklarduranVarliklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariAlacaklarduranVarliklar3 == null || bilancoWrapperItem.ticariAlacaklarduranVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariAlacaklarduranVarliklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar3 != null && bilancoWrapperItem.duranVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariAlacaklarduranVarliklar3 / bilancoWrapperItem.duranVarliklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar3 == null || bilancoWrapperItem.duranVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Maddi Duran Varlıklar</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.maddiDuranVarliklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.maddiDuranVarliklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.maddiDuranVarliklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar1 != null && bilancoWrapperItem.duranVarliklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.maddiDuranVarliklar1 / bilancoWrapperItem.duranVarliklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar1 == null || bilancoWrapperItem.duranVarliklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.maddiDuranVarliklar2 != null && bilancoWrapperItem.maddiDuranVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.maddiDuranVarliklar1 / bilancoWrapperItem.maddiDuranVarliklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.maddiDuranVarliklar2 == null || bilancoWrapperItem.maddiDuranVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.maddiDuranVarliklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.maddiDuranVarliklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.maddiDuranVarliklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar2 != null && bilancoWrapperItem.duranVarliklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.maddiDuranVarliklar2 / bilancoWrapperItem.duranVarliklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar2 == null || bilancoWrapperItem.duranVarliklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.maddiDuranVarliklar3 != null && bilancoWrapperItem.maddiDuranVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.maddiDuranVarliklar2 / bilancoWrapperItem.maddiDuranVarliklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.maddiDuranVarliklar3 == null || bilancoWrapperItem.maddiDuranVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.maddiDuranVarliklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.maddiDuranVarliklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.maddiDuranVarliklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar3 != null && bilancoWrapperItem.duranVarliklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.maddiDuranVarliklar3 / bilancoWrapperItem.duranVarliklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.duranVarliklar3 == null || bilancoWrapperItem.duranVarliklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; background-color:#A9A9A9;">KV Yabancı Kaynaklar</td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.kvYabanciKaynaklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 != null && bilancoWrapperItem.aktifToplam1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.kvYabanciKaynaklar1 / bilancoWrapperItem.aktifToplam1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 == null || bilancoWrapperItem.aktifToplam1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 != null && bilancoWrapperItem.kvYabanciKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.kvYabanciKaynaklar1 / bilancoWrapperItem.kvYabanciKaynaklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 == null || bilancoWrapperItem.kvYabanciKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.kvYabanciKaynaklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 != null && bilancoWrapperItem.aktifToplam2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.kvYabanciKaynaklar2 / bilancoWrapperItem.aktifToplam2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 == null || bilancoWrapperItem.aktifToplam2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 != null && bilancoWrapperItem.kvYabanciKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.kvYabanciKaynaklar2 / bilancoWrapperItem.kvYabanciKaynaklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 == null || bilancoWrapperItem.kvYabanciKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.kvYabanciKaynaklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 != null && bilancoWrapperItem.aktifToplam3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.kvYabanciKaynaklar3 / bilancoWrapperItem.aktifToplam3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 == null || bilancoWrapperItem.aktifToplam3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Banka Kredileri</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriKV1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.bankaKredileriKV1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriKV1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar1 != null && bilancoWrapperItem.kvYabanciKaynaklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.bankaKredileriKV1 / bilancoWrapperItem.kvYabanciKaynaklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar1 == null || bilancoWrapperItem.kvYabanciKaynaklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriKV2 != null && bilancoWrapperItem.bankaKredileriKV2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.bankaKredileriKV1 / bilancoWrapperItem.bankaKredileriKV2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriKV2 == null || bilancoWrapperItem.bankaKredileriKV2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriKV2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.bankaKredileriKV2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriKV2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 != null && bilancoWrapperItem.kvYabanciKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.bankaKredileriKV2 / bilancoWrapperItem.kvYabanciKaynaklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 == null || bilancoWrapperItem.kvYabanciKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriKV3 != null && bilancoWrapperItem.bankaKredileriKV3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.bankaKredileriKV2 / bilancoWrapperItem.bankaKredileriKV3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriKV3 == null || bilancoWrapperItem.bankaKredileriKV3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriKV3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.bankaKredileriKV3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriKV3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 != null && bilancoWrapperItem.kvYabanciKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.bankaKredileriKV3 / bilancoWrapperItem.kvYabanciKaynaklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 == null || bilancoWrapperItem.kvYabanciKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Ticari Borçlar</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarKV1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariBorclarKV1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarKV1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar1 != null && bilancoWrapperItem.kvYabanciKaynaklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariBorclarKV1 / bilancoWrapperItem.kvYabanciKaynaklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar1 == null || bilancoWrapperItem.kvYabanciKaynaklar1 == 0), true, false)}">-</apex:outputText>
+                 </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarKV2 != null && bilancoWrapperItem.ticariBorclarKV2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ticariBorclarKV1 / bilancoWrapperItem.ticariBorclarKV2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarKV2 == null || bilancoWrapperItem.ticariBorclarKV2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarKV2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariBorclarKV2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarKV2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 != null && bilancoWrapperItem.kvYabanciKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariBorclarKV2 / bilancoWrapperItem.kvYabanciKaynaklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 == null || bilancoWrapperItem.kvYabanciKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarKV3 != null && bilancoWrapperItem.ticariBorclarKV3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ticariBorclarKV2 / bilancoWrapperItem.ticariBorclarKV3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarKV3 == null || bilancoWrapperItem.ticariBorclarKV3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarKV3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariBorclarKV3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarKV3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 != null && bilancoWrapperItem.kvYabanciKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariBorclarKV3 / bilancoWrapperItem.kvYabanciKaynaklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 == null || bilancoWrapperItem.kvYabanciKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; background-color:#A9A9A9;">UV Yabancı Kaynaklar</td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.uvYabanciKaynaklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.uvYabanciKaynaklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.uvYabanciKaynaklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 != null && bilancoWrapperItem.aktifToplam1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.uvYabanciKaynaklar1 / bilancoWrapperItem.aktifToplam1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 == null || bilancoWrapperItem.aktifToplam1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar2 != null && bilancoWrapperItem.uvYabanciKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.uvYabanciKaynaklar1 / bilancoWrapperItem.uvYabanciKaynaklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar2 == null || bilancoWrapperItem.uvYabanciKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.uvYabanciKaynaklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.uvYabanciKaynaklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.uvYabanciKaynaklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 != null && bilancoWrapperItem.aktifToplam2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.uvYabanciKaynaklar2 / bilancoWrapperItem.aktifToplam2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 == null || bilancoWrapperItem.aktifToplam2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar3 != null && bilancoWrapperItem.uvYabanciKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.uvYabanciKaynaklar2 / bilancoWrapperItem.uvYabanciKaynaklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar3 == null || bilancoWrapperItem.uvYabanciKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.uvYabanciKaynaklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.uvYabanciKaynaklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.uvYabanciKaynaklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 != null && bilancoWrapperItem.aktifToplam3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.uvYabanciKaynaklar3 / bilancoWrapperItem.aktifToplam3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 == null || bilancoWrapperItem.aktifToplam3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Banka Kredileri</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriUV1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.bankaKredileriUV1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriUV1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar1 != null && bilancoWrapperItem.uvYabanciKaynaklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.bankaKredileriUV1 / bilancoWrapperItem.uvYabanciKaynaklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar1 == null || bilancoWrapperItem.uvYabanciKaynaklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriUV2 != null && bilancoWrapperItem.bankaKredileriUV2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.bankaKredileriUV1 / bilancoWrapperItem.bankaKredileriUV2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriUV2 == null || bilancoWrapperItem.bankaKredileriUV2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriUV2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.bankaKredileriUV2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriUV2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar2 != null && bilancoWrapperItem.uvYabanciKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.bankaKredileriUV2 / bilancoWrapperItem.uvYabanciKaynaklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar2 == null || bilancoWrapperItem.uvYabanciKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriUV3 != null && bilancoWrapperItem.bankaKredileriUV3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.bankaKredileriUV2 / bilancoWrapperItem.bankaKredileriUV3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.bankaKredileriUV3 == null || bilancoWrapperItem.bankaKredileriUV3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriUV3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.bankaKredileriUV3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.bankaKredileriUV3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar3 != null && bilancoWrapperItem.uvYabanciKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.bankaKredileriUV3 / bilancoWrapperItem.uvYabanciKaynaklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar3 == null || bilancoWrapperItem.uvYabanciKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Ticari Borçlar</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarUV1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariBorclarUV1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarUV1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar1 != null && bilancoWrapperItem.uvYabanciKaynaklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariBorclarUV1 / bilancoWrapperItem.uvYabanciKaynaklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar1 == null || bilancoWrapperItem.uvYabanciKaynaklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarUV2 != null && bilancoWrapperItem.ticariBorclarUV2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ticariBorclarUV1 / bilancoWrapperItem.ticariBorclarUV2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarUV2 == null || bilancoWrapperItem.ticariBorclarUV2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarUV2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariBorclarUV2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarUV2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar2 != null && bilancoWrapperItem.uvYabanciKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariBorclarUV2 / bilancoWrapperItem.uvYabanciKaynaklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar2 == null || bilancoWrapperItem.uvYabanciKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarUV3 != null && bilancoWrapperItem.ticariBorclarUV3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{{! ((bilancoWrapperItem.ticariBorclarUV2 / bilancoWrapperItem.ticariBorclarUV3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ticariBorclarUV3 == null || bilancoWrapperItem.ticariBorclarUV3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarUV3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ticariBorclarUV3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ticariBorclarUV3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar3 != null && bilancoWrapperItem.uvYabanciKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ticariBorclarUV3 / bilancoWrapperItem.uvYabanciKaynaklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.uvYabanciKaynaklar3 == null || bilancoWrapperItem.uvYabanciKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; background-color:#A9A9A9;">Özkaynaklar</td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ozKaynaklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ozKaynaklar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ozKaynaklar1 != null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 != null && bilancoWrapperItem.aktifToplam1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ozKaynaklar1 / bilancoWrapperItem.aktifToplam1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 == null || bilancoWrapperItem.aktifToplam1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar2 != null && bilancoWrapperItem.ozKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ozKaynaklar1 / bilancoWrapperItem.ozKaynaklar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar2 == null || bilancoWrapperItem.ozKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ozKaynaklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ozKaynaklar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ozKaynaklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 != null && bilancoWrapperItem.aktifToplam2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ozKaynaklar2 / bilancoWrapperItem.aktifToplam2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 == null || bilancoWrapperItem.aktifToplam2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar3 != null && bilancoWrapperItem.ozKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.ozKaynaklar2 / bilancoWrapperItem.ozKaynaklar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar3 == null || bilancoWrapperItem.ozKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#A9A9A9; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.ozKaynaklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.ozKaynaklar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.ozKaynaklar3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 != null && bilancoWrapperItem.aktifToplam3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.ozKaynaklar3 / bilancoWrapperItem.aktifToplam3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 == null || bilancoWrapperItem.aktifToplam3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:23%; font-size:12px; text-align:right;">Ödenmiş Sermaye</td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.odenmisSermaye1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.odenmisSermaye1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.odenmisSermaye1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar1 != null && bilancoWrapperItem.ozKaynaklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.odenmisSermaye1 / bilancoWrapperItem.ozKaynaklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar1 == null || bilancoWrapperItem.ozKaynaklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye1 != null && bilancoWrapperItem.odenmisSermaye1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.odenmisSermaye1 / bilancoWrapperItem.odenmisSermaye1)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye1 == null || bilancoWrapperItem.odenmisSermaye1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.odenmisSermaye2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.odenmisSermaye2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.odenmisSermaye2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar2 != null && bilancoWrapperItem.ozKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.odenmisSermaye2 / bilancoWrapperItem.ozKaynaklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar2 == null || bilancoWrapperItem.ozKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:13%; font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye2 != null && bilancoWrapperItem.odenmisSermaye2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((bilancoWrapperItem.odenmisSermaye2 / bilancoWrapperItem.odenmisSermaye2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye2 == null || bilancoWrapperItem.odenmisSermaye2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:right;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.odenmisSermaye3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!bilancoWrapperItem.odenmisSermaye3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.odenmisSermaye3 == null}">-</apex:outputText>
+                </td>
+                <td style="width:7%;  font-size:12px; background-color:#A9A9A9; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar3 != null && bilancoWrapperItem.ozKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.odenmisSermaye3 / bilancoWrapperItem.ozKaynaklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.ozKaynaklar3 == null || bilancoWrapperItem.ozKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#A9A9A9;" colspan="9">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Bilanco_Aciklama__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Bilanco_Aciklama__c}" escape="false" style="font-size:12px !important;"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Bilanco_Aciklama__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Gelir Tablosu Bilgileri (TL)</td>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil1 != null}">
+                        {!bilancoWrapperItem.yil1}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Değişim(%)</td>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil2 != null}">
+                        {!bilancoWrapperItem.yil2}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">Değişim(%)</td>
+                <td style="width:20%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil3 != null}">
+                        {!bilancoWrapperItem.yil3}
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.yil3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:20%; font-size:12px;">Net Satışlar</td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.netSatislar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.netSatislar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.netSatislar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar2 != null && gelirTablosuItem.netSatislar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.netSatislar1 / gelirTablosuItem.netSatislar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar2 == null || gelirTablosuItem.netSatislar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.netSatislar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.netSatislar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.netSatislar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar3 != null && gelirTablosuItem.netSatislar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.netSatislar2 / gelirTablosuItem.netSatislar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar3 == null || gelirTablosuItem.netSatislar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.netSatislar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.netSatislar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.netSatislar3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:20%; font-size:12px;">Satılan Malın Maliyeti</td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.satilanMalMaliyeti1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.satilanMalMaliyeti1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                 </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.satilanMalMaliyeti2 != null && gelirTablosuItem.satilanMalMaliyeti2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.satilanMalMaliyeti1 / gelirTablosuItem.satilanMalMaliyeti2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.satilanMalMaliyeti2 == null || gelirTablosuItem.satilanMalMaliyeti2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.satilanMalMaliyeti2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.satilanMalMaliyeti2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.satilanMalMaliyeti2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.satilanMalMaliyeti3 != null && gelirTablosuItem.satilanMalMaliyeti3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.satilanMalMaliyeti2 / gelirTablosuItem.satilanMalMaliyeti3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.satilanMalMaliyeti3 == null || gelirTablosuItem.satilanMalMaliyeti3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.satilanMalMaliyeti3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.satilanMalMaliyeti3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.satilanMalMaliyeti3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:20%; font-size:12px;">Faaliyet Karı</td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.faaliyetKari1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.faaliyetKari1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.faaliyetKari1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.faaliyetKari2 != null && gelirTablosuItem.faaliyetKari2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.faaliyetKari2 / gelirTablosuItem.faaliyetKari2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.faaliyetKari1 == null || gelirTablosuItem.faaliyetKari2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.faaliyetKari2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.faaliyetKari2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.faaliyetKari2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.faaliyetKari3 != null && gelirTablosuItem.faaliyetKari3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.faaliyetKari2 / gelirTablosuItem.faaliyetKari3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.faaliyetKari3 == null || gelirTablosuItem.faaliyetKari3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.faaliyetKari3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.faaliyetKari3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.faaliyetKari3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:20%; font-size:12px;">Net Kar</td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.netKar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.netKar1}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.netKar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netKar2 != null && gelirTablosuItem.netKar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.netKar1 / gelirTablosuItem.netKar2)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netKar2 == null || gelirTablosuItem.netKar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.netKar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.netKar2}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.netKar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:10%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netKar3 != null && gelirTablosuItem.netKar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! ((gelirTablosuItem.netKar2 / gelirTablosuItem.netKar3)*100)-100}"/>
+                        </apex:outputText>
+                    </apex:outputText> 
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netKar3 == null || gelirTablosuItem.netKar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:20%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!gelirTablosuItem.netKar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!gelirTablosuItem.netKar3}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!gelirTablosuItem.netKar3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#A9A9A9;" colspan="6">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Gelir_Tablosu_Aciklama__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Gelir_Tablosu_Aciklama__c}" escape="false" style="font-size:12px !important;"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Gelir_Tablosu_Aciklama__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <!--<p style="width:100%; font-size:12px; margin:0px; padding-right:0px; padding-top:0px; padding-bottom:0px; padding-left:5px;">
+            Oran
+        </p>-->
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:25%; font-size:12px; background-color:#003365; color:#ffffff;">Oran Analizi</td>
+                <td style="width:25%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">{!bilancoWrapperItem.yil1}</td>
+                <td style="width:25%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">{!bilancoWrapperItem.yil2}</td>
+                <td style="width:25%; font-size:12px; background-color:#003365; color:#ffffff; text-align:center;">{!bilancoWrapperItem.yil3}</td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Cari Oran</td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar1 != null && bilancoWrapperItem.kvYabanciKaynaklar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar1 / bilancoWrapperItem.kvYabanciKaynaklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar1 == null || bilancoWrapperItem.kvYabanciKaynaklar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 != null && bilancoWrapperItem.kvYabanciKaynaklar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar2 / bilancoWrapperItem.kvYabanciKaynaklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar2 == null || bilancoWrapperItem.kvYabanciKaynaklar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 != null && bilancoWrapperItem.kvYabanciKaynaklar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar3 / bilancoWrapperItem.kvYabanciKaynaklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.kvYabanciKaynaklar3 == null || bilancoWrapperItem.kvYabanciKaynaklar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Net İşletme Sermayesi</td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar1 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar1 - bilancoWrapperItem.kvYabanciKaynaklar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar2 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar2 - bilancoWrapperItem.kvYabanciKaynaklar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar3 != null}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (bilancoWrapperItem.donenVarliklar3 - bilancoWrapperItem.kvYabanciKaynaklar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!bilancoWrapperItem.kvYabanciKaynaklar3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Net Kar Marjı</td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar1 != null && gelirTablosuItem.netSatislar1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar1 / gelirTablosuItem.netSatislar1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar1 == null || gelirTablosuItem.netSatislar1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar2 != null && gelirTablosuItem.netSatislar2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar2 / gelirTablosuItem.netSatislar2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar2 == null || gelirTablosuItem.netSatislar2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar3 != null && gelirTablosuItem.netSatislar3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar3 / gelirTablosuItem.netSatislar3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((gelirTablosuItem.netSatislar3 == null || gelirTablosuItem.netSatislar3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Öz Kaynak Karlılığı</td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye1 != null && bilancoWrapperItem.odenmisSermaye1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar1 / bilancoWrapperItem.odenmisSermaye1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye1 == null || bilancoWrapperItem.odenmisSermaye1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye2 != null && bilancoWrapperItem.odenmisSermaye2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar2 / bilancoWrapperItem.odenmisSermaye2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye2 == null || bilancoWrapperItem.odenmisSermaye2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye3 != null && bilancoWrapperItem.odenmisSermaye3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar3 / bilancoWrapperItem.odenmisSermaye3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.odenmisSermaye3 == null || bilancoWrapperItem.odenmisSermaye3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Toplam Aktif Karlılığı</td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 != null && bilancoWrapperItem.aktifToplam1 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar1 / bilancoWrapperItem.aktifToplam1 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam1 == null || bilancoWrapperItem.aktifToplam1 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 != null && bilancoWrapperItem.aktifToplam2 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar2 / bilancoWrapperItem.aktifToplam2 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam2 == null || bilancoWrapperItem.aktifToplam2 == 0), true, false)}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 != null && bilancoWrapperItem.aktifToplam3 != 0), true, false)}">
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{! (gelirTablosuItem.netKar3 / bilancoWrapperItem.aktifToplam3 )}"/>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!IF((bilancoWrapperItem.aktifToplam3 == null || bilancoWrapperItem.aktifToplam3 == 0), true, false)}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Stok Tutma Süresi</td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!oranAnaliziItem.stokTutmaSuresi1 != null}">
+                        <apex:param value="{!oranAnaliziItem.stokTutmaSuresi1}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!oranAnaliziItem.stokTutmaSuresi1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!oranAnaliziItem.stokTutmaSuresi2 != null}">
+                        <apex:param value="{!oranAnaliziItem.stokTutmaSuresi2}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!oranAnaliziItem.stokTutmaSuresi2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                    <apex:outputText rendered="{!oranAnaliziItem.stokTutmaSuresi3 != null}">
+                        <apex:param value="{!oranAnaliziItem.stokTutmaSuresi3}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!oranAnaliziItem.stokTutmaSuresi3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:25%; font-size:12px;">Ortalama Tahsilat Süresi</td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                <apex:outputText rendered="{!oranAnaliziItem.ortalamaTahsilatSuresi1 != null}">
+                        <apex:param value="{!oranAnaliziItem.ortalamaTahsilatSuresi1}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!oranAnaliziItem.ortalamaTahsilatSuresi1 == null}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                <apex:outputText rendered="{!oranAnaliziItem.ortalamaTahsilatSuresi2 != null}">
+                        <apex:param value="{!oranAnaliziItem.ortalamaTahsilatSuresi2}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!oranAnaliziItem.ortalamaTahsilatSuresi2 == null}">-</apex:outputText>
+                </td>
+                <td style="width:25%; font-size:12px; text-align:center;">
+                <apex:outputText rendered="{!oranAnaliziItem.ortalamaTahsilatSuresi3 != null}">
+                        <apex:param value="{!oranAnaliziItem.ortalamaTahsilatSuresi3}"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!oranAnaliziItem.ortalamaTahsilatSuresi3 == null}">-</apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#A9A9A9;" colspan="4">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Oran_Analizi_Aciklama__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Oran_Analizi_Aciklama__c}" escape="false" style="font-size:12px !important;"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Oran_Analizi_Aciklama__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#ffffff;" colspan="6">Gayrimenkul Bilgileri</td>
+            </tr>
+            <tr>
+                <td style="width:17%; font-size:12px; background-color:#A9A9A9; text-align:center;">Malik</td>
+                <td style="width:17%; font-size:12px; background-color:#A9A9A9; text-align:center;">İl / İlçe</td>
+                <td style="width:15%; font-size:12px; background-color:#A9A9A9; text-align:center;">Niteliği</td>
+                <td style="width:17%; font-size:12px; background-color:#A9A9A9; text-align:center;">İpotek Tutarı</td>
+                <td style="width:17%; font-size:12px; background-color:#A9A9A9; text-align:center;">Ekspertiz Değeri</td>
+                <td style="width:17%; font-size:12px; background-color:#A9A9A9; text-align:center;">Geçerli Tutar</td>
+            </tr>
+            <apex:repeat var="item" value="{!gayrimenkulInfoList}">
+                <tr>
+                    <td style="width:17%; font-size:12px;">
+                        <apex:outputText rendered="{!item.RC_Malik__c != null}">{!item.RC_Malik__c}</apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Malik__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:17%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Il_Ilce__c != null}">{!item.RC_Il_Ilce__c}</apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Il_Ilce__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:15%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Niteligi__c != null}">{!item.RC_Niteligi__c}</apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Niteligi__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:17%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Ipotek_Tutari__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Ipotek_Tutari__c}"/>
+                            </apex:outputText>
+                            TL 
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Ipotek_Tutari__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:17%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Ekspertiz_Degeri__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Ekspertiz_Degeri__c}"/>
+                            </apex:outputText>
+                            TL 
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Ekspertiz_Degeri__c == null}">-</apex:outputText>
+                    </td>
+                    <td style="width:17%; font-size:12px; text-align:center;">
+                        <apex:outputText rendered="{!item.RC_Gecerli_Tutar__c != null}">
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.RC_Gecerli_Tutar__c}"/>
+                            </apex:outputText>
+                            TL 
+                        </apex:outputText>
+                        <apex:outputText rendered="{!item.RC_Gecerli_Tutar__c == null}">-</apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#A9A9A9;" colspan="6">&nbsp;</td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#FF0000;">Taşıt Bilgileri</td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Tasit_Bilgileri__c != null}">{!creditAnalysisFormRec.RC_Tasit_Bilgileri__c}</apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Tasit_Bilgileri__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#FFFFFF;">Bölge Müdürlüğü Görüşü</td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Bolge_Mudurlugu_Gorusu__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Bolge_Mudurlugu_Gorusu__c}" escape="false" style="font-size:12px !important;"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Bolge_Mudurlugu_Gorusu__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#FFFFFF;">ÖZGEÇMİŞ</td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ozgecmis__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Ozgecmis__c}" escape="false" style="font-size:12px !important;"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Ozgecmis__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:100%; font-size:12px; background-color:#003365; color:#FFFFFF;">GENEL DEĞERLENDİRME</td>
+            </tr>
+            <tr>
+                <td style="width:100%; font-size:12px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Genel_Degerlendirme__c != null}">
+                        <apex:outputText value="{!creditAnalysisFormRec.RC_Genel_Degerlendirme__c}" escape="false" style="font-size:12px !important;"/>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.RC_Genel_Degerlendirme__c == null}">-</apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="width:34%; font-size:12px; text-align:center; background-color:#003365; color:#FFFFFF;">Raporu Hazırlayan</td>
+                <td style="width:33%; font-size:12px; text-align:center; background-color:#003365; color:#FFFFFF;">İmza</td>
+                <td style="width:33%; font-size:12px; text-align:center; background-color:#003365; color:#FFFFFF;">Tarih</td>
+            </tr>
+            <tr>
+                <td style="width:34%; font-size:12px; text-align:center; height:100px;">{!creditAnalysisFormRec.CreatedBy.Name}</td>
+                <td style="width:33%; font-size:12px; text-align:center; height:100px;">&nbsp;</td>
+                <td style="width:33%; font-size:12px; text-align:center; height:100px;">
+                    <apex:outputText value="{0, date, dd'.'MM'.'yyyy}">
+                        <apex:param value="{!creditAnalysisFormRec.CreatedDate}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:34%; font-size:12px; text-align:center; height:100px;">
+                    <apex:outputText rendered="{!creditAnalysisFormRec.CreatedBy.Manager.Name != null}">{!creditAnalysisFormRec.CreatedBy.Manager.Name}</apex:outputText>
+                    <apex:outputText rendered="{!creditAnalysisFormRec.CreatedBy.Manager.Name == null}">-</apex:outputText>
+                </td>
+                <td style="width:33%; font-size:12px; text-align:center; height:100px;">&nbsp;</td>
+                <td style="width:33%; font-size:12px; text-align:center; height:100px;">&nbsp;</td>
+            </tr>
+        </table>
+    </body>
+</apex:page>

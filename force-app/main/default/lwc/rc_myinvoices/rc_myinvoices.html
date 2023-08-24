@@ -1,0 +1,203 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid" style="border-bottom: 1px solid lightgray;background-color: #DF2027;color: white;padding: 7px;margin: 0;">
+            <div class="slds-media">
+               <div class="slds-media__figure">
+                  <span class="slds-assistive-text">opportunity</span>
+                  <lightning-icon class="my-icon" style="background-color: transparent;--sds-c-icon-color-foreground-default: white !important;" icon-name="custom:custom98"></lightning-icon>
+               </div>
+               <div class="slds-media__body">
+                  <div class="slds-page-header__name">
+                     <div class="slds-page-header__name-title">
+                        <h1>
+                           <span class="slds-page-header__title slds-truncate" title="Faturalarım">Faturalarım</span>
+                        </h1>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="info" if:true={isCommunity}>
+           Faturaya istinaden ödeme almak için Sipariş İşlemleri altında yer alan Siparişlerim sekmesinde Faturaya Göre Listele seçeneğini kullanınız.
+         </div>
+         <footer class="slds-card__footer" style="padding-top: 0;">
+            <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+               <legend class="slds-text-heading_small slds-p-vertical_medium" align="left" style="width: auto; font-size:large">
+                  Filtre
+               </legend>
+               <lightning-layout multiple-rows="true" vertical-align="end">
+                <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6"
+                padding="around-small">
+                <div class="slds-grid slds-gutters responsive-gutters">               
+                   
+                <template if:false={isCommunity}>    
+                    <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <c-search-component obj-name="Account" icon-name="standard:account" label-name="Bayi"
+                               placeholder="Bayi Seç" fields={fieldsAccount} display-fields={displayFieldsAccount} onlookup={handleLookupAccount}>
+                           </c-search-component>
+                           </div>
+                        </div>
+                     </div>
+                    </template>
+                <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-input type="date" label="Başlangıç Tarihi" name="startDate" onchange={handleSearchStartDate}>
+                            </lightning-input>
+                        </div>
+                    </div>
+                </div>
+                    
+                <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                            <lightning-input type="date" label="Bitiş Tarihi" onchange={handleSearchEndDate}></lightning-input>
+                        </div>
+                    </div>
+                    </div>
+   
+                    </div>
+                    
+                    <div class="slds-grid slds-gutters responsive-gutters">
+                            <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <lightning-combobox name="cmbStatu" value={category1} placeholder="Kademe 1"
+                                        options={ProductCategory1} onchange={handleSearchCategory1} label="Kademe 1">
+                                     </lightning-combobox>                                     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <lightning-combobox name="cmbStatu" value={category2} placeholder="Kademe 2" label="Kademe 2"
+                                        options={ProductCategory2} onchange={handleSearchCategory2}>
+                                     </lightning-combobox>                                     
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <lightning-combobox name="cmbStatu" value={category3} placeholder="Kademe 3" label="Kademe 3"
+                                        options={ProductCategory3} onchange={handleSearchCategory3}>
+                                     </lightning-combobox>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters responsive-gutters">
+                            <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                                <div class="slds-form-element">
+                                   
+                                        <div class="slds-form-element__control">
+                                
+                                            <lightning-input name="invoiceNo" label="Fatura Numarası" onchange={handleSearchElements}>
+                                            </lightning-input>
+                                        </div>                            
+                                    
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <c-search-component obj-name="Product2" icon-name="standard:product" label-name="Ürün Bilgisi"
+                                            placeholder="Ürün Kodu" fields={fields} display-fields={displayFields} onlookup={handleLookup}>
+                                        </c-search-component>                             
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__control"> 
+                                            <lightning-button icon-name="utility:search" class="lightning-button-element" label="Ara" variant="destructive" onclick={handleSearch}></lightning-button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <template if:true={loaded}>
+                    <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                    </template>
+                <br />
+                
+                <div class="slds-grid slds-gutters responsive-gutters">
+                <div class="slds-col slds-size_3-of-3">
+                    <div class="slds-form-element" >
+                        
+                        </div>
+                    </div>
+                </div>
+                </div>
+                
+                    </lightning-layout-item>
+                </lightning-layout>
+            </fieldset>
+       </footer>
+    </article>
+
+<br />
+
+<template if:true={invoicesData}>
+    <article class="slds-card">
+        <div class="slds-form-element slds-has-bottom-magnet excel">
+            <div class="slds-form-element__control">
+                <lightning-button icon-name="utility:download" label="Excel" onclick={downloadTable}></lightning-button>
+            </div>
+        </div>
+        <div class="slds-card slds-has-top-magnet" style="text-align: end; margin-right:1em;">
+            <br>
+            <p><i><b>
+                * Para birimi TL'dir.<br>
+                * Değerler KDV hariç olarak hesaplanmıştır.<br>               
+            </b></i></p>
+
+        </div>
+        <div class="margin">
+            <lightning-datatable key-field="id" show-row-number-column hide-checkbox-column suppress-bottom-bar
+            data={invoicesData} onrowaction={handleRowAction} oncellchange={handleCellChange} columns={columns}
+            draft-values={draftValues}>
+            </lightning-datatable>
+        </div>
+        <br/>
+        <lightning-layout horizontal-align="space" style="padding-top: 10px;">
+            <lightning-layout-item flexibility="auto">
+                <lightning-button 
+                class="slds-button slds-button_stretch"
+                label="Previous"
+                icon-name="utility:chevronleft"
+                onclick={previous}
+                >
+                </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto" style="align-self: center;">
+                Page {page} of {totalPage}
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto">
+                <lightning-button
+                class="slds-button slds-button_stretch"
+                label="Next"
+                icon-name="utility:chevronright"
+                icon-position="right"
+                onclick={next}
+                ></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+        <br/>
+    </article>
+</template>
+
+
+<c-rc_detail-modal detail-data={detailData} columns={detailColumn} is-showed={isShowed} invoice-no={invoiceNo}></c-rc_detail-modal>
+<c-Rc_IptalIadeIslemleri detail-data={iptalIadeData} columns={iptalIadeColumns} delivery-number={deliveryNumber} is-showed={isShowed} record-id={recordId} invoice-no={invoiceNo}></c-Rc_IptalIadeIslemleri>
+
+<div style="display: none;">
+    <form action="https://test.merchantsafeunipay.com/zorlu/payment" method="POST" data-id="assecoForm">
+       <input type="submit" data-id="assecoSubmit"></input>
+    </form>
+ </div>
+</template>

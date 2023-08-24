@@ -1,0 +1,55 @@
+<template>
+    <template if:true={isLoading}>
+        <div class="spinner">
+            <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
+        </div>
+    </template>
+    <div class="slds-modal__container">
+        <header class="slds-modal__header">
+            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Fiyat Listesi Secimi</h2>
+
+        </header>
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+            <p>Select a Price Book to associate with this opportunity. You can add products only from the Price Book you
+                associate with this opportunity. Changing the Price Book deletes all products from the opportunity.</p>
+            <br><br>
+            <c-search-component obj-name="Pricebook2" icon-name="standard:pricebook" label-name="Fiyat Listesi"
+                where-clause={whereClauses} placeholder="Search" fields={fields} display-fields={displayFields}
+                onlookup={handleLookup}>
+            </c-search-component>
+        </div>
+        <footer class="slds-modal__footer">
+            <!--<lightning-button variant="destructive"  onclick={closeQuickAction} label= "Iptal" class="slds-m-left_x-small"></lightning-button> -->
+            <lightning-button variant="brand" onclick={updateOpportunity} label="Kaydet" class="slds-m-left_x-small">
+            </lightning-button>
+        </footer>
+    </div>
+
+    <template if:true={isOpenChildModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small"
+            aria-labelledby="modal-heading-02" aria-modal="true">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                    </svg>
+                    <span class="slds-assistive-text">Cancel and close</span>
+                </button>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Modal header</h1>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <p>Bu firsat uzerinde eklenmis durumda olan kalemler bulunuyor , fiyat listesi secimi durumunda ilgili kalemler silinecektir onayliyor musunuz ?</p>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button variant="destructive"  onclick={closeChildModal} label= "İptal" class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="Brand"        onclick={closeChildModalAfterSaving} label= "Onayla" class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+
+
+    </template>
+
+</template>

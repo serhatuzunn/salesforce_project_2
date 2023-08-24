@@ -1,0 +1,95 @@
+<aura:component controller="RC_BI_CiroReportsController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" />
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="reportLink" type="string" />
+    <aura:attribute name="reportLinkRetail" type="string" />
+    <aura:attribute name="reportLinkTotal" type="string" />
+    <aura:attribute name="reportSalesPerformance" type="string" />
+    <aura:attribute name="reportAccrualBonus" type="string" />
+    <aura:attribute name="reportRetailBonus" type="string" />
+    <br/>
+    
+    <lightning:card>
+    <aura:set attribute="title">
+            <lightning:icon class="my-icon" iconName="standard:expense_report" alternativeText="Raporlar" title="Raporlar"/>
+            <span class="page-title" style="font-size:15px;padding-left:10px;">Raporlar</span>     
+        </aura:set>
+    </lightning:card>
+    
+    
+    <br/>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-small-size_12-of-12">
+        <tbody>
+            <tr class="slds-hint-parent">
+                <td data-label="Report" scope="row" style="width:70%;">
+                    <div class="slds-truncate" title=""><b>Rapor</b></div>
+                </td>
+                <td data-label="Detail" scope="row" style="width:70%;">
+                    <div class="slds-truncate" title=""><b>Detay</b></div>
+                </td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <td data-label="Report Name" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title="">Aylık Ciro Raporu</div>
+                </td>
+                <td data-label="Link" scope="row" class="slds-small-size_5-of-12">
+                    <div class="slds-truncate" title=""><a target="_blank"  class="slds-button slds-button_success" href="{!v.reportLink}">
+                        <lightning:icon class="eye-icon" iconName="utility:preview" size="small" alternativeText="Görüntüle" title="Görüntüle" />
+                        Görüntüle</a></div>
+                </td>
+            </tr>
+                        <tr class="slds-hint-parent">
+                <td data-label="Report Name" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title="">Perakende YTD Raporu</div>
+                </td>
+                <td data-label="Link" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title=""><a target="_blank"  class="slds-button slds-button_success" href="{!v.reportLinkRetail}"><lightning:icon class="eye-icon" iconName="utility:preview" size="small" alternativeText="Görüntüle" title="Görüntüle" />
+                        Görüntüle</a></div>
+                </td>
+            </tr>
+                        <tr class="slds-hint-parent">
+                <td data-label="Report Name" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title="">Toptan YTD Raporu</div>
+                </td>
+                <td data-label="Link" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title=""><a target="_blank"  class="slds-button slds-button_success" href="{!v.reportLinkTotal}">
+                        <lightning:icon class="eye-icon" iconName="utility:preview" size="small" alternativeText="Görüntüle" title="Görüntüle" />
+                        Görüntüle</a></div>
+                </td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <td data-label="Report Name" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title="">Satış Performans Raporu</div>
+                </td>
+                <td data-label="Link" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title=""><a target="_blank"  class="slds-button slds-button_success" href="{!v.reportSalesPerformance}">
+                        <lightning:icon class="eye-icon" iconName="utility:preview" size="small" alternativeText="Görüntüle" title="Görüntüle" />
+                        Görüntüle</a></div>
+                </td>
+            </tr>            
+            <tr class="slds-hint-parent">
+                <td data-label="Report Name" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title="">Büyüme Prim Raporu</div>
+                </td>
+                <td data-label="Link" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title=""><a target="_blank"  class="slds-button slds-button_success" href="{!v.reportAccrualBonus}">
+                        <lightning:icon class="eye-icon" iconName="utility:preview" size="small" alternativeText="Görüntüle" title="Görüntüle" />
+                        Görüntüle</a></div>
+                </td>
+            </tr>            
+            <tr class="slds-hint-parent">
+                <td data-label="Report Name" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title="">Perakende Prim Raporu</div>
+                </td>
+                <td data-label="Link" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title=""><a target="_blank"  class="slds-button slds-button_success" href="{!v.reportRetailBonus}">
+                        <lightning:icon class="eye-icon" iconName="utility:preview" size="small" alternativeText="Görüntüle" title="Görüntüle" />
+                        Görüntüle</a></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    
+    
+</aura:component>

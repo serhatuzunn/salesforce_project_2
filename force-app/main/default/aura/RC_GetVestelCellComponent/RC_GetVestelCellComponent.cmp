@@ -1,0 +1,64 @@
+<aura:component controller="RC_GetVestelCellController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    
+    <ltng:require styles="{!$Resource.select2CustomCSS}" />
+        
+    
+    <ltng:require scripts="{!$Resource.RC_FileSaver}" />
+    
+    <aura:attribute name="VCellResponse" type="RC_GetVestelCellController.VestelCellResponseModel"/>
+    <aura:attribute name="VCellUseResponse" type="RC_GetVestelCellController.VestelCellUseResponseModel"/>
+	<aura:attribute name="VCellSorgulama" type="boolean" default="false"/>
+    <aura:attribute name="VCellUseSorgulama" type="boolean" default="false"/>
+    <aura:attribute name="VUseButton" type="boolean" default="false"/>
+    
+    <aura:attribute name="loading" 	type="boolean" default="false"/>
+    
+    
+       <aura:if isTrue="{!v.loading}">
+        <div class="spinner">
+            <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>   
+        </div> 
+         </aura:if>
+        <lightning:card>
+            <aura:set attribute="title">
+            <lightning:icon iconName="utility:database" class="my-icon" size="medium" alternativeText="VESTELCELL İndirim Kodu Sorgulama" title="VESTELCELL İndirim Kodu Sorgulama" />
+            <span class="page-title">VESTELCELL İndirim Kodu Sorgulama</span>     
+            </aura:set>
+            <aura:set attribute="footer">
+                <fieldset class="slds-box slds-theme_default slds-container_x-large form-box">
+                    <legend class="slds-text-heading_small slds-p-vertical_medium" align="left">
+                        Filtre
+                    </legend>
+                <lightning:layout multipleRows="true">  
+                    <lightning:layoutItem flexibility="auto" size="12" class="left-align padding">
+                        <lightning:input  aura:id="IT_CHECK_NO_V2" label="Çek No" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem flexibility="auto" size="12" class="padding">
+                            <lightning:button class="lightning-button-element"  aura:id="button" label="Ara" iconName="utility:search" title="Ara" onclick="{! c.handLeClick }" /> 
+                         <aura:if isTrue="{!v.VUseButton}">
+                            <lightning:button class="lightning-button-element"  aura:id="button" label="Çeki Kullan" title="Çeki Kullan" onclick="{! c.handLeVCellUseObjeClick }" />     
+                        </aura:if>
+                    </lightning:layoutItem>
+             </lightning:layout>
+                </fieldset>
+            </aura:set>
+    </lightning:card>
+    <aura:if isTrue="{!v.VCellSorgulama}"> 
+        <div class="slds-card">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                <thead>
+                    <tr class="slds-hint-parent corporate-color">
+                        <td  scope="row">
+                            <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_Statu}</b></div>
+                        </td>
+                        
+                        <td data-label="Çek No" scope="row">
+                                <div class="slds-truncate" title="">{!v.VCellResponse.DURUM}</div>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </aura:if>
+</aura:component>

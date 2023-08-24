@@ -1,0 +1,399 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+
+<template>
+
+    <div class="c-container slds-is-relative">
+        <template if:true={isLoading}>
+            <div class="spinner">
+                <lightning-spinner alternative-text="Loading" variant="brand" size="large">
+                </lightning-spinner>
+            </div>
+        </template>
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid"
+                style="border-bottom: 1px solid lightgray;background-color: #DF2027;color: white;padding: 7px;margin: 0;">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="slds-assistive-text">Bakiye Bilgilerim</span>
+                        <lightning-icon icon-name="standard:expense"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate title"
+                                        title="Bakiye Bilgilerim">Bakiye Bilgilerim</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="slds-card__footer" style="padding-top: 0;">
+                <template if:true={isShowSearchComponent}>
+                    <lightning-layout class="mrgTop">
+                        <lightning-layout-item size="3" padding="around-small">
+                            <lightning-card
+                                style="padding-right: 1% !important;position: absolute;z-index: 90;width: 400px;"
+                                variant="Narrow" title="Bayi Arama" icon-name="standard:account">
+                                <p class="slds-p-horizontal_small">
+                                    <c-search-component obj-name="Account" icon-name="standard:account"
+                                        label-name="Account" where-clause={whereClauses} placeholder="Search"
+                                        fields={fields} display-fields={displayFields} onlookup={handleLookup}>
+                                    </c-search-component>
+                                </p>
+                            </lightning-card>
+                        </lightning-layout-item>
+
+                        <!-- <lightning-layout-item size="1" padding="around-small"></lightning-layout-item>
+                        <lightning-layout-item size="8" padding="around-small">
+                            <lightning-button style="margin-right: 3%;" label="Sözleşme Girişi" class="" disabled>
+                            </lightning-button>
+                            <lightning-button style="margin-right: 3%;" label="Aktif Sözleşme" class="" disabled>
+                            </lightning-button>
+                            <lightning-button style="margin-right: 3%;" label="Geçmiş Bağlantı Bilgileri" disabled class="">
+                            </lightning-button>
+                        </lightning-layout-item>
+                        -->
+                    </lightning-layout>
+                </template>
+                <lightning-layout horizontal-align="spread">
+                    <lightning-layout-item size="12" padding="around-small">
+
+                        <template if:true={isShowSearchComponent}>
+                            <fieldset class="slds-box slds-theme--default" style="margin-top: 11%;">
+                                <legend class="slds-text-heading_small slds-p-vertical_medium" align="left"
+                                    style="width: auto;">
+                                    Filtre
+                                </legend>
+                                <lightning-layout horizontal-align="spread">
+                                    <lightning-layout-item size="6" padding="around-small">
+                                        <lightning-input type="date" date-style="short" name="input1"
+                                            label="Belge Tarihi" disabled={isDisabledFilter} value={selectedBelgeTarihi}
+                                            onchange={belgeTarihiOnChange}
+                                            field-level-help="Seçilen tarihe kadar veri gelecektir.">
+                                        </lightning-input>
+                                        <lightning-input type="date" date-style="short" name="input1"
+                                            label="Vade Tarihi" disabled={isDisabledFilter} value={selectedVadeTarihi}
+                                            onchange={vadeTarihiOnChange}
+                                            field-level-help="Seçilen tarihe kadar veri gelecektir.">
+                                        </lightning-input>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item size="6" padding="around-small">
+                                        <lightning-combobox name="kredi" label="Kredi Kontrol Alanı"
+                                            value={selectedKrediKontrol} disabled={isDisabledFilter}
+                                            options={krediKontrolPicklist} onchange={handleComboboxChange}
+                                            field-level-help="Bordro yaratabilmek için bu alan doldurulmalıdır.">
+                                        </lightning-combobox>
+                                        <lightning-combobox id="surectipicombobox" name="surec" label="Süreç Tipi"
+                                            value={selectedSurecTipi} disabled={isDisabledFilter}
+                                            options={surecTipiPicklist} onchange={handleComboboxChange}
+                                            field-level-help="Belge seçebilmek için bu alanı doldurup tekrar açık kalemleri sorgulayınız.">
+                                        </lightning-combobox></br>
+                                        <lightning-button icon-name="utility:search"
+                                            class="lightning-button-element slds-float_right"
+                                            label="Açık Belgeleri Getir" variant="destructive"
+                                            onclick={getDocumentOnClick}></lightning-button>
+                                        <span style="float:right;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        <lightning-button label="Temizle" onclick={clearFilter} variant="destructive"
+                                            class="lightning-button-element slds-float_right">
+                                        </lightning-button>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </fieldset>
+                        </template>
+                        <template if:false={isShowSearchComponent}>
+                            <fieldset class="slds-box slds-theme--default">
+                                <legend class="slds-text-heading_small slds-p-vertical_medium" align="left"
+                                    style="width: auto;">
+                                    Filtre
+                                </legend>
+                                <lightning-layout horizontal-align="spread">
+                                    <lightning-layout-item size="6" padding="around-small">
+                                        <lightning-input type="date" date-style="short" name="input1"
+                                            label="Belge Tarihi" disabled={isDisabledFilter} value={selectedBelgeTarihi}
+                                            onchange={belgeTarihiOnChange}
+                                            field-level-help="Seçilen tarihe kadar veri gelecektir.">
+                                        </lightning-input>
+                                        <lightning-input type="date" date-style="short" name="input1"
+                                            label="Vade Tarihi" disabled={isDisabledFilter} value={selectedVadeTarihi}
+                                            onchange={vadeTarihiOnChange}
+                                            field-level-help="Seçilen tarihe kadar veri gelecektir.">
+                                        </lightning-input>
+                                    </lightning-layout-item>
+
+                                    <lightning-layout-item size="6" padding="around-small">
+                                        <lightning-combobox name="kredi" label="Kredi Kontrol Alanı"
+                                            value={selectedKrediKontrol} disabled={isDisabledFilter}
+                                            options={krediKontrolPicklist} onchange={handleComboboxChange}
+                                            field-level-help="Bordro yaratabilmek için bu alan doldurulmalıdır.">
+                                        </lightning-combobox>
+                                        <lightning-combobox id="surectipicombobox2" name="surec" label="Süreç Tipi"
+                                            value={selectedSurecTipi} disabled={isDisabledFilter}
+                                            options={surecTipiPicklist} onchange={handleComboboxChange}
+                                            field-level-help="Belge seçebilmek için bu alanı doldurup tekrar açık kalemleri sorgulayınız.">
+                                        </lightning-combobox></br>
+                                        <lightning-button label="Açık Belgeleri Getir" variant="destructive-text"
+                                            onclick={getDocumentOnClick}
+                                            class="lightning-button-element slds-float_right"></lightning-button>
+                                        <span style="float:right;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                        <lightning-button label="Temizle" variant="destructive-text"
+                                            onclick={clearFilter} class="lightning-button-element slds-float_right">
+                                        </lightning-button>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </fieldset>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </footer>
+        </article>
+        <br>
+
+
+        <template if:true={isShowDataTable}>
+            <lightning-card>
+                <div class="slds-card__header slds-grid">
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__body">
+                            <slot name="title" >
+                                <lightning-button icon-name="doctype:excel" label="Excele Aktar" onclick={downloadTable} style="float: right;"> 
+                                </lightning-button>
+                            </slot>
+                        </div>
+                        <div class="slds-no-flex"><slot name="actions"></slot></div>
+                    </header>
+                </div>
+                
+                <template if:true={isShowTableCheckbox}>
+                    <div style="padding-left: 1%;">
+                        <span style="font-size: 14px;font-weight: 600;">Seçili Belge Sayısı
+                            :</span><span style="font-size: 14px;font-weight: 600;"> ({selectedItemSize})</span>
+                    </div>
+                </template>
+
+                <lightning-layout>
+                    <lightning-layout-item size="12" padding="around-small">
+                        <div class="slds-scrollable">
+                            <table
+                                class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset slds-hint-parent corporate-color">
+                                        <template if:true={isShowTableCheckbox}>
+                                            <th class="" scope="col">
+                                                <div class="slds-truncate">
+                                                    <lightning-input checked={selectAllCbxChecked} type="checkbox"
+                                                        label="" onchange={cbxSelectAll}></lightning-input>
+                                                </div>
+                                            </th>
+                                        </template>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate ">Belge No</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Ürün Bilgisi</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Kayıt Tarihi</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Vade Tarihi</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Tutar</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Para Birimi</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Belge türü</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Belge Türü Tanımı</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Referans İşlem</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Mali Yıl</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Ödeme Biçimi</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Ödeme Blokajı</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate">Kredi Kontrol Alanı</div>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <thead>
+                                    <tr class="slds-line-height_reset slds-hint-parent corporate-color">
+                                        <template if:true={isShowTableCheckbox}>
+                                            <th></th>
+                                        </template>
+                                        <th>
+                                            <lightning-input name="belgeNo" type="text" value={filteredBelgeNo}
+                                                onkeyup={handleInputChange}></lightning-input>
+                                        </th>
+                                        <th></th>
+                                        <th>
+                                            <lightning-input name="kayitTarihi" type="text" value={filteredkayitTarihi}
+                                                onchange={handleInputChange}></lightning-input>
+                                        </th>
+                                        <th>
+                                            <lightning-input name="VadeTarihi" type="text" value={filteredVadeTarihi}
+                                                onchange={handleInputChange}></lightning-input>
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>
+                                            <lightning-combobox class="mrg" style="margin-top: -10% !important;"
+                                                name="belge" value={selectedBelgeTuru} options={belgeTuruPicklist}
+                                                onchange={handleComboboxChange} placeholder=""></lightning-combobox>
+                                        </th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>
+                                            <lightning-combobox class="mrg" name="odeme" value={selectedOdemeBicimi}
+                                                options={odemeBicimiPicklist} onchange={handleComboboxChange}
+                                                placeholder="">
+                                            </lightning-combobox>
+                                        </th>
+                                        <th>
+                                            <lightning-combobox class="mrg" name="odemeblokaj"
+                                                value={selectedOdemeBlokaj} options={OdemeBlokajPicklist}
+                                                onchange={handleComboboxChange} placeholder="">
+                                            </lightning-combobox>
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <template for:each={tableDataList} for:item="data" for:index="index">
+                                        <tr key={data.BELNR} class="slds-hint-parent">
+                                            <template if:true={isShowTableCheckbox}>
+                                                <td style="text-align: center;" data-label="">
+                                                    <div class="slds-truncate">
+                                                        <lightning-input checked={data.isChecked} type="checkbox"
+                                                            label="" data-id="cbx" id={data.BELNR} data-index={index}
+                                                            onchange={cbxOnChange}>
+                                                        </lightning-input>
+                                                    </div>
+                                                </td>
+                                            </template>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.BELNR}</div>
+                                            </td>
+                                            <td data-label="" >
+                                                <div class="slds-truncate" >
+                                                    <lightning-formatted-rich-text value={data.formattedProductInfo} >
+                                                    </lightning-formatted-rich-text>
+
+                                                </div>
+                                            </td>
+
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.BUDAT}</div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.ZFBDT}</div>
+                                            </td>
+                                            <td data-label="" style="text-align: right;">
+                                                <div class="slds-truncate">
+                                                    <lightning-formatted-number value={data.DMBTR}
+                                                        maximum-fraction-digits="2"></lightning-formatted-number>
+                                                </div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.WAERS}</div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.BLART}</div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.LTEXT}</div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.AWKEY}</div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.GJAHR}</div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">
+                                                    {data.ZLSCH}
+                                                    <template if:false={data.isEmptyZLSCH}>
+                                                        <lightning-helptext class="sClass" style="font-size: 17px !important;margin-left: 5px !important;" content="İlgili fatura yukarıda bulunan süreç tiplerinden birinde kullanılmıştır.Finans birimi tarafından denkleştirildiğinde açık hesap içerisinde görünmeyecektir."></lightning-helptext>
+                                                    </template>
+                                                </div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">
+                                                    {data.ZLSPR}
+                                                    <template if:false={data.isEmptyZLSPR}>
+                                                        <lightning-helptext class="sClass" style="font-size: 17px !important;margin-left: 5px !important;" content="İlgili fatura yukarıda bulunan süreç tiplerinden birinde kullanılmıştır.Finans birimi tarafından denkleştirildiğinde açık hesap içerisinde görünmeyecektir."></lightning-helptext>
+                                                    </template>
+                                                </div>
+                                            </td>
+                                            <td data-label="" style="text-align: center;">
+                                                <div class="slds-truncate">{data.KKBER}</div>
+                                            </td>
+
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+
+
+                <table class="new">
+                    <tr>
+                        <td style="padding: 10px;">
+                            <lightning-input type="date" date-style="short" name="input2" label="Ortalama Vade"
+                                value={ortVadeDateInput} disabled></lightning-input>
+                        </td>
+                        <td style="padding: 10px;">
+                            <lightning-input type="number" label="Toplam Tutar" value={toplamTutar} formatter="currency"
+                                disabled></lightning-input>
+                        </td>
+                        <td valign="bottom" style="padding: 10px;">
+                            <lightning-button class="lightning-button-element" label="Ortalama Vade Hesapla"
+                                onclick={ortalamaVadeGetir}></lightning-button>
+                        </td>
+                        <td valign="bottom" style="padding: 10px;">
+                            <template if:true={isOpenCreateBordroButton}>
+                                <lightning-button name="bordroButton" class="lightning-button-element"
+                                    label="Bordro Oluştur" onclick={createBordro} style="width: 168px !important;"
+                                    disabled={disabledCreateBordroButton}>
+                                </lightning-button>
+                            </template>
+
+                        </td>
+                    </tr>
+                </table>
+            </lightning-card>
+        </template>
+    </div>
+
+
+    <template if:true={isShowCekComponent}>
+        <c-rc_createchequeandbond hidefilter={hideFilter} passedbordro={bordroId} bayiid={selectedAccountId}
+            onclosechildcomponent={closeChild}></c-rc_createchequeandbond>
+    </template>
+
+
+    <template if:true={isShowDTSCekComponent}>
+        <c-rc_dtsbordrohesap hidefilter={hideFilter} passedbordro={bordroId} bayiid={selectedAccountId}
+            onclosechildcomponent={closeChild}></c-rc_dtsbordrohesap>
+    </template>
+
+</template>

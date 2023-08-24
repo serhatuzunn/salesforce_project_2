@@ -1,0 +1,309 @@
+<apex:page extensions="RC_VestelOrderDocPdfController" standardStylesheets="false" renderAs="pdf" standardController="Order" applyBodyTag="false"  applyHtmlTag="false" showHeader="false" title="Sipariş Belgesi" language="TR" >
+    
+    <head>       
+        <style type="text/css" media="print">
+            
+            @page
+            {
+            margin-top:15%; 
+            margin-left: 1%;
+            margin-right:5%;
+            margin-bottom:12%;           
+            size: A4;
+            
+            background-size: auto;       
+            background-repeat: no-repeat;
+            background-position: center top;
+            
+            
+            @top-left
+            {
+            content : element(top-left-div);
+            }
+            
+            @top-center
+            {
+            content : element(top-center-div);
+            }
+            
+            @top-right
+            {           
+            content : element(top-right-div);
+            }
+            
+            @bottom-left
+            {
+            content : element(bottom-left-div);
+            }
+            
+            @bottom-center
+            {
+            content : element(bottom-center-div);
+            <!--"Sayfa " counter(page) " / " counter(pages);-->
+            }
+            
+            @bottom-right
+            {
+            content : element(bottom-right-div);
+            }
+            
+            }
+            
+            
+            
+            .top-left-div
+            {
+            position: running(top-left-div);
+            text-align:left;  
+            }
+            
+            .top-center-div
+            {
+            position: running(top-center-div);
+            text-align:center;
+            padding-left:8px;
+            padding-right:8px;
+            padding-bottom:8px;
+            }
+            
+            .top-right-div
+            {
+            position: running(top-right-div);               
+            text-align:left;
+            margin-top:10px;
+            }
+                  
+            
+            
+            table, th, td {
+            border-collapse:separate;
+            border-spacing:0.05em !important;
+            
+            }  
+            
+            
+            body{
+            font-family: Arial Unicode MS  !important;
+            line-height: 90%;
+            }
+            .content{
+                margin-top:15%;
+            }
+            
+        </style>
+        <!-- HEADER INFO BEGIN-->
+        <div class="top-left-div "> 
+            <div style="font-size:large; margin-top: 25px !important;">
+                VESTEL <br/> 
+            </div> 
+            <div style="font-size:14px">
+                <br/> VESTEL TİCARET AŞ <br/> İSTANBUL ŞUBESİ  
+            </div>
+            <div style="font-size:13px;">
+                <br/> Levent 199, Büyükdere Caddesi No: 199 <br/> Şişli - İSTANBUL <br/> Tel:(0-212) 422 00 00 (pbx)
+            </div>    
+        
+        </div>
+        
+        <div class="top-center-div " style="font-size:x-large;"> SİPARİŞ BELGESİ </div>
+        <div class="top-right-div " style="margin-top: 110px !important; margin-left: 50px !important;">
+            <div style="font-size:13px">
+                SİP NO : {!order.RC_Order_No__c}
+            </div>
+            <div style="font-size:13px">
+                SAS NO: {!order.RC_SAS_Number__c}
+            </div>
+                     
+        </div>
+        
+        
+        <!-- HEADER INFO END-->
+                
+    </head>
+    
+    <body style="margin-top:25px;  padding-top:30px;" >
+        <table style="float: left; width:33.3%; border: 1px solid black; font-size:13px; height:150px;">
+            <tr>
+                <td>Bayi Kodu : {!acc.accountID} </td>
+                
+            </tr> 
+            
+            <tr>
+                <td>Ünvanı :</td>                
+            </tr>
+            <tr>
+                <td>{!acc.accountName}</td>                
+            </tr>			         
+            <tr>
+                <td>{!acc.streetName}</td>                
+            </tr>
+            <tr>
+                <td>Posta Kodu: {!acc.postalCode}</td>                
+            </tr>
+            <tr>
+                <td>{!acc.districtName}</td>                
+            </tr>
+            <tr>
+                <td>{!acc.countyName}</td>                
+            </tr>
+            <tr>
+                <td>{!acc.cityName}</td>                
+            </tr>
+                        
+        </table>
+        <table style="float: left; width:33.3%; border: 1px solid black; font-size:13px; height:150px;">
+            <tr>
+                <td>Sirküler No:  {!order.RC_Circular_Number__c} </td>
+                
+            </tr>             
+            <tr>
+                <td>Sipariş Türü: {!order.Type} </td>
+                
+            </tr>
+            <tr>
+                <td>Ödeme Koşulu: {!order.RC_Payment_Condition__c} </td>
+                
+            </tr>
+            <tr>
+                <td>Sipariş Gerekçesi: {!order.RC_Order_Justification__c} </td>
+                
+            </tr>
+            <tr>
+                <td></td>
+                
+            </tr>
+        </table>
+        <table style="float: left; width:33.3%; border: 1px solid black; font-size:13px; height:150px;">
+            <tr>
+                <td>SAS Tarihi: {!order.RC_SAS_Date__c}  </td>                
+            </tr> 
+            
+            <tr>
+                <td>Sevk Tarihi:{!order.RC_Delivery_Date__c}</td>                
+            </tr>
+            <tr>
+                <td>Ort. Valör: {!order.RC_Average_Value_Date__c} </td>                
+            </tr>
+            <tr>
+                <td>Ek Valör: {!order.RC_Additional_Value_Date__c} </td>                
+            </tr>
+            <tr>
+                <td>-----------------------</td>                
+            </tr>
+            <tr>
+                <td>ÖZEL ŞARTLAR VE NOTLAR</td>                
+            </tr>
+        </table>
+        
+        <table style="float: left; width:100%; border: 1px solid black; font-size:13px; margin-top:15px; border-collapse:collapse !important; ">
+            <tr>
+                <td style="border: 1px solid black !important; text-align:center; width:15%;">NO</td> 
+                <td style="border: 1px solid black !important; text-align:center;">ÜRÜN KODU</td>
+                <td style="border: 1px solid black !important; text-align:center;">CİNSİ</td>
+                <td style="border: 1px solid black !important; text-align:center; width:7%;">MİKTAR</td>
+                <td style="border: 1px solid black !important; text-align:center;">B.FİYAT</td>
+                <td style="border: 1px solid black !important; text-align:center;">TOPLAM</td>
+            </tr>
+            
+            <apex:repeat var="item" value="{!orderItems}">                
+                <tr>
+                    <td style="border: 1px solid black !important; text-align:center;"> {!item.ProductNo} </td>
+                    <td style="border: 1px solid black !important; text-align:center;"> {!item.ProductCode} </td>
+                    <td style="border: 1px solid black !important;"> {!item.ProductName} </td>
+                    <td style="border: 1px solid black !important; text-align:right;">                       
+                        <apex:outputText value="{0, number,0}">
+                            <apex:param value="{!item.Quantity}" />
+                        </apex:outputText>
+                    
+                    </td>
+                    <td style="border: 1px solid black !important; text-align:right;"> 
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!item.UnitPrice}" />
+                        </apex:outputText>
+                    </td>
+                    <td style="border: 1px solid black !important; text-align:right;">                          
+                         <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                             <apex:param value="{!item.TotalPrice}" />
+                         </apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>   
+            <tr>
+                <td style="border: 1px solid black !important;"> </td>
+                <td style="border: 1px solid black !important; text-align:right; height:30px !important;"> Genel Toplam </td>
+                <td style="border: 1px solid black !important;" > </td>
+                <td style="border: 1px solid black !important;"> </td>
+                <td style="border: 1px solid black !important;"> </td>
+                <td style="border: 1px solid black !important; text-align:right;">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!order.TotalAmount}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+            
+            
+               
+        </table>
+        
+        <table style="float: left; width:100%; border: 1px solid black; font-size:13px; margin-top:15px; ">
+            <tr> 
+                <td style="text-align:center !important; border-bottom: 1px solid black;">
+                    TAHSİLAT VE DİĞER BİLGİLER
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align:left !important;">
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </td>
+            </tr>            
+        </table>
+        
+        <!-- <table style="float: left; width:45%; border: 1px solid black; font-size:13px; margin-top:15px; height:77px;">
+            <tr>
+                <td style="text-align:center;"> SİPARİŞ ALAN SATICININ </td>
+            </tr>
+            <tr>
+                <td style="text-align:left;"> Kodu: </td>
+            </tr>
+            <tr>
+                <td style="text-align:left;"> Satış Grubu: </td>
+            </tr>
+            <tr>
+                <td style="text-align:left;"> Adı Soyadı: </td>
+            </tr>
+            
+        </table>
+        <table style="float: left; width:55%; border: 1px solid black; font-size:13px; margin-top:15px; height:77px;">
+            <tr>
+                <td style="text-align:center;"> BAYİNİN ÜNVANI, KAŞESİ VE İMZASI </td>
+            </tr>
+            <tr>
+                <td style="text-align:left !important;">
+                    <br/>
+                    <br/>
+                    <br/>
+                    
+                </td>
+            </tr>
+        </table> -->
+        
+        <table style="float: left; width:100%; font-size:13px; margin-top:15px;">
+            <tr>
+                <td> 1. Sevk tarihlerindeki fiyatlarımız geçerlidir. </td>
+            </tr>
+            <tr>
+                <td> 2. KDV oranlarındaki ve diğer yasal değişikliklerden doğabilecek farklar bu sipariş belgesindeki fiyatlara aynen yansıtılacaktır. </td>
+            </tr>
+            <tr>
+                <td> 3. Bu sipariş belgesi üzerinde yazılı bilgilerden, miktar fiyat veya tutar hatalarını düzeltme hakkımız mahfuzdur. </td>
+            </tr>
+            <tr>
+                <td> 4. Bu sipariş belgesindeki siparişlerin sevkini müşterimizin kredi ve risk durumunun müsait olmaması halinde erteleme hakkımız mahfuzdur. </td>
+            </tr>
+            
+        </table>        
+    </body>
+</apex:page>

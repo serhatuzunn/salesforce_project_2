@@ -1,0 +1,20 @@
+.THIS .slds-carousel__content{
+    display:none !important;
+    min-height: 11rem;
+}
+.THIS .slds-carousel__image{
+    min-height: 11rem;
+    object-fit:contain;
+}
+.THIS .slds-carousel__autoplay{
+    display:none !important;
+}
+.THIS .slds-carousel__indicators{
+    margin-top: -40px !important;
+    position: relative !important;
+}
+
+.THIS a.slds-carousel__indicator-action.slds-is-active,.THIS .slds-carousel__indicator-action.slds-is-active:hover {
+    background: #999  !important;
+    border-color: #999  !important;
+}

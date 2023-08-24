@@ -1,0 +1,80 @@
+<aura:component controller="RC_CustomSliders" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    
+    <aura:attribute name="contentData" type="RC_CustomSliders.ContentClass[]" />
+    <aura:attribute name="content2Data" type="RC_CustomSliders.ContentClass[]" />
+    <aura:attribute name="loading" 	   type="boolean" default="false"/>
+    <aura:attribute name="ContentTitle" type="string"/>
+    <aura:attribute name="Content1" type="string"/>
+    <aura:attribute name="SecondContentTitle" type="string"/>
+    <aura:attribute name="ContentName" type="string"/>
+    <aura:attribute name="SecondContentName" type="string"/>
+    <aura:attribute name="ButtonText" type="string"/>
+    <aura:attribute name="SecondButtonText" type="string"/>
+    <aura:attribute name="FirstContentDetailButton" type="string"/>
+    <aura:attribute name="SecondContentDetailButton" type="string"/>
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    <div>
+        <lightning:layout class="content-slider">
+            <lightning:layoutItem size="3" class="icons-line slds-scrollable_y">
+                <div class="shadow-box shadow-box-active" aura:id="div-content" data-id="1" onclick="{!c.iconClick}" data-name="Kampanyalar">
+                <lightning:icon iconName="utility:campaign" aura:id="icon-content"  class="my-icon icon-active" data-id="1" size="large" alternativeText="" title="" />
+                <span class="padding list-header">KAMPANYALAR</span></div>
+             
+                <div class="shadow-box" aura:id="div-content" data-id="2" onclick="{!c.iconClick}" data-name="Duyurular">
+                <lightning:icon iconName="utility:announcement" aura:id="icon-content" data-id="2" class="my-icon" size="large" alternativeText="" title="" />
+                <span class="padding list-header">DUYURULAR</span></div>
+            
+                <div class="shadow-box" aura:id="div-content" data-id="3" onclick="{!c.iconClick}" data-name="Farkındalık">
+                <lightning:icon iconName="utility:advertising" aura:id="icon-content" data-id="3" class="my-icon" size="large" alternativeText="" title="" />
+                <span class="padding list-header">FARKINDALIK BÜLTENLERİ</span></div>
+               
+                <div class="shadow-box" aura:id="div-content" data-id="4" onclick="{!c.iconClick}" data-name="Perakendecinin Rehberi">
+                <lightning:icon iconName="utility:asset_warranty" aura:id="icon-content" data-id="4" class="my-icon" size="large" alternativeText="" title="" />
+                <span class="padding list-header">PERAKENDECİNİN REHBERİ</span></div>
+                 <div class="shadow-box" aura:id="div-content" data-id="5" onclick="{!c.iconClick}" data-name="Perakendecinin Rehberi">
+                <lightning:icon iconName="utility:classic_interface" aura:id="icon-content" data-id="5" class="my-icon" size="large" alternativeText="" title="" />
+                <span class="padding list-header">PAP KAMPANYALARI</span></div>
+                 <div class="shadow-box" aura:id="div-content" data-id="6" onclick="{!c.iconClick}" data-name="Perakendecinin Rehberi">
+                <lightning:icon iconName="utility:signpost" aura:id="icon-content" data-id="6" class="my-icon" size="large" alternativeText="" title="" />
+                <span class="padding list-header">PROJELER</span></div>
+                <div class="shadow-box" aura:id="div-content" data-id="7" onclick="{!c.iconClick}" data-name="Perakendecinin Rehberi">
+                <lightning:icon iconName="utility:education" aura:id="icon-content" data-id="7" class="my-icon" size="large" alternativeText="" title="" />
+                <span class="padding list-header">EĞİTİM</span></div>
+                <div class="shadow-box" aura:id="div-content" data-id="8" onclick="{!c.iconClick}" data-name="Perakendecinin Rehberi">
+                <lightning:icon iconName="utility:knowledge_base" aura:id="icon-content" data-id="8" class="my-icon" size="large" alternativeText="" title="" />
+                <span class="padding list-header">ZORLU DERGİ</span></div>
+                
+            </lightning:layoutItem>
+            <lightning:layoutItem size="9">
+                <div class="list-view-responsive-element slds-scrollable_y">
+                    <ul class="responsive-table padding-left">
+                        <aura:iteration items="{!v.contentData}" var="content">
+                            <aura:if isTrue="{!content.ContentIsShow}">
+                                <a href="{!content.ContentDetailLink}">
+                                    
+                                    <li class="table-row right-row">
+                                        <div class="col-12" style="font-style: italic;padding-left: 0;">
+                                            <h4 style="font-weight: bold;color:#212529; font-size:15px;">{!content.ContentTitle} </h4>
+                                            
+                                            {!content.ContentDetail}
+                                         <h4 style="font-weight: bold; font-size:14px; float: right;padding-top: 10px">İncele >> </h4>
+                                        </div>
+.
+                                    
+                                    </li></a>
+                            
+                            </aura:if>
+                        </aura:iteration>
+                    </ul>
+                    <a class="href-button" href="{!'/vestelb2b/s' + v.FirstContentDetailButton}">Tümünü Göster</a>
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout></div>
+
+    
+    
+</aura:component>

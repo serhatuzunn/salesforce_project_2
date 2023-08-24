@@ -1,0 +1,154 @@
+.THIS{
+    font-family: 'Salesforce Sans';
+}
+
+.THIS h1{    
+    text-align: left;
+    padding: 8px;
+}
+
+.THIS .page-title{
+    font-family: 'Salesforce Sans';
+    font-size: 18px;
+    font-weight: 400;
+    padding-left: 10px;
+}
+
+.THIS .form-box{
+
+}
+
+.THIS .slds-form-element__label{
+    font-size: 14px;
+    font-weight: 300;
+}
+
+.THIS .slds-card__header{
+    border-bottom: 1px solid lightgray;
+    background-color: #DF2027;
+	color: white;
+    padding: 7px;
+    margin: 0;
+}
+    
+.THIS .slds-card__footer{
+  padding-top: 0;
+}
+
+.THIS .slds-form_stacked{
+	display:flex;
+}
+
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: white;
+}
+
+.THIS .search-button{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    float: right;
+    width: 100px;
+    margin-top: 1.4rem;
+}
+  
+.THIS .search-button button:hover{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    transform: translateY(-1px);
+    width: 100px;
+    margin-top: 1.4rem;
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+.THIS .preview-button{
+    background: #DF2027;
+    height: 32px;
+    border-radius: 4px !important;
+    margin-top: 22px;
+    color: white;
+	font-family: 'Salesforce Sans';
+    margin-left: 1rem;
+}
+
+
+.THIS .buttons-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.THIS .search-button:hover{
+   transform: translateY(-1px);
+   box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}
+
+.THIS .preview-button:hover{
+   transform: translateY(-1px);
+   box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}
+
+.THIS input:focus, .THIS select:focus{
+    border-color:#DF2027 !important;
+}
+
+.THIS .slds-cell-fixed{
+    background: #DF2027;
+}
+
+.THIS .slds-th__action{    
+    background: #DF2027;
+    color: white;
+}
+
+.THIS .slds-th__action:hover{    
+    background: #DF2027;
+}
+.THIS .slds-th__action:focus{    
+    background: #DF2027;
+}
+
+.THIS .slds-th__action .slds-button{
+    color:white;
+}
+
+.THIS .slds-docked-form-footer{
+    bottom:746px;
+}
+
+.THIS .slds-form-element{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+.THIS #header {
+    background-color: #FFFFFF;
+}
+
+.THIS .slds-table_header-fixed_container{
+    height: 80% !important;
+}
+    
+.THIS .slds-cell-edit__button{
+        margin-right: 1rem;
+}
+
+.THIS legend{
+    width: 2.5%;
+}
+
+@media screen and (max-width: 1024px){
+	.THIS .form-control-element{
+		display: flex;
+    	flex-direction: column;  
+     }
+    .THIS .form-element{
+        width: 100%;    
+     }
+}

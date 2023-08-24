@@ -1,0 +1,323 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0" controller="RC_GenerateBarcodeController" 
+           applyBodyTag="False" applyHtmlTag="False" lightningStylesheets="true">
+    <head>
+        <script type="text/javascript">
+        function showSpinner(){
+            document.getElementById('spinner').className = 'slds-spinner_container slds-is-relative';    
+        }
+        
+        function hideSpinner(){
+            document.getElementById('spinner').className = 'slds-spinner_container slds-is-relative slds-hide';              
+        }
+        </script>
+        <style type="text/css">
+            @font-face{
+            font-family: 'Gotham-Medium';
+            src: url(/resource/gothambook);
+            }
+            @font-face{
+            font-family: 'Gotham-Light';
+            src: url(/resource/gothamlight);
+            }
+            .slds-scope{
+            font-family: 'Gotham-Medium';
+            }
+            .slds-page-header__title{
+            font-family: 'Gotham-Medium' !important;
+            margin-top: 5px;                
+            }
+        </style>
+    </head>
+    
+    
+    
+    <apex:slds />
+    <apex:form id="frmGenerateBarcode"  >
+        <head>            
+            <div class="slds-scope" style="background-color: white;vertical-align:top; padding-left:2% !important; padding-right:2% !important; padding-top:1% !important;border-radius: .25rem;border: 1px solid rgb(221, 219, 218);margin: 1rem;box-shadow: 0 2px 2px 0 rgb(0 0 0 / 10%);" >
+                <div class="slds-page-header" style="background: white;border: none;border-bottom: 1px solid lightgray;border-radius: 0;box-shadow: none;">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-custom-custom40 slds-icon-text-default" >
+                                        <svg aria-hidden="true" class="slds-icon ">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                 xlink:href="/apexpages/slds/latest/assets/icons/custom-sprite/svg/symbols.svg#custom40">
+                                            </use>
+                                        </svg>
+                                        <span class="slds-assistive-text"></span>
+                                    </span>
+                                    
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate" title="Risk Durumu">Barkod Oluştur</span>
+                                                
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><br/>
+                <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+                    <legend class="slds-text-heading_small slds-p-vertical_medium" align="left">
+                        Filtre
+                    </legend>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col" style="width: 50%;">
+                            <label class="slds-form-element__label">Kademe 1 :</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <apex:selectList id="hierarchy" value="{!selectedHierarchy}" multiselect="false" size="1" styleClass="slds-select" >
+                                        <apex:selectOptions value="{!HierarchyOption}" />
+                                        <apex:actionSupport action="{!getHierarchy1Products}" event="onchange" reRender="hierarchy2"/>
+                                    </apex:selectList>                        
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width: 50%;">
+                            
+                            <label class="slds-form-element__label">Kademe 2 :</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <apex:selectList id="hierarchy2" value="{!selectedHierarchy2}" multiselect="false" size="1" styleClass="slds-select">
+                                        <apex:selectOptions value="{!HierarchyOption2}" />
+                                        <apex:actionSupport action="{!getHierarchy2Products}" event="onchange" reRender="hierarchy3"/>
+                                    </apex:selectList>                      
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col" style="width: 50%;">
+                            <label class="slds-form-element__label">Kademe 3 :</label>
+                            <div class="slds-form-element__control">
+                                <div class="slds-select_container">
+                                    <apex:selectList id="hierarchy3" value="{!selectedHierarchy3}" multiselect="false" size="1" styleClass="slds-select">   
+                                        <apex:selectOptions value="{!HierarchyOption3}" />
+                                        <apex:actionSupport action="{!getHierarchy3Products}" event="onchange" reRender="lstProducts"/>
+                                    </apex:selectList>                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col" style="width: 50%;">  
+                            
+                            <label class="slds-form-element__label">Ürün Kodu :</label>
+                            <div class="slds-form-element__control">
+                                <apex:inputText id="txtProductCode" label="Ürün Kodu:" styleClass="slds-input"  value="{!filterProductCode}" required="false" />
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="slds-col">
+                        <div style="float:right;">
+                            
+                            <label class="slds-form-element__label"></label>
+                            <div class="slds-form-element__control" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                                <div style="background: #FFFFFF; border: 1px solid #DF2027;box-sizing: border-box;border-radius: 4px;color: #DF2027;margin-right: 5px;">
+                                    <svg focusable="false" data-key="search" aria-hidden="true" viewBox="0 0 52 52" class="slds-button__icon slds-button__icon_left" style=" margin-left: 1rem;"><g><path d="M49.62 45.27L36.22 32a18.9 18.9 0 10-34.1-9.2A18.91 18.91 0 0032 36.27l13.3 13.3a1.45 1.45 0 002.1 0l2.1-2.1a1.68 1.68 0 00.12-2.2zm-28.7-11.5a12.9 12.9 0 1112.9-12.9 12.87 12.87 0 01-12.9 12.9z" fill-rule="evenodd"></path></g></svg>
+                                    <apex:commandButton id="btnList" value="Ara" onclick="showSpinner();" reRender="frmGenerateBarcode" onComplete="hideSpinner();" status="status" action="{!search}" styleClass="slds-button slds-button_neutral colour" style="color: #DF2027;border: none;padding: 0;margin-right: 1rem;"/>
+                                </div>
+                                <div style="background: #c9c7c5;border: 1px solid #C9C7C5;box-sizing: border-box;border-radius: 4px;color: #FFFFFF;margin-right: 5px;">
+                                    <svg focusable="false" data-key="add" aria-hidden="true" viewBox="0 0 52 52" class="slds-button__icon slds-button__icon_left" style=" margin-left: 1rem;"><g><path d="M30 29h16.5c.8 0 1.5-.7 1.5-1.5v-3c0-.8-.7-1.5-1.5-1.5H30c-.6 0-1-.4-1-1V5.5c0-.8-.7-1.5-1.5-1.5h-3c-.8 0-1.5.7-1.5 1.5V22c0 .6-.4 1-1 1H5.5c-.8 0-1.5.7-1.5 1.5v3c0 .8.7 1.5 1.5 1.5H22c.6 0 1 .4 1 1v16.5c0 .8.7 1.5 1.5 1.5h3c.8 0 1.5-.7 1.5-1.5V30c0-.6.4-1 1-1z"></path></g></svg>
+                                    <apex:commandButton id="btnAdd" value="Ekle" onclick="showSpinner();" onComplete="hideSpinner();" reRender="frmGenerateBarcode" status="status" action="{!add}" styleClass="slds-button slds-button_neutral" style="color: #FFFFFF;border: none;padding: 0;margin-right: 1rem;background: none;"/>
+                                </div>
+                                <apex:commandButton id="btnClearAll" value="Tümünü Temizle" onclick="showSpinner();" onComplete="hideSpinner();" reRender="frmGenerateBarcode"  status="status" action="{!clearAll}" styleClass="slds-button slds-button_brand" style="background: #DF2027;height: 32px;border-radius: 4px; border: none;"/>
+                                <apex:commandlink action="{!createPDF}" target="_blank" ><apex:commandButton styleClass="slds-button slds-button_neutral" style="background-color: rgb(69, 198, 90);color: white;height: 32px;margin-left: 5px;" id="btnPDF" value="PDF Al" /></apex:commandLink>&nbsp;
+                                <apex:commandlink action="{!createPDFEAN}" target="_blank"><apex:commandButton style="background-color: rgb(0, 109, 204);height: 32px;" styleClass="slds-button slds-button_brand" id="btnPDFEAN" value="PDF Al (EAN) "/></apex:commandLink>            
+                            </div></div>         
+                    </div>
+                </fieldset>
+                
+                <br/>
+                <!-- SPINNER -->
+                <div id="spinner" class="slds-spinner_container slds-is-relative slds-hide"  style="height:%100;background-color:#16325c;">
+                    <div class="slds-spinner_container">
+                        <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand">
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- / SPINNER -->                
+                <div id="divProductTable" class="center" style="display:{!if(showProductTable,"block","none")};">
+                    <br/><br/><br/>
+                    <table>
+                        <tr>
+                            <td style="width:50%; vertical-align:top">
+                                <table aria-multiselectable="true" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" style="width:100%" role="grid" value="{!lstProductsWrp}" var="Products">
+                                    <thead>
+                                        <tr class="slds-line-height_reset" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;">
+                                            <th class="slds-text-align_right" scope="col" style="width:3.25rem;font-weight: bold;background-color:#DF2027;color:white;height: 32px;text-align: center;">
+                                                <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;display: flex; flex-direction: column; align-items: center; justify-content: center;">                                   
+                                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                        <span class="slds-truncate" title="Name">Seç</span>
+                                                        <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                            <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                                
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                            </th>
+                                            <th aria-label="Ürün Kodu" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;text-align: center;">
+                                                <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                                    <span class="slds-assistive-text">Sort by: </span>
+                                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                        <span class="slds-truncate" title="Name">Ürün Kodu</span>
+                                                        <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                            <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                                
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                                <div class="slds-resizable">
+                                                    <input type="range" aria-label="Name column width" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-561" max="1000" min="20" tabindex="0" />
+                                                    <span class="slds-resizable__handle">
+                                                        <span class="slds-resizable__divider"></span>
+                                                    </span>
+                                                </div>
+                                            </th>
+                                            <th aria-label="Ürün Adı" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;text-align: center;">
+                                                <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                                    <span class="slds-assistive-text">Sort by: </span>
+                                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                        <span class="slds-truncate" title="Account Name">Ürün Adı</span>
+                                                        <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                            <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                                
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                </a>
+                                                <div class="slds-resizable">
+                                                    <input type="range" aria-label="Account Name column width" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-562" max="1000" min="20" tabindex="0" />
+                                                    <span class="slds-resizable__handle">
+                                                        <span class="slds-resizable__divider"></span>
+                                                    </span>
+                                                </div>
+                                            </th>                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:repeat value="{!lstProductsWrp}" var="Products" >
+                                            <tr class="slds-hint-parent">
+                                                <td class="slds-size--1-of-5" data-label="Seç" value="{!Products.isSelected}" style="text-align: center;padding-left: 0;"><apex:inputCheckbox value="{!Products.isSelected}"/></td>
+                                                <td class="slds-size--1-of-5" data-label="Ürün Kodu" value="{!Products.ProductCode}" style="text-align: center;">{!Products.ProductCode}</td>
+                                                <td class="slds-size--1-of-5" data-label="Ürün Adı" value="{!Products.Name}" style="text-align: center;">{!Products.Name}</td>                                    
+                                            </tr>
+                                        </apex:repeat>
+                                        
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td style="width:50%; vertical-align:top; padding-left:15px">
+                            <table aria-multiselectable="true" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" style="width:100%" role="grid" value="{!lstProductsAdded}" var="Products" >
+                                <thead>
+                                    <tr class="slds-line-height_reset" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;">
+                                        <th class="slds-is-resizable slds-is-sortable" scope="col" style="width:3.75rem; font-weight: bold;background-color:#DF2027;color:white;height: 32px;">
+                                            <div class="slds-th__action slds-text-link_reset" title="Sıra">Sıra</div>
+                                        </th>                                        
+                                        <th aria-label="Ürün Kodu" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;text-align: center;">
+                                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                                <span class="slds-assistive-text">Sort by: </span>
+                                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                    <span class="slds-truncate" title="Name">Ürün Kodu</span>
+                                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                        <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                            
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </a>
+                                            <div class="slds-resizable">
+                                                <input type="range" aria-label="Name column width" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-561" max="1000" min="20" tabindex="0" />
+                                                <span class="slds-resizable__handle">
+                                                    <span class="slds-resizable__divider"></span>
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th aria-label="Ürün Adı" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;text-align: center;">
+                                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                                <span class="slds-assistive-text">Sort by: </span>
+                                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                    <span class="slds-truncate" title="Account Name">Ürün Adı</span>
+                                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                        <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                            
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </a>
+                                            <div class="slds-resizable">
+                                                <input type="range" aria-label="Account Name column width" class="slds-resizable__input slds-assistive-text" id="cell-resize-handle-562" max="1000" min="20" tabindex="0" />
+                                                <span class="slds-resizable__handle">
+                                                    <span class="slds-resizable__divider"></span>
+                                                </span>
+                                            </div>
+                                        </th>
+                                        <th class="slds-text-align_right " scope="col" style="width:3.25rem;font-weight: bold;background-color:#DF2027;color:white;height: 32px;text-align: center;">
+                                            <a class="slds-th__action slds-text-link_reset" role="button" tabindex="0" style="font-weight: bold;background-color:#DF2027;color:white;height: 32px;display: flex; flex-direction: column; align-items: center; justify-content: center;">                                   
+                                                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                                    <span class="slds-truncate" title="Name">Sil</span>
+                                                    <span class="slds-icon_container slds-icon-utility-arrowdown">
+                                                        <svg class="slds-icon slds-icon-text-default slds-is-sortable__icon " aria-hidden="true">
+                                                            
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <apex:repeat value="{!lstProductsAdded}" var="Products" >
+                                        <tr class="slds-hint-parent">
+                                            <td class="slds-cell-edit slds-cell-error" role="gridcell" style="text-align: center;padding-left: 0;">
+                                                <button id="error-01" class="slds-button slds-button_icon slds-button_icon-error slds-m-horizontal_xxx-small slds-hidden" aria-hidden="true" tabindex="0" title="Item 1 has errors">
+                                                    <svg class="slds-button__icon" aria-hidden="true">                                                 
+                                                    </svg>
+                                                    <span class="slds-assistive-text">Item 1 has errors</span>
+                                                </button>
+                                                <span class="slds-row-number slds-text-body_small slds-text-color_weak"></span>
+                                            </td>                                            
+                                            <td class="slds-size--1-of-5" style="text-align: center;" data-label="Ürün Kodu" value="{!Products.ProductCode}">{!Products.ProductCode}</td>
+                                            <td class="slds-size--1-of-5" style="text-align: center;" data-label="Ürün Adı" value="{!Products.Name}">{!Products.Name}</td>                                    
+                                            <td class="slds-size--1-of-5" style="text-align: center;">                                                    
+                                                <button class="slds-button" style="color: #DF2027">                                                    
+                                                    <apex:commandLink id="btnRemove"
+                                                                      action="{!deleteAddedProduct}"  
+                                                                      Value=" "
+                                                                      onclick="showSpinner();" onComplete="hideSpinner();" status="status" 
+                                                                      styleClass="slds-vf-button_brand" reRender="frmGenerateBarcode" >
+                                                        <apex:param name="paramValue" value="{!Products.ProductCode}" assignTo="{!paramValue}"/>
+                                                        <svg focusable="false" data-key="delete" aria-hidden="true" viewBox="0 0 52 52" class="slds-button__icon" style="height: 16px;"><g><g><path d="M45.5 10H33V6c0-2.2-1.8-4-4-4h-6c-2.2 0-4 1.8-4 4v4H6.5c-.8 0-1.5.7-1.5 1.5v3c0 .8.7 1.5 1.5 1.5h39c.8 0 1.5-.7 1.5-1.5v-3c0-.8-.7-1.5-1.5-1.5zM23 7c0-.6.4-1 1-1h4c.6 0 1 .4 1 1v3h-6V7zM41.5 20h-31c-.8 0-1.5.7-1.5 1.5V45c0 2.8 2.2 5 5 5h24c2.8 0 5-2.2 5-5V21.5c0-.8-.7-1.5-1.5-1.5zM23 42c0 .6-.4 1-1 1h-2c-.6 0-1-.4-1-1V28c0-.6.4-1 1-1h2c.6 0 1 .4 1 1v14zm10 0c0 .6-.4 1-1 1h-2c-.6 0-1-.4-1-1V28c0-.6.4-1 1-1h2c.6 0 1 .4 1 1v14z"></path></g></g></svg>
+                                                    </apex:commandLink>
+                                                    
+                                                </button>                                                    
+                                            </td>
+                                        </tr>
+                                    </apex:repeat>
+                                    
+                                </tbody>
+                            </table>
+                        </td>
+                        </tr>
+                    </table>
+                    
+                    
+                </div>
+                <br/><br/>                 
+            </div>
+        </head>
+    </apex:form>       
+</apex:page>

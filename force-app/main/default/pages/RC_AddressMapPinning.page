@@ -1,0 +1,154 @@
+<apex:page controller="RC_AddressMapPinningController" showHeader="false" standardStylesheets="false">
+    <apex:slds />
+    <style type="text/css">
+        #map { height: 90%; }
+        html,
+        body { height: 100%; margin: 0; padding: 0; }
+        #floating-panel { position: absolute; top: 10px; left: 25%; z-index: 5; background-color: #fff; padding: 5px; border: 1px solid #999; text-align: center; font-family: "Roboto", "sans-serif"; line-height: 30px; padding-left: 10px; }
+    </style>
+    <script>    
+    let map;
+    let markers = [];
+    
+    let hasLocation;
+    
+    let city;
+    let region;
+    let district;
+    
+    function initMap()
+    {
+        debugger;        
+        var hasLat = '{!lat}';
+        var hasLon = '{!lon}';
+        if (hasLat != '' && hasLon != '')
+        {
+            hasLocation = new google.maps.LatLng(hasLat, hasLon);
+        }
+    
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 14,
+            center: hasLocation,
+            mapTypeId: "terrain",
+        });
+    
+        var param = '{!address}';
+        if (param != '' && hasLocation == undefined)
+        {
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({
+                'address': param
+            }, function(results, status) {
+                debugger;
+                if (status === 'OK')
+                {
+                    map.setCenter(results[0].geometry.location);
+                }
+            });
+        }
+    
+        map.addListener("click", (event) => {
+            addMarker(event.latLng);
+        });
+            
+            if (hasLat != '' && hasLon != '')
+            {
+            addMarker(hasLocation);
+        }
+    }
+    
+    function addMarker(location)
+    {
+        debugger;
+        deleteMarkers();
+        const marker = new google.maps.Marker({
+            position: location,
+            map: map
+        });
+        markers.push(marker);
+    }
+    
+    function deleteMarkers()
+    {
+        setMapOnAll(null);
+        markers = [];
+    }
+    
+    function setMapOnAll(map)
+    {
+        for (let i = 0; i < markers.length; i++)
+        {
+            markers[i].setMap(map);
+        }
+    }
+
+    function calculate(lat, lon)
+    {
+        debugger;
+        if (markers[0] !== undefined)
+        {
+            var Location = markers[0].position.toString();    
+            
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({
+                'location': markers[0].position
+            }, function(results, status) {
+                debugger;
+                if (status === 'OK')
+                {
+                    city = results[0].address_components.find(e=>e.types[0] == "administrative_area_level_1").short_name; //administrative_area_level_1
+                    region = results[0].address_components.find(e=>e.types[0] == "administrative_area_level_2").short_name; //administrative_area_level_2
+                    district = results[0].address_components.find(e=>e.types[0] == "administrative_area_level_4").short_name; //administrative_area_level_4
+                }
+                calAF(Location, city, region, district);
+                toastLaunch();
+            });  
+        }
+    }
+    
+    function toastLaunch(){
+        var element = document.getElementById("ToastMessage");
+        element.classList.toggle("slds-hidden");
+    }
+    </script>
+    
+        <div class="demo-only slds-hidden" style="height: 4rem;position: absolute;" id='ToastMessage'>
+        <div class="slds-notify_container slds-is-relative">
+            <div class="slds-notify slds-notify_toast slds-theme_success" role="alert">
+                <span class="slds-assistive-text">success</span>
+                <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top" title="Description of icon when needed">
+                    <svg class="slds-icon slds-icon_small" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#success')}" />
+                    </svg>
+                </span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small ">Address save successfully</h2>
+                </div>
+                <button class="slds-button slds-button_icon slds-notify__close slds-button_icon-inverse" style="top: 1.4rem !important;" title="Close" onclick='toastLaunch()'>
+                    <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#close')}" />
+                    </svg>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="map"></div> 
+    <apex:form >      
+        <apex:pageblock id="pgblck">
+            <input type="button" value="Save" class="slds-button slds-button_brand" onclick="calculate()"/>
+        </apex:pageblock>
+        
+        <apex:actionfunction action="{!SetLocation}" name="calAF" rerender="pgblck">
+            <apex:param assignto="{!Location}" name="param1" value="" />
+            
+            <apex:param assignto="{!City}" name="city" value="" />
+            <apex:param assignto="{!Region}" name="region" value="" />
+            <apex:param assignto="{!District}" name="district" value="" />
+        </apex:actionfunction>
+    </apex:form>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyATbqA_BZnitjdNvQJn3HPT4zNJwTLWhj4&callback=initMap&libraries=&v=weekly" async="async"></script>
+    
+    </apex:page>

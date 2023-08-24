@@ -1,0 +1,64 @@
+<aura:component controller="RC_CreateCustomerComponentController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+
+         <aura:attribute name="recordId" type="string" />
+   		 <aura:attribute name="loading" 	type="boolean" default="false"/>
+       	 <aura:attribute name="currentRecordName" type="string" />
+    	 <aura:attribute name="createCustomerWrapper" type="RC_CreateCustomerComponentController.CreateCustomerWrapper"/>
+     	 <aura:attribute name="referanceRecordName" type="string" />
+ 	
+ 	     
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" /> 
+    
+      <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>   
+    </aura:if>
+        <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+     			   <lightning:icon iconName="standard:account" alternativeText="Account" title="Account" />
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate" title="SAP Müşteri Aktarım">SAP Müşteri Aktarımı</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br/>
+      <div class="slds-page-header__row slds-page-header__row_gutters">
+    <div class="slds-page-header__col-details">
+    <fieldset>
+            
+      <lightning:layout>  
+          <aura:if isTrue="{!v.referanceRecordName!=''}">
+          <lightning:layoutitem size="10" class="left-align padding" aura:id="Save"> 
+      	  <p>
+             <h2  class="slds-modal__header leftalign" > <b>Ana Hesap: </b> {!v.currentRecordName}</h2>
+              <h2  class="slds-modal__header leftalign"> <b>Referans Hesap:</b> {!v.referanceRecordName}</h2>
+        <h2 class="slds-modal__header leftalign"> Referansı ile SAP Sistemine aktarılacaktır. 
+                
+            <lightning:button label="Aktar" class="rightbutton" iconName="action:share" iconPosition="left"   onclick="{! c.handleClick }"  /> </h2>
+               
+            </p>
+              <br></br>
+          </lightning:layoutitem>
+                  <aura:set attribute="else">
+       <lightning:layoutitem size="10" class="left-align padding"  > 
+      	  <p>
+         <h2  class="slds-modal__header"> <b>Referans Hesap Seçimi Yapılmalı</b></h2></p>
+          </lightning:layoutitem>
+    </aura:set>
+         </aura:if>
+    </lightning:layout>
+         </fieldset>
+          </div>
+    </div>
+   
+</aura:component>

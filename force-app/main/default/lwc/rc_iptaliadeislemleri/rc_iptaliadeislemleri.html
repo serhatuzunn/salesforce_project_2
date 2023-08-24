@@ -1,0 +1,106 @@
+<template>  
+    <template if:true={isShowed}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">        
+        <div class="slds-modal__container" style="height: 700px;">      
+          <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="custom:custom98"></lightning-icon>
+                        </div>
+                            <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                            <h1>
+                            <span class="slds-page-header__title slds-truncate" title="İptal İade">İptal İade</span>
+                            </h1>
+                            </div>
+                            </div>
+                            <p class="slds-page-header__name-meta">{invoiceNo}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-modal__content slds-p-around_medium" style="height: 600px;" id="modal-content-id-1">
+              <div style="padding-bottom:20px;">
+                <table>
+                  <tr>
+                    <td style="padding-right: 2px;">
+                      <lightning-combobox
+                    name="cmbStatu"
+                    value={status}
+                    placeholder="Ürün durumunu seçiniz."
+                    options={statuses}
+                    onchange={handleProductStatuChange}>
+                      </lightning-combobox>
+                  </td>
+                <td>
+                  <lightning-combobox
+                  name="cmbIsInvoice"
+                  value={isInvoiceStatus}
+                  placeholder="Faturalama var mı?"
+                  options={isInvoiceStatuses}
+                  onchange={handleInvoiceStatuChange}>
+                </lightning-combobox>
+                </td>
+              </tr>
+                <tr >
+                  <td  style="padding-right: 2px;">
+                    <lightning-combobox
+                    name="cmbCanceledReason"                    
+                    placeholder="İptal Nedeni"
+                    options={objects}
+                    onchange={handleCancelRefundChange}>
+                  </lightning-combobox>
+                  </td>
+                  <td >
+                    <lightning-combobox
+                    name="cmbDelivering"                                      
+                    placeholder="Malı Teslim Eden"
+                    options={deliveryOptions}
+                    onchange={handleDelivering}>                    
+                  </lightning-combobox>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-right: 2px;">                    
+                    <lightning-input type="label" disabled="true"
+                    label="Depo Yeri Kodu" value={depoYeriKodu}>
+   </lightning-input>
+                </td>
+                  <td style="padding-right: 2px;">
+                    <lightning-input type="label" disabled="true"
+                    label="Üretim Yeri Kodu" value={uretimYeriKodu}>
+   </lightning-input>
+                  </td>
+                  
+                </tr>
+                <tr>
+                  <td style="padding-right: 2px;">
+                  <lightning-input type="label" disabled="true"
+                  label="Toplama Yeri Kodu" value={toplamaYeriKodu} > 
+ </lightning-input>
+                </td>
+                <td>
+                  <lightning-input type="label" 
+                  label="Fatura Edilecek Müşteri No" onchange={handleCustomerName}> 
+                 </lightning-input>
+                </td></tr>
+                </table>              
+              </div>
+                <lightning-datatable key-field="UNIQECODE" show-row-number-column suppress-bottom-bar
+                    data={detailData} columns={columns} onrowselection={selectedRow} oncellchange={handleCellChangeIptIade} draft-values={draftValues}>
+                </lightning-datatable>
+              </div>
+              <footer class="slds-modal__footer">  
+                <button class="slds-button slds-button_neutral" onclick={sendSap} title="Devam Et">Devam Et</button>
+
+                  <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+              </footer>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+  </template>

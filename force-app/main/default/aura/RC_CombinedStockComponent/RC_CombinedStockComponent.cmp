@@ -1,0 +1,14 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <lightning:card>
+        
+        <lightning:tabset>
+            <lightning:tab label="Stok Raporu" class="bold">
+                <div class="padding">
+                    <c:RC_SD_GetStockComponent productCodes="null"/></div>
+            </lightning:tab>
+            <lightning:tab  label="Emanet Stok Raporu" title="2nd tab extended title">
+                <div class="padding">
+                    <c:RC_GetEmanetComponent/></div>
+            </lightning:tab>
+        </lightning:tabset></lightning:card>
+</aura:component>

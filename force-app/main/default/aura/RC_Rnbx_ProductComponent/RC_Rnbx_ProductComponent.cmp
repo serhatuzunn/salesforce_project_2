@@ -1,0 +1,120 @@
+<aura:component controller="RC_Rnbx_ProductComponentController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" /> 
+    
+    <aura:attribute name="loading" 	type="boolean" default="false"/>
+    
+    <aura:attribute name="pageCount" type="Integer" default="1"/>
+    <aura:attribute name="selectedPage" type="Integer" default="1"/>
+    
+    <aura:attribute name="initWrapper" type="RC_Rnbx_ProductComponentController.InitWrapper" />
+    <aura:attribute name="listdefinitionHierarcy1" type="List" default="[]"/>
+    <aura:attribute name="listdefinitionHierarcy2" type="List" default="[]"/>
+    <aura:attribute name="listdefinitionHierarcy3" type="List" default="[]"/>
+    
+    <aura:attribute name="AllProductResponse" type="RC_Rnbx_ProductComponentController.ProductResponse" />
+    <aura:attribute name="FilterProductResponse" type="RC_Rnbx_ProductComponentController.ProductResponse" />
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>   
+    </aura:if>
+    
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="utility:builder" class="my-icon" size="medium" alternativeText="{!$Label.c.RC_Products}" title="{!$Label.c.RC_Products}" />
+            <span class="page-title" style="font-size:15px;padding-left:10px;">{!$Label.c.RC_Products}</span>     
+        </aura:set>
+        <aura:set attribute="footer">
+            <div style="box-sizing: border-box;">
+                <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+                    <legend class="slds-text-heading_small slds-p-vertical_medium" align="left">
+                        Filtre
+                    </legend>
+                    <lightning:layout>  
+                        <lightning:layoutItem size="4" class="left-align padding">
+                            <lightning:select name="drpHierarchy1" aura:id="drpHierarchy1" label="{!$Label.c.RC_Hierarchy1}" onchange="{!c.selectedHierarchy1Drp}">
+                                <option value="">Seçiniz...</option>
+                                <aura:iteration items="{!v.listdefinitionHierarcy1}" var="option">
+                                    <option text="{!option.label}" value="{!option.value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        <br/>
+                        
+                        <lightning:layoutItem size="4" class="left-align padding">
+                            <lightning:select name="drpHierarchy2" aura:id="drpHierarchy2" label="{!$Label.c.RC_Hierarchy2}" onchange="{!c.selectedHierarchy2Drp}">
+                                <option value="">Seçiniz...</option>
+                                <aura:iteration items="{!v.listdefinitionHierarcy2}" var="option">
+                                    <option text="{!option.label}" value="{!option.value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        
+                        <lightning:layoutItem size="4" class="left-align padding">
+                            <lightning:select name="drpHierarchy3" aura:id="drpHierarchy3" label="{!$Label.c.RC_Hierarchy3}">
+                                <option value="">Seçiniz...</option>
+                                <aura:iteration items="{!v.listdefinitionHierarcy3}" var="option">
+                                    <option text="{!option.label}" value="{!option.value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                    </lightning:layout> 
+                    
+                    <lightning:layout>
+                        <lightning:layoutItem size="12" class="right-align padding">
+                            <lightning:button class="filter-button" iconName="utility:search" label="Sorgula" onclick="{!c.filtreHandleClick }" ></lightning:button>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+
+                </fieldset>  
+                
+            </div>
+            
+            
+        </aura:set>
+    </lightning:card>
+    <aura:if isTrue="{!not(empty(v.FilterProductResponse.ProductList))}">
+        <div class="slds-box">
+            <lightning:layout multipleRows="true">
+                
+                <aura:iteration items="{!v.FilterProductResponse.ProductList}" var="item">
+                    
+                    <lightning:layoutItem size="12" smallDeviceSize="6" mediumDeviceSize="4" largeDeviceSize="3" padding="around-small" class="showBox">
+                        <div class="custom-box">
+                            
+                            <lightning:layoutItem size="12" class="right-align padding">
+                                <img width="150" height="150" style="object-fit: contain; max-height:150px" src="{!item.RC_Image_URL__c}"/>
+                            </lightning:layoutItem>
+                            
+                            <lightning:layoutItem size="12" class="right-align padding box-text">
+                                <aura:text value="{!item.Name}"></aura:text>
+                            </lightning:layoutItem>
+                            
+                            <lightning:layoutItem size="12" class="right-align padding button-elm">
+                                <lightning:button class="detail-button" iconName="utility:preview" label="İncele" onclick="{!c.inceleClick }" value="{!item.RC_External_System_ProductID__c}" ></lightning:button>
+                            </lightning:layoutItem>
+                            
+                        </div>
+                    </lightning:layoutItem>
+                    
+                    
+                </aura:iteration>
+                
+                
+                
+            </lightning:layout>
+            
+            
+            
+
+                
+                <div class="slds-align_absolute-center">
+                    <lightning:button class="slds-button slds-button_neutral slds-button_stretch" label="{!$Label.c.previous}" title="{!$Label.c.previous}" onclick="{! c.previousClick }" />
+                    <div style="margin-left:5px; margin-right:5px;width:80px">
+                        <lightning:formattedNumber value="{! v.selectedPage}" />&nbsp;/
+                        <lightning:formattedNumber value="{! v.pageCount}" />
+                    </div>
+                    <lightning:button class="slds-button slds-button_neutral slds-button_stretch"  label="{!$Label.c.next}" title="{!$Label.c.next}" onclick="{! c.nextClick }" />
+                </div>
+        </div>
+    </aura:if>
+</aura:component>

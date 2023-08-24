@@ -1,0 +1,80 @@
+<aura:component controller="RC_CustomSliders" implements="lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    
+    <aura:attribute name="loading" 	   type="boolean" default="false"/>
+    <aura:attribute name="contentData" type="RC_CustomSliders.ContentClass" />
+    <aura:attribute name="contentId"   type="string" />
+    <aura:attribute name="cval" type="String"/>
+    <aura:attribute name="defaultImage" type="String"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    <!-- <div class="container" style="background-color: white; padding: 20px; border-radius: 15px;box-shadow: rgb(0 0 0 / 24%) 0 3px 8px;">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-small" size="12">
+                            
+            </lightning:layoutItem>
+            <lightning:layoutItem  padding="around-small" size="12">
+                
+            </lightning:layoutItem>
+            <lightning:layoutItem flexibility="auto" padding="around-small" size="12">
+                
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div> -->
+    <div class="container slds-container_x-large" style="background-color: white;border-radius: 4px;box-shadow: rgb(0 0 0 / 24%) 0 3px 8px;border: 1px solid #d8dde6;">
+        <div class="slds-grid slds-grid_vertical" style="margin-left:-15px;margin-right:-15px;">
+            <div id="cardHeading" class="slds-col">
+                <div class="slds-grid" style="padding: 15px;">
+                    <div class="slds-size_2-of-12" id="iconCol">
+                        <aura:if isTrue="{!v.contentData.ContentImage==null}">
+                            <img
+                                 width="30px"
+                                 height="auto"
+                                 class="img-fluid"
+                                 src="{!v.defaultImage}"
+                                 alt=""
+                                 style="border-radius: 15px; object-fit:contain;display:block;width:100px"
+                                 />
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_8-of-12">
+                        <h1 class="my-4" style="font-weight: bold; font-size: 18px;margin-bottom: 1rem;text-align: center; padding-bottom: 2rem;color:white">
+                            {!v.contentData.ContentTitle}
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col center">
+                <aura:if isTrue="{!v.contentData.ContentImage!=null}">
+                    <div id="imageDiv" class="center">
+                        <img class="col-img center" src="{!v.contentData.ContentImage}" height="256" width="356" alt="" />
+                    </div>
+                </aura:if>
+            </div>
+            
+            <div id="cardBody" class="slds-col">
+                <aura:unescapedHtml value="{!v.contentData.ContentDetail}">
+                </aura:unescapedHtml>
+            </div>
+            <aura:if isTrue="{!v.contentData.ContentDocumentLinks!=null}">
+            <div id="documentsBody" class="slds-col">
+                <aura:iteration items="{!v.contentData.ContentDocumentLinks}" var="item">
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                           <lightning:button iconName="utility:download" class="lightning-excel-button slds-m-around_small">
+                            <a class="cut-text" href="{!item.ContentId}">{!item.ContentName}</a>
+                           </lightning:button>
+                        </div>
+                     </div>
+                </aura:iteration>
+            </div>
+            <br/>
+            </aura:if>
+        </div>
+    </div>
+    
+    
+</aura:component>

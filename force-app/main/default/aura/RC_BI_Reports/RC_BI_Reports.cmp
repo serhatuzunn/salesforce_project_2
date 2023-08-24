@@ -1,0 +1,49 @@
+<aura:component controller="RC_BI_CiroReportsController"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" />
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="reportLink" type="string" />
+    <br/>
+    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="slds-assistive-text">opportunity</span>
+                        <lightning:icon iconName="action:update" size="small" alternativeText="Description" title="Description" />
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate" title="Risk Durumu">Raporlar</span>
+                                </h1>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br/>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <tbody>
+            <tr class="slds-hint-parent">
+                <td data-label="Report" scope="row" style="width:70%;">
+                    <div class="slds-truncate" title=""><b>Rapor</b></div>
+                </td>
+                <td data-label="Detail" scope="row" style="width:70%;">
+                    <div class="slds-truncate" title=""><b>Detay</b></div>
+                </td>
+            </tr>
+            <tr class="slds-hint-parent">
+                <td data-label="Report Name" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title="">Satış Performans Raporu</div>
+                </td>
+                <td data-label="Link" scope="row" style="width:30%;">
+                    <div class="slds-truncate" title=""><a target="_blank"  class="slds-button slds-button_success"  href="{!v.reportLink}">Görüntüle</a></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+</aura:component>

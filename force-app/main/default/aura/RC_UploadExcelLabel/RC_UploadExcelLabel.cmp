@@ -1,0 +1,96 @@
+<aura:component controller="RC_UploadExcelLabelController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="loading" type="boolean" default="false"/>
+    <aura:Attribute name="acceptList"    		type="List"       default="['.xls','.xlsx']" />
+    <aura:Attribute name="excelModel"    		type="List"       default="[]"/>
+    <aura:Attribute name="fileName"      		type="string"     default=""/>
+    <aura:Attribute name="isUploaded"    		type="boolean"    default="false"/>
+    <aura:Attribute name="isVisibleChecked"     type="boolean"    default="false"/>
+    <aura:Attribute name="v.loading"     		type="boolean"    default="false"/>
+    <aura:Attribute name="isExistFile"   		type="boolean"    default="false"/>
+	<aura:attribute name="newAttachment" 		type="List"       default="[]" />
+    <aura:attribute name="attachments"   		type="List"       default="[]" />
+    <aura:attribute name="excel"         		type="RC_UploadExcelLabelController.ResultWrapper"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    
+    <ui:scrollerWrapper class="scrollerSize"> 
+        <form class="theme">   
+            <aura:if isTrue="{!v.loading}">
+                <div aura:id="spinnerId" class="slds-spinner_container Spinner">
+                    <div class="slds-spinner-brand  slds-spinner slds-spinner-large slds-is-relative" role="alert">
+                        <span class="slds-assistive-text">Loading</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                    </div>
+                </div>
+            </aura:if>
+        </form>
+    </ui:scrollerWrapper>
+    <div class="slds-page-header" style="background: white;">
+      <div class="slds-page-header__row">
+         <div class="slds-page-header__col-title">
+            <div class="slds-media">
+               <div class="slds-media__figure">
+                  <span class="slds-assistive-text">Ürün Bilgileri Yükleme</span>
+                  <lightning:icon iconName="utility:upload" style="--sds-c-icon-color-foreground-default: #DF2027;"></lightning:icon>
+               </div>
+               <div class="slds-media__body">
+                  <div class="slds-page-header__name">
+                     <div class="slds-page-header__name-title">
+                        <h1>
+                           <span class="slds-page-header__title slds-truncate" title="Siparislerim" style="margin-top: 5px;">Ürün Bilgileri Yükleme</span>
+                        </h1>
+                     </div>
+                  </div>
+			
+               </div>
+            </div>
+         </div>
+          <lightning:icon iconName="doctype:excel" onclick="{!c.downloadExampleExcelFile}" alternative-text="Örnek Dosya"  title="Örnek Dosya" size="small"/>
+      </div>
+   </div>
+    <article class="slds-card" data-aura-rendered-by="908:0">
+        <div class="slds-box">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col" style="text-align:center;">
+                    <aura:if isTrue="{!v.isUploaded}">
+                        <div class="slds-box">
+                            <span style="font-weight:bold;text-align:center;">{!v.fileName}</span>
+                        </div>
+                    </aura:if>
+                    
+                    
+                    
+                    <lightning:input type="file" name="file" aura:id="excelUploadButton" label="Ürün Bilgileri Yükle"
+                                     multiple="false" accept="{!v.acceptList}" required="true"
+                                     onchange="{!c.excelImport}"  />
+                    
+                    
+                    <aura:if isTrue="{!v.isExistFile}">
+                        <!--<lightning:button label="SİL"
+                                      iconName="utility:cancel_file_request"
+                                      onclick="{!c.removeFiles}" iconPosition="left"  /> 
+                        <lightning:button variant="success" label="Aktar" title="Excel Aktar" onclick="{! c.SaveExcel }" class="customBtn"/>-->
+                    </aura:if>
+                    
+                    
+                    
+                </div>
+                <div class="slds-col" style="text-align:center;">
+                    <span></span>
+                </div>
+                <!-- <div class="slds-col" style="text-align:center;">
+                    <ul style="">
+                        <li style="font-weight:bold;text-align:left;">Dosyanızı Yüklemeden Önce!</li>
+                        <li style="text-align:left;">1- Stok verilerini, size iletilen formatta, excel dosyası olarak yüklemeniz gerekmektedir.</li>
+                        <li style="text-align:left;">2- Stok verilerinizi yüklediğinizde, eski yüklenen stok verileriniz silinmektedir.</li>
+                        <li style="text-align:left;">3- Yüklediğiniz stok verilerini tüm bayi özel kullanıcıları görebilmektedir.</li>
+                        <li style="text-align:left;">4- Yüklediğiniz stok verileri, gerekli kontrollerden sonra 2 saat içerisinde Bayi Özel sisteminde görüntülenebilir olacaktır.</li>
+                    </ul>
+                </div>-->
+            </div>
+        </div>
+    </article>
+</aura:component>

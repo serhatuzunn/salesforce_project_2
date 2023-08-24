@@ -1,0 +1,12 @@
+.THIS {
+
+}
+.THIS.slds-table tbody tr, .THIS.slds-table td {
+    white-space: nowrap;
+    position: relative;
+    width: 25% !important;
+}
+.THIS.slds-modal__container{
+ max-width: 70px !important;
+ width:70px !important;
+}

@@ -1,0 +1,12 @@
+@isTest
+global class RC_OrtVadeBulIntegratorMock implements HttpCalloutMock {
+    global HttpResponse respond(HttpRequest req) {
+        // Create a fake response
+        HttpResponse res = new HttpResponse();
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody('{"EV_BAKIYE":"-1.0000","EV_ORTVADE":"2020-10-20","IT_LINEITEMS":{"item":[{"COMP_CODE":"1","CUSTOMER":"1","SP_GL_IND":"1","CLEAR_DATE":"19-10-2020","CLR_DOC_NO":"1","ALLOC_NMBR":"1","FISC_YEAR":"0001","DOC_NO":"1","ITEM_NUM":"001","PSTNG_DATE":"19-10-2020","DOC_DATE":"19-10-2020","ENTRY_DATE":"19-10-2020","CURRENCY":"1","LOC_CURRCY":"1","REF_DOC_NO":"1","DOC_TYPE":"1","FIS_PERIOD":"01","POST_KEY":"1","DB_CR_IND":"1","BUS_AREA":"1","TAX_CODE":"1","LC_AMOUNT":"1.0000","AMT_DOCCUR":"1.0000","LC_TAX":"1.0000","TX_DOC_CUR":"1.0000","ITEM_TEXT":"1","BRANCH":"1","BLINE_DATE":"19-10-2020","PMNTTRMS":"1","DSCT_DAYS1":"1","DSCT_DAYS2":"1","NETTERMS":"1","DSCT_PCT1":"1.000","DSCT_PCT2":"1.000","DISC_BASE":"1.0000","DSC_AMT_LC":"1.0000","DSC_AMT_DC":"1.0000","PYMT_METH":"1","PMNT_BLOCK":"1","FIXEDTERMS":"1","INV_REF":"1","INV_YEAR":"0001","INV_ITEM":"001","DUNN_BLOCK":"1","DUNN_KEY":"1","LAST_DUNN":"19-10-2020","DUNN_LEVEL":"1","DUNN_AREA":"1","DOC_STATUS":"1","NXT_DOCTYP":"1","VAT_REG_NO":"1","REASON_CDE":"1","PMTMTHSUPL":"1","REF_KEY_1":"1","REF_KEY_2":"1","T_CURRENCY":"1","AMOUNT":"1.0000","NET_AMOUNT":"1.0000","NAME":"1","NAME_2":"1","NAME_3":"1","NAME_4":"1","POSTL_CODE":"1","CITY":"","COUNTRY":"1","STREET":"1","PO_BOX":"1","POBX_PCD":"1","POBK_CURAC":"1","BANK_ACCT":"1","BANK_KEY":"1","BANK_CTRY":"1","TAX_NO_1":"1","TAX_NO_2":"1","TAX":"1","EQUAL_TAX":"1","REGION":"1","CTRL_KEY":"1","INSTR_KEY":"1","PAYEE_CODE":"1","LANGU":"1","BILL_LIFE":"1","BE_TAXCODE":"1","BILLTAX_LC":"1.0000","BILLTAX_FC":"1.0000","LC_COL_CHG":"1.0000","COLL_CHARG":"1.0000","CHGS_TX_CD":"1","ISSUE_DATE":"19-10-2020","USAGEDATE":"19-10-2020","BILL_USAGE":"1","DOMICILE":"1","DRAWER":"1","CTRBNK_LOC":"1","DRAW_CITY1":"1","DRAWEE":"1","DRAW_CITY2":"1","DISCT_DAYS":"1","DISCT_RATE":"1.00000","ACCEPTED":"1","BILLSTATUS":"1","PRTEST_IND":"1","BE_DEMAND":"1","OBJ_TYPE":"1","REF_DOC":"1","REF_ORG_UN":"1","REVERSAL_DOC":"1","SP_GL_TYPE":"1","NEG_POSTNG":"1","REF_DOC_NO_LONG":"1","BILL_DOC":"1"}]}}');
+        res.setStatusCode(200);
+        res.setStatus('OK');
+        return res;
+    }
+}

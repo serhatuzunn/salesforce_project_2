@@ -1,0 +1,448 @@
+<template>
+   <div style="display: none;">
+      <form action="" method="POST" data-id="assecoForm">
+         <input type="submit" data-id="assecoSubmit"></input>
+      </form>
+   </div>
+   <article class="slds-card">
+      <div class="slds-card__header slds-grid" style="border-bottom: 1px solid lightgray;background-color: #DF2027;color: white;padding: 7px;margin: 0;">
+         <div class="slds-media">
+            <div class="slds-media__figure">
+               <span class="slds-assistive-text">Siparişlerim</span>
+               <lightning-icon class="my-icon" icon-name="utility:work_order_type"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+               <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                     <h1>
+                        <span class="slds-page-header__title slds-truncate" title="Siparislerim">Siparislerim</span>
+                     </h1>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <footer class="slds-card__footer" style="padding-top: 0;">
+         <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+            <legend class="slds-text-heading_small slds-p-vertical_medium" align="left" style="width: auto;">
+               Filtre
+            </legend>
+            <lightning-layout multiple-rows="true" vertical-align="end">
+               <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6"
+                  padding="around-small">
+                  <div class="slds-grid slds-gutters responsive-gutters">
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <lightning-input type="date" id="startDate" onchange={handleSearchStartDate} label="Başlangıç Tarihi">
+                              </lightning-input>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element" >
+                           <div class="slds-form-element__control">
+                              <lightning-input type="date" id="endDate" onchange={handleSearchEndDate} label="Bitiş Tarihi">
+                              </lightning-input>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <lightning-combobox name="cmbStatu" value={listType} placeholder="Liste Gösterim Şekli Seçiniz" label="*Liste Gösterim Şekli"
+                                 options={ListType} onchange={handleSearchListType}>
+                              </lightning-combobox>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  
+         
+                  <div class="slds-grid slds-gutters responsive-gutters">
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <lightning-input type="text" id="orderNo" onchange={handleSearchOrderNo} label="Sipariş Numarası">
+                              </lightning-input>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <lightning-input type="text" id="orderReason" onchange={handleSearchOrderReason}
+                                 label="Sipariş Gerekçesi">
+                              </lightning-input>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control" >
+                              <lightning-combobox name="cmbStatu" value={status} placeholder="Sipariş durumu"
+                                 options={OrderStausesOptions} onchange={handleSearchOrderStatu} label="Sipariş Durumu">
+                              </lightning-combobox>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+         
+                  <div class="slds-grid slds-gutters responsive-gutters">
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <lightning-combobox name="cmbStatu" value={category1} placeholder="Kademe 1"
+                                 options={ProductCategory1} onchange={handleSearchCategory1} label="Kademe 1">
+                              </lightning-combobox>
+                           </div>
+                        </div>
+                     </div>
+                     
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <lightning-combobox name="cmbStatu" value={category2} placeholder="Kademe 2" label="Kademe 2"
+                                 options={ProductCategory2} onchange={handleSearchCategory2}>
+                              </lightning-combobox>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                        <div class="slds-form-element">
+                           <div class="slds-form-element__control">
+                              <lightning-combobox name="cmbStatu" value={category3} placeholder="Kademe 3" label="Kademe 3"
+                                 options={ProductCategory3} onchange={handleSearchCategory3}>
+                              </lightning-combobox>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="slds-grid slds-gutters responsive-gutters">
+                  <div class="slds-col slds-size_1-of-3 responsive-form-element">
+                     <div class="slds-form-element">
+                        <div class="slds-form-element__control">
+                           <c-search-component obj-name="Product2" icon-name="standard:product" label-name="Ürün Bilgisi"
+                            placeholder="Ürün Kodu" fields={fields} display-fields={displayFields} onlookup={handleLookup}>
+                        </c-search-component>
+                        </div>
+                     </div>
+                  </div>
+         
+                     <div class="slds-col slds-size_2-of-3 desktop">
+                        <div class="slds-form-element" >
+                           <div class="slds-form-element__control">
+                              <lightning-button icon-name="utility:search" class="lightning-button-element mobile-right" label="Ara" variant="destructive" onclick={handleSearch}></lightning-button>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="slds-col slds-size_3-of-3 responsive">
+                        <div class="slds-form-element" >
+                           <div class="slds-form-element__control">
+                              <lightning-button icon-name="utility:search" class="lightning-button-element mobile-right" label="Ara" variant="destructive" onclick={handleSearch}></lightning-button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+         
+         
+                  <template if:true={loaded}>
+                     <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                  </template>
+                  <br />
+         
+               </lightning-layout-item>
+            </lightning-layout>
+         </fieldset>
+    </footer>
+   </article>
+   <br />
+   <template if:true={data}>
+      <br>
+      <lightning-card>
+         <div class="slds-form-element right-excel-button">
+            <div class="slds-form-element__control">
+               <lightning-button icon-name="utility:download" class="lightning-excel-button" label="Excel" onclick={downloadTable}></lightning-button>
+            </div>
+         </div>
+         <div class="slds-m-around_medium">
+            <lightning-datatable key-field="id" show-row-number-column hide-checkbox-column suppress-bottom-bar
+               data={data} columns={columns} onrowaction={handleRowAction} oncellchange={handleCellChange}
+               draft-values={draftValues} onsort={sortColumns}>
+            </lightning-datatable>
+            </br>
+            <lightning-layout horizontal-align="space">
+               <lightning-layout-item flexibility="auto">
+                  <lightning-button variant="destructive-text" label="Geri" icon-name="utility:chevronleft"
+                     onclick={previousHandler}>
+                  </lightning-button>
+               </lightning-layout-item>
+               <lightning-layout-item flexibility="auto">
+                  Page {page} of {totalPage}
+               </lightning-layout-item>
+               <lightning-layout-item flexibility="auto">
+                  <lightning-button variant="destructive-text" label="İleri" icon-name="utility:chevronright"
+                     icon-position="right" onclick={nextHandler}></lightning-button>
+               </lightning-layout-item>
+            </lightning-layout>
+         </div>
+      </lightning-card>
+   </template>
+   <template if:true={isModalOpen}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+         aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+         <div class="slds-modal__container" style="max-height : 100%;">
+            <header class="slds-modal__header">
+               <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                  onclick={closeModal}>
+                  <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                     <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+               </button>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+               <div class="slds-page-header">
+                  <div class="slds-page-header__row">
+                     <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                           <div class="slds-media__figure">
+                              <lightning-icon icon-name="standard:order_item"></lightning-icon>
+                           </div>
+                           <div class="slds-media__body">
+                              <div class="slds-page-header__name">
+                                 <div class="slds-page-header__name-title">
+                                    <h1>
+                                       <span class="slds-page-header__title slds-truncate" title={PageTitle}>{PageTitle}</span>
+                                    </h1>
+                                 </div>
+                              </div>
+                              <p class="slds-page-header__name-meta">{Info}</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <template if:false={isProductDetail}>
+               <lightning-progress-indicator current-step={orderStatuDetail} type="path" variant="base">
+                  <template for:each={OrderStausesOptions} for:item="step">
+                      <lightning-progress-step 
+                      label={step.label} value={step.value} key={step.label}  data-id={step.value}></lightning-progress-step>
+                  </template>
+              </lightning-progress-indicator>
+            </template>
+             </br>
+             <lightning-card  title={DetailTitle} icon-name="standard:orders">                     
+               <lightning-datatable key-field="id" show-row-number-column hide-checkbox-column suppress-bottom-bar
+                  data={orderdetailData} columns={orderdetailColumns} onrowaction={handleRowActionDetail} >
+               </lightning-datatable>
+             </lightning-card>
+               </br>
+               <template if:false={isProductDetail}>
+               <lightning-card  title={DeliveryAndBillingTitle} icon-name="custom:custom98">               
+                  <lightning-datatable key-field="id" show-row-number-column hide-checkbox-column suppress-bottom-bar
+                     data={orderDeliveryData} columns={orderDeliveryColumns} onrowaction={handleRowActionCargoStatus}>
+                  </lightning-datatable>
+                </lightning-card>
+            </template>
+            </div>
+            <footer class="slds-modal__footer">
+               <button class="slds-button slds-button_destructive lightning-cancel-button" onclick={closeModal} title="Cancel">İptal</button>
+            </footer>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+   </template>
+   <template if:true={isModalOpenCargoStatus}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+         aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+         <div class="slds-modal__container" style="max-height : 100%;">
+            <header class="slds-modal__header">
+               <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                  onclick={closeModalCargoStatus}>
+                  <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                     <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+               </button>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+               <div class="slds-page-header">
+                  <div class="slds-page-header__row">
+                     <div class="slds-page-header__col-title">
+                        <div class="slds-media" style="display: flex;flex-direction: row;align-items: center;">
+                           <div class="slds-media__figure">
+                              <lightning-icon icon-name="standard:order_item"></lightning-icon>
+                           </div>
+                           <div class="slds-media__body">
+                              <div class="slds-page-header__name">
+                                 <div class="slds-page-header__name-title">
+                                    <h1>
+                                       <span class="slds-page-header__title slds-truncate" title="Kargo Hareketleri">Kargo Hareketleri</span>
+                                    </h1>
+                                 </div>
+                              </div>                             
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div> 
+            
+            <lightning-layout multiple-rows="true" vertical-align="end">
+               <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6"
+                  padding="around-small">
+            <div class="wrapper">               
+               <ul class="StepProgress">
+                  <template for:each={cargoDetailData} for:item="obj">
+                     <li class={obj.new_class} key={obj.new_class}>
+                        <strong>{obj.Statu}</strong>
+                        {obj.createDate}
+                     </li>
+                 </template>
+               </ul>
+             </div>
+            </lightning-layout-item>
+            </lightning-layout>
+         </div>
+            <footer class="slds-modal__footer">
+               <button class="slds-button slds-button_destructive lightning-cancel-button" onclick={closeModalCargoStatus} title="Cancel">İptal</button>
+            </footer>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+   </template>
+   <template if:true={isModalOpenTransferAddress}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+         aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+         <div class="slds-modal__container" style="max-height : 100%;">
+            <header class="slds-modal__header">
+               <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                  onclick={closeModalAddressTransfer}>
+                  <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                     <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                  </svg>
+                  <span class="slds-assistive-text">Close</span>
+               </button>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+               <div class="slds-page-header">
+                  <div class="slds-page-header__row">
+                     <div class="slds-page-header__col-title">
+                        <div class="slds-media" style="display: flex;flex-direction: row;align-items: center;">
+                           <div class="slds-media__figure">
+                              <lightning-icon icon-name="standard:order_item"></lightning-icon>
+                           </div>
+                           <div class="slds-media__body">
+                              <div class="slds-page-header__name">
+                                 <div class="slds-page-header__name-title">
+                                    <h1>
+                                       <span class="slds-page-header__title slds-truncate" title="Adrese Teslim">Adrese Teslim</span>
+                                    </h1>
+                                 </div>
+                              </div>
+                              <p class="slds-page-header__name-meta">{InfoAddressTransfer}</p>                              
+                              <p class="slds-page-header__name-meta">{InfoAddressTransferInfo}</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>               
+               </br>
+               <lightning-layout multiple-rows="true" vertical-align="end">
+                  <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6"
+                     padding="around-small" style="margin-left: 7rem;">
+                     <div class="slds-form-element" style="width: 325px; position:absolute;">                        
+                        <div class="slds-form-element__control">
+                           <lightning-combobox name="cmbCity" value={city} placeholder="İl"
+                           options={cityList} onchange={handleCity} label="İl *">
+                        </lightning-combobox>
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 325px; left:425px;">
+                        <div class="slds-form-element__control">
+                           <lightning-input type="text" id="name" onchange={handleCustomerName} label="Ad *">
+                           </lightning-input>
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 325px; position:absolute;">
+                        <div class="slds-form-element__control">
+                           <lightning-combobox name="cmbCounty" value={county} placeholder="İlçe"
+                           options={countyList} onchange={handleCounty} label="İlçe *">
+                        </lightning-combobox>                          
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 325px; left:425px;">
+                        <div class="slds-form-element__control" >
+                           <lightning-input type="text" id="surname" onchange={handleCustomerSurname} label="Soyad *">
+                           </lightning-input>
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 325px; position:absolute;">
+                        <div class="slds-form-element__control">
+                           <lightning-combobox name="cmbDistrict" value={district} placeholder="Semt"
+                           options={districtList} onchange={handleDistrict} label="Semt *">
+                        </lightning-combobox>
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 85px; position:absolute; left:565px;">
+                        <div class="slds-form-element__control">
+                           <lightning-input type="number" maxlength="3" id="phoneArea" onchange={handlePhoneAreaCode} label="Telefon *">
+                           </lightning-input>
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 233px; left:520px;">
+                        <div class="slds-form-element__control">
+                           <lightning-input type="tel" maxlength="7" class="validate" pattern="[0-9]{7}" id="phone" onchange={handlePhone} label="&nbsp;">
+                           </lightning-input>
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 325px; position:absolute;">
+                        <div class="slds-form-element__control">
+                           <lightning-combobox name="cmService" value={service} placeholder="Servis"
+                           options={serviceList} onchange={handleService} label="Servis *">
+                        </lightning-combobox>
+                        </div>
+                     </div>
+                       
+                     <div class="slds-form-element" style="width: 325px; left:425px;">
+                        <div class="slds-form-element__control">
+                           <lightning-input type="number" id="quantity" onchange={handleDeliveryQuantity} label="Adet *">
+                           </lightning-input>
+                        </div>
+                     </div>
+                     <div class="slds-form-element" style="width: 325px; position:absolute;">
+                        <div class="slds-form-element__control">
+                           <lightning-textarea name="deliveryAddress" max-length="60" onchange={handleAddress}   label="Teslimat Adresi *" >
+                           </lightning-textarea>
+                        </div>
+                     </div>                                      
+                     <div class="slds-form-element" style="width: 325px;  left:425px;">
+                        <div class="slds-form-element__control">
+                           <lightning-textarea name="description" onchange={handleNote}  label="Not" >
+                           </lightning-textarea>
+                        </div>
+                     </div>
+                  
+                     <template if:true={loaded}>
+                        <lightning-spinner alternative-text="Loading"></lightning-spinner>
+                     </template>
+                     <br />
+                     <div class="slds-form-element" style=" left:340px;float: right;">
+                        <div class="slds-form-element__control">
+                           <lightning-button label="Siparişi Tamamla" variant="destructive" onclick={handleShipTo} style="margin-right: 3rem;"></lightning-button>
+                        </div>
+                     </div>
+                  </lightning-layout-item>
+               </lightning-layout>
+            </div>
+            <footer class="slds-modal__footer">
+               <button class="slds-button slds-button_destructive lightning-cancel-button" onclick={closeModalAddressTransfer} title="Cancel">İptal</button>
+            </footer>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+   </template>
+
+   <c-rc_detail-modal detail-data={detailData} columns={detailColumn} is-showed={isShowed} invoice-no={invoiceNo}></c-rc_detail-modal>
+   <c-Rc_IptalIadeIslemleri detail-data={iptalIadeData} columns={iptalIadeColumns} delivery-number={deliveryNumber} is-showed={isShowed} record-id={recordId} invoice-no={invoiceNo}></c-Rc_IptalIadeIslemleri>
+</template>

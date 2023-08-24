@@ -1,0 +1,9 @@
+<aura:component controller="RC_GetVestelCellController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+   
+    <aura:attribute name="recordId" type="String" />
+    
+        	 <lightning:input  aura:id="IT_DOCUMENT_DATE" type="date" label="{!$Label.c.Gift_Check_DocumentDate}" /> <br/>
+     		 <lightning:input  aura:id="IT_MATBU_NO" label="{!$Label.c.Gift_Check_MatbuNo}" /> <br/>
+             <lightning:button class="slds-button slds-button_neutral colour list-button"  aura:id="button" variant="brand" label="{!$Label.c.Gift_Check_Save}" iconName="utility:save" title="{!$Label.c.Gift_Check_Save}" onclick="{! c.setHandLeClick }" /> 
+    
+</aura:component>

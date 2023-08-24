@@ -1,0 +1,24 @@
+.THIS .slds-has-bottom-magnet{
+    left: 90%;
+}
+
+@media screen and (min-width:600px){
+    .THIS .slds-has-bottom-magnet{
+        left: 80%;
+    }
+}
+
+.info
+{
+	border: 1px solid;
+	margin: 2px 0px;
+	padding: 13px 5px 5px 20px;
+	font-family: tahoma;
+	font-weight: bold;
+	font-size: 13px;
+
+	color: #FFF;
+	border-color: #666;
+	background-color: #666;
+    height: 50px;
+}

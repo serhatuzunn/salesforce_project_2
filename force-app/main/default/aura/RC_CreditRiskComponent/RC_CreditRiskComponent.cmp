@@ -1,0 +1,1317 @@
+<aura:component controller="RC_CreditRiskComponentController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <ltng:require scripts="{!$Resource.RC_FileSaver}" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" /> 
+    <aura:attribute name="loading" 			 	      		     type="boolean" default="false"/>
+    <aura:attribute name="showRiskPopup" 			 	      	 type="boolean" default="false"/>
+    <aura:attribute name="showCekSenetDetay" 			 	     type="boolean" default="false"/>
+    <aura:attribute name="showKarsiliksizCekSenetDetay" 		 type="boolean" default="false"/>
+    <aura:attribute name="showYenilenecekTeminat" 			 	 type="boolean" default="false"/>
+    <aura:attribute name="showIpotekDetay" 			 	         type="boolean" default="false"/>
+    <aura:attribute name="showTeminatDetay" 			 	     type="boolean" default="false"/>
+    <aura:attribute name="showTeminatIpotegiDetay" 			 	 type="boolean" default="false"/>
+    <aura:attribute name="showDtstmckDetay" 			 	     type="boolean" default="false"/>
+    <aura:attribute name="showBaglantiFaturaDetay" 			 	 type="boolean" default="false"/>
+    <aura:attribute name="showBaglantiCekDetay" 			 	 type="boolean" default="false"/>
+    <aura:attribute name="recordId" 			 	             type="string" />
+    <aura:attribute name="DistChannelList"          		  	 type="List"	 default="[]"/> 
+    <aura:attribute name="selectedDistChannel" 				     type="string"   default=""/>
+    <aura:attribute name="CreditRiskResponse"			         type="RC_CreditRiskIntegrator.responseModel"/>
+    <aura:attribute name="BayiCekResponse"			             type="RC_BayiCekSenetIntegrator.responseModel"/>
+    <aura:attribute name="BaglantiResponse"			             type="RC_BaglantiIntegrator.responseModel"/>
+    <aura:attribute name="GroupedCekSenet"			             type="RC_CreditRiskComponentController.GroupedCheckTypes"/>
+    <aura:attribute name="SelectedGroupedCekSenet"			     type="RC_CreditRiskComponentController.SelectedGroupedCheckTypes"/>
+    <aura:attribute name="SelectedCekSenetName"			         type="String"/>
+    
+    <aura:attribute name="SelectedKarsiliksizCekSenetName"		 type="String"/>
+    <aura:attribute name="SelectedKarsiliksizCekSenet"			 type="RC_CreditRiskComponentController.SelectedKarsiliksizCekSenet"/>
+    
+    <aura:attribute name="SelectedBaglantiFaturaDetay" 			 type="RC_SD_BaglantiParser.FAT_DETAY" />
+    <aura:attribute name="SelectedBaglantiCekDetay" 			 type="RC_SD_BaglantiParser.CEK_DETAY" />
+    
+    <aura:attribute name="Acik_Hesap_Valor_Number"               type="Integer"  /> 
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    
+    <div id="back-to-top" class="btn btn-primary btn-lg back-to-top"  data-toggle="tooltip" data-placement="left" style="z-index:9999;">
+        <span id="back-to-top" class="fas fa-angle-up" style="
+                                             font-size: 20px;
+                                             position: relative;
+                                             top: -8px;
+                                             "> </span>
+    </div>
+    <div class="slds-size_12-of-12" title="Finansal Bilgiler">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="8" padding="around-small">
+                <h6 style="font-size:20px !important;"><b> {!$Label.c.Finansal_Durum_zeti}</b>&nbsp;
+                    <aura:if isTrue="{!v.CreditRiskResponse.itemZ.RISK_SINIFI=='+'}">
+                        <lightning:icon style="cursor:pointer;" iconName="action:new" onclick="{!c.showPopUp}" size="small" alternativeText="Description" title="Description" />
+                    </aura:if>
+                    <aura:if isTrue="{!v.CreditRiskResponse.itemZ.RISK_SINIFI=='-'}">
+                        <lightning:icon style="cursor:pointer;" iconName="action:close" onclick="{!c.showPopUp}" size="small" alternativeText="Description" title="Description" />
+                    </aura:if>
+                </h6><br/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3" padding="around-small">
+                <lightning:select label="KKA" value="{!v.selectedDistChannel}" onchange="{!c.distributionChannelChange}"> 
+                    <aura:iteration items="{!v.DistChannelList}" var="option">
+                        <option text="{!option.label}" value="{!option.value}"  />
+                    </aura:iteration>
+                </lightning:select>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" padding="around-small">
+                <div style="padding-top:24px; text-align:left;" class="pdf-button">
+                    <lightning:button iconName="utility:download" label="PDF" title="PDF" onclick="{!c.handlePDF}"/>
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout></div>
+    <div class="dskTbl slds-scrollable_x">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered dskTbl">
+            <tbody style="width: 100%;display: table;">
+                <tr class="slds-hint-parent">
+                    <td  scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Acik_Hesap_Borcu}</b></div>
+                    </td>
+                    <td data-label="Açık Hesap Valörü" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Acik_Hesap_Valoru}</b></div>
+                    </td>
+                    <td data-label="Açık Hesap Vadesi" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Acik_Hesap_Vadesi}</b></div>
+                    </td>
+                    <td data-label="Bayi Oluş Tarihi" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Bayi_Olu_Tarihi}</b></div>
+                    </td>
+                    <td data-label="Açık Hesap Borcu" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Kredi_Tarihi}</b></div>
+                    </td>
+                </tr>
+                <tr class="slds-hint-parent">
+                    <td data-label="Açık Hesap Borcu" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.ACIK_BAGSIZ}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                    <td data-label="Açık Hesap Valörü" scope="row">
+                        <div class="slds-truncate" title="">
+                            {!v.CreditRiskResponse.itemZ.ACIK_HESAP_VALORU}
+                            <aura:if isTrue="{!greaterthan(v.Acik_Hesap_Valor_Number, 20)}">
+                                 <lightning:icon iconName="utility:warning" size="small" title="{!$Label.c.Over20days}"/>
+                            </aura:if>
+                        </div>
+                    </td>
+                    <td data-label="Açık Hesap Vadesi" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.ACIK_BAGSIZ_TARIH}</div>
+                    </td>
+                    <td data-label="Bayi Oluş Tarihi" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.BAYI_OLUS_TARIHI}</div>
+                    </td>
+                    <td data-label="Kredi Tarihi" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.KREDI_TARIHI}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="rspTbl  slds-scrollable_x">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered rspTbl">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td  scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Acik_Hesap_Borcu}</b></div>
+                    </td>  
+                    <td data-label="Açık Hesap Borcu" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.ACIK_BAGSIZ}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr class="slds-hint-parent">
+                    <td data-label="Açık Hesap Valörü" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Acik_Hesap_Valoru}</b></div>
+                    </td>
+                    <td data-label="Açık Hesap Valörü" scope="row">
+                            {!v.CreditRiskResponse.itemZ.ACIK_HESAP_VALORU}
+                            <aura:if isTrue="{!greaterthan(v.Acik_Hesap_Valor_Number, 20)}">
+                                 <lightning:icon iconName="utility:warning" size="small" title="{!$Label.c.Over20days}"/>
+                            </aura:if>                    </td>
+                    
+                </tr>
+                <tr class="slds-hint-parent">
+                    <td data-label="Açık Hesap Vadesi" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Acik_Hesap_Vadesi}</b></div>
+                    </td>
+                    <td data-label="Açık Hesap Vadesi" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.ACIK_BAGSIZ_TARIH}</div>
+                    </td>
+                </tr>
+                <tr class="slds-hint-parent">
+                    <td data-label="Bayi Oluş Tarihi" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Bayi_Olu_Tarihi}</b></div>
+                    </td>
+                    <td data-label="Bayi Oluş Tarihi" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.BAYI_OLUS_TARIHI}</div>
+                    </td>
+                </tr>
+                <tr class="slds-hint-parent">
+                    <td data-label="Açık Hesap Borcu" scope="row">
+                        <div class="slds-truncate" title=""><b>{!$Label.c.Kredi_Tarihi}</b></div>
+                    </td>
+                    <td data-label="Kredi Tarihi" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.KREDI_TARIHI}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <div class="slds-scrollable_x" title="Risk Durumu">
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <span class="slds-assistive-text">opportunity</span>
+                            <lightning:icon iconName="action:announcement" size="small" alternativeText="Description" title="Description" />
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate" title="Risk Durumu">{!$Label.c.Risk_Durumu}</span>
+                                    </h1>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Asim_Limit}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.FARK_ASIM}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Toplam_Kredi}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.TOP_KREDI}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Risk}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.TOP_RISK}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Risk_Ciro}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.RISK_CIRO}</div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Odeme_Gun_Sayisi}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.RISK_CIRO * 365}" style="decimal" minimumFractionDigits="2"/></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Open_Account_Average_Maturity_Days}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.ACIK_BAGSIZ_VALOR}" style="decimal" minimumFractionDigits="2"/></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Dip_Bakiye}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.ACIK_BKY}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Bottom_Balance_Average_Maturity_Days}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.ACIK_VALOR}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Dip_Bakiye_Tarihi}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!v.CreditRiskResponse.itemZ.ACIK_VADE_TARIH}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class=" slds-scrollable_x" title="Kredi/Limit Detayları">
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning:icon iconName="action:description" size="small" alternativeText="Description" title="Description" />
+                            <span class="slds-assistive-text">Kredi/Limit Detayları</span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate" title="Kredi/Limit Detayları">{!$Label.c.Kredi_Limit_Detaylar}</span>
+                                    </h1>
+                                </div>
+                            </div>
+                            <p class="slds-page-header__name-meta"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.A_k_Kredi_Limiti}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.ACIK_KREDI}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                 <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.teminat_ipote_i}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" title="" onclick="{! c.showTeminatIpotegiDetayPopUp }">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.TEMINATIPOTEK}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Ge_erli_potek}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" title="" onclick="{! c.showIpotekDetayPopUp }">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.IPOTEK}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Banka_Teminat_Mektubu}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" title="" onclick="{! c.showTeminatDetayPopUp }">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.TEMINAT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Aval_Kredisi}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.AVAL_KREDI}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Ek_Y_netim_Limiti_2}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.EKYONETIM_LMT2}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Alacak_Sigortas}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.ALACAK_SIGORTA}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.KMH_Limiti}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KMH_LIMIT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.KMH_Borcu}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KMH}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.DBS_Limiti}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.DBS_LIMIT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.DBS_Borcu}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.DBSBORC}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.DTS_Kasa_eki}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" onclick="{! c.showDtstmckDetayPopUp }" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.DTSTEMCEK}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Aval_Bonosu}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.AVAL_BONOSU}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Yenilenecek_Teminat}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row" >
+                        <div class="slds-truncate underline" onclick="{! c.showTeminat }"  title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.YENILENECEK_TMNT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class=" slds-scrollable_x" title="Ek Limit Detayları">
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning:icon iconName="action:share_link" size="small" alternativeText="Description" title="Description" />
+                            <span class="slds-assistive-text">Ek Limit Detayları</span>
+                            
+                        </div>
+                        <div class="slds-media__body ">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate" title="Ek Limit Detayları">{!$Label.c.Ek_Limit_Detaylar}</span>
+                                    </h1>
+                                </div>
+                            </div>
+                            <p class="slds-page-header__name-meta"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Klima_Derin_Dondurucu_Kul_Limit}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KUL_KLIMA_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Klima_Derin_Dondurucu_Ek_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.EK_KLIMA_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Klima_Derin_Dondurucu_Ek_Kul_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            TRY <lightning:formattedNumber value="{!(v.CreditRiskResponse.itemZ.EK_KLIMA_LMT - v.CreditRiskResponse.itemZ.KUL_KLIMA_LMT)}"  minimumFractionDigits="2" currencyCode="TRY" currencyDisplayAs="code" style="decimal"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Cep_Tel_Kul_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KUL_CEPTEL_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Cep_Tel_Ek_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.EK_CEPTEL_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Cep_Tel_Ek_Kul_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            TRY <lightning:formattedNumber value="{!(v.CreditRiskResponse.itemZ.EK_CEPTEL_LMT - v.CreditRiskResponse.itemZ.KUL_CEPTEL_LMT)}"  minimumFractionDigits="2" currencyCode="TRY" currencyDisplayAs="code" style="decimal"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.KEA_S_p_Kul_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KUL_KEA_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.KEA_S_p_Ek_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.EK_KEA_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.KEA_S_p_Ek_Kul_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            TRY <lightning:formattedNumber value="{!(v.CreditRiskResponse.itemZ.EK_KEA_LMT - v.CreditRiskResponse.itemZ.KUL_KEA_LMT)}"  minimumFractionDigits="2" currencyCode="TRY" currencyDisplayAs="code" style="decimal"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Ank_Ve_M_Kul_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KUL_ACM_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                        </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Ank_Ve_M_Ek_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title=""><lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.EK_ACM_LMT}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div></td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Ank_Ve_M_Ek_Kul_Limit}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            TRY <lightning:formattedNumber value="{!(v.CreditRiskResponse.itemZ.EK_ACM_LMT - v.CreditRiskResponse.itemZ.KUL_ACM_LMT)}"  minimumFractionDigits="2" currencyCode="TRY" currencyDisplayAs="code" style="decimal" />
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class=" slds-scrollable_x" title="Çek-Senet Detayları">    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="action:clone" size="small" alternativeText="Description" title="Description" />
+                        <span class="slds-assistive-text">Çek-Senet Detayları</span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate" title="Çek-Senet Detayları">{!$Label.c.ek_Senet_Detaylar}</span>
+                                </h1>
+                            </div>
+                        </div>
+                        <p class="slds-page-header__name-meta"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <tbody>
+                <tr>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.ahsi_ekler}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div  class="slds-truncate underline" data-id="CEK_SAHSI" onclick="{! c.checkDetail }" >
+                            <lightning:formattedNumber value="{!v.BayiCekResponse.etReturn.item[0].CEK_SAHSI_TOP}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.ahsi_Senetler}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate  underline" data-id="SENET_SAHSI" onclick="{! c.checkDetail }">
+                            <lightning:formattedNumber value="{!v.BayiCekResponse.etReturn.item[0].SENET_SAHSI_TOP}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.M_teri_ekleri}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" data-id="CEK_MUSTERI" onclick="{! c.checkDetail }">
+                            <lightning:formattedNumber value="{!v.BayiCekResponse.etReturn.item[0].CEK_MUSTERI_TOP}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.M_teri_Senetleri}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate  underline" data-id="SENET_MUSTERI" onclick="{! c.checkDetail }">
+                            <lightning:formattedNumber value="{!v.BayiCekResponse.etReturn.item[0].SENET_MUSTERI_TOP}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.DTS_ekleri}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" data-id="CEK_DTS" onclick="{! c.checkDetail }">
+                            <lightning:formattedNumber value="{!v.BayiCekResponse.etReturn.item[0].CEK_DTS_TOP}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Ba_lant_ekleri}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" data-id="CEK_BAGLANTI" onclick="{! c.checkDetail }">
+                            <lightning:formattedNumber value="{!v.BayiCekResponse.etReturn.item[0].CEK_BAGLANTI_TOP}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Ba_lant_Senetleri}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" data-id="SENET_BAGLANTI"  onclick="{! c.checkDetail }">
+                            <lightning:formattedNumber value="{!v.BayiCekResponse.etReturn.item[0].SENET_BAGLANTI_TOP}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class=" slds-scrollable_x" title="Karşılıksız/İade Çek-Senet">    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="action:remove" size="small" alternativeText="Description" title="Description" />
+                        <span class="slds-assistive-text">Karşılıksız/İade Çek-Senet</span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate" title="Karşılıksız/İade Çek-Senet">{!$Label.c.Kar_l_ks_z_ade_ek_Senet}</span>
+                                </h1>
+                            </div>
+                        </div>
+                        <p class="slds-page-header__name-meta"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <tbody>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Kar_l_ks_z_ekler}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" title="" data-id="KARSILIKSIZ_CEKLER" onclick="{! c.karsiliksizCheckDetail }">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KARSILIKSIZ_CEKLER}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Protestolu_Senetler}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" title="" data-id="PROTESTOLU_SENETLER" onclick="{! c.karsiliksizCheckDetail }">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.PROTESTOLU_SENETLER}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.ade_ekler}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" title=""  data-id="IADELI_CEKLER" onclick="{! c.karsiliksizCheckDetail }">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.IADELI_CEKLER}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.ade_Senetler}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate underline" title="" data-id="IADELI_SENETLER" onclick="{! c.karsiliksizCheckDetail }">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.IADELI_SENETLER}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                
+            </tbody>
+        </table>
+    </div>
+    <div class=" slds-scrollable_x" title="Stok Bilgileri">    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="action:share_poll" size="small" alternativeText="Description" title="Description" />
+                        <span class="slds-assistive-text">Stok Bilgileri</span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate" title="Stok Bilgileri">{!$Label.c.Stok_Bilgileri}</span>
+                                </h1>
+                            </div>
+                        </div>
+                        <p class="slds-page-header__name-meta"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <tbody>
+                <tr>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Konsinye}</div>
+                    </td>
+                    <td style="width:50%" data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.KONSINYE}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">{!$Label.c.Emanet_Stok}</div>
+                    </td>
+                    <td data-label="Opportunity Name" scope="row">
+                        <div class="slds-truncate" title="">
+                            <lightning:formattedNumber value="{!v.CreditRiskResponse.itemZ.EMANET}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  />
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <aura:if isTrue="{!v.BaglantiResponse!=null}">
+    <div class=" slds-scrollable_x" title="Bağlantı Detayları">  
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <lightning:icon iconName="action:share_link" size="small" alternativeText="{!$Label.c.Connection_Details}" title="{!$Label.c.Connection_Details}" />
+                            <span class="slds-assistive-text">{!$Label.c.Connection_Details}</span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate" title="{!$Label.c.Connection_Details}">{!$Label.c.Connection_Details}</span>
+                                    </h1>
+                                </div>
+                            </div>
+                            <p class="slds-page-header__name-meta"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <lightning:accordion aura:id="accordion" activeSectionName="A">
+            <aura:iteration items="{!v.BaglantiResponse.etReturn.item}" var="itemBaglanti">
+                <aura:if isTrue="{!itemBaglanti.SOZLESME_NO != ''}">
+                    <lightning:accordionSection name="A" label="{!itemBaglanti.SOZLESME_NO}">
+                        <div class="slds-scrollable_x">
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col">{!$Label.c.Connection_Start}</th>
+                                        <th scope="col">{!$Label.c.Connection_Finish}</th>
+                                        <th scope="col">{!$Label.c.Connection_Amount}</th>
+                                        <th scope="col">{!$Label.c.Connection_Term}</th>
+                                        <th scope="col">{!$Label.c.Payment_Condition}</th>
+                                        <th scope="col">{!$Label.c.Marked_Invoice_Amount}</th>
+                                        <th scope="col">{!$Label.c.Remaining_Amount}</th>
+                                        <th scope="col">{!$Label.c.Check_Amount}</th>
+                                        <th scope="col">{!$Label.c.Check_Maturity1}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate">{!itemBaglanti.SOZLESME_BAS}</div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate">{!itemBaglanti.SOZLESME_BIT}</div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate"><lightning:formattedNumber value="{!itemBaglanti.TOPLAM_CEK}" currencyCode="TRY" currencyDisplayAs="code" style="currency"/></div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate">{!itemBaglanti.VADE_TARIH}</div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate">{!itemBaglanti.ZTERM}</div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate" data-id="{!itemBaglanti.SOZLESME_NO}"> <!-- onclick="{! c.showBaglantiFaturaDetayPopUp } -->
+                                                <lightning:formattedNumber value="{!itemBaglanti.FAT_TOTAL}" currencyCode="TRY" currencyDisplayAs="code" style="currency"/>
+                                            </div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate">
+                                                <lightning:formattedNumber value="{!itemBaglanti.TOPLAM_CEK - itemBaglanti.FAT_TOTAL}" currencyCode="TRY" currencyDisplayAs="code" style="currency"/>
+                                            </div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate underline" data-id="{!itemBaglanti.SOZLESME_NO}" onclick="{! c.showBaglantiCekDetayPopUp }">
+                                                <lightning:formattedNumber value="{!itemBaglanti.BAGCEK_TOTAL1}" currencyCode="TRY" currencyDisplayAs="code" style="currency"/>
+                                            </div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate" title="">{!itemBaglanti.BAGCEK_VADE_TARIH}</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </lightning:accordionSection>
+                </aura:if>
+                
+            </aura:iteration>
+        </lightning:accordion>
+        
+    </div>
+        </aura:if>
+    
+    <aura:if isTrue="{!v.showCekSenetDetay}">
+        <div title="Çek Senet Detayları">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideCekSenetDetail}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!v.SelectedCekSenetName}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelCekSenetDetay}" class="excelButton"/>
+                        <br/>
+                        <lightning:accordion aura:id="accordion" activeSectionName="A">
+                            <aura:iteration items="{!v.SelectedGroupedCekSenet}" var="item">
+                                <lightning:accordionSection name="A" label="{!item.MonthAndYear}">TRY <lightning:formattedNumber value="{!item.TotalValue}" minimumFractionDigits="2" currencyCode="TRY" currencyDisplayAs="code" style="decimal" />
+                                    <div class="slds-scrollable_x">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">  
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th scope="col">{!$Label.c.Number}</th>
+                                                    <th scope="col">{!$Label.c.Maturity}</th>
+                                                    <th scope="col">{!$Label.c.portfolio}</th>
+                                                    <th scope="col">{!$Label.c.Amount}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <aura:iteration items="{!item.ItemList}" var="itemData">
+                                                    <tr class="slds-hint-parent">
+                                                        <td data-label="Account Name">
+                                                            <div class="slds-truncate" title="">{!itemData.BOENO}</div>
+                                                        </td>
+                                                        <td data-label="Account Name">
+                                                            <div class="slds-truncate" title="">{!itemData.VADE}</div>
+                                                        </td>
+                                                        <td data-label="Account Name">
+                                                            <div class="slds-truncate" title="">{!itemData.PORTF}</div>
+                                                        </td>
+                                                        
+                                                        <td data-label="Account Name">
+                                                            <div class="slds-truncate" title=""><lightning:formattedNumber value="{!itemData.TUTAR}" currencyCode="TRY" currencyDisplayAs="code" style="currency"/></div>
+                                                        </td>
+                                                    </tr>
+                                                </aura:iteration>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </lightning:accordionSection>
+                            </aura:iteration>
+                        </lightning:accordion>
+                        
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.showKarsiliksizCekSenetDetay}">
+        <div title="Karşılıksız Çek Senet Detayları">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideKarsiliksizCekSenetDetail}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!v.SelectedKarsiliksizCekSenetName}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelKarsiliksizCekSenet}" class="excelButton"/>
+                        <br/>
+                        <lightning:accordion aura:id="accordion" activeSectionName="A">
+                            <aura:iteration items="{!v.SelectedKarsiliksizCekSenet.SelectedModalKarsiliksizList}" var="item">
+                                <lightning:accordionSection name="A" label="{!item.Year}">
+                                    <div class="slds-scrollable_x">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">  
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th scope="col">{!$Label.c.Number}</th>
+                                                    <th scope="col">{!$Label.c.Maturity}</th>
+                                                    <th scope="col">{!$Label.c.portfolio}</th>
+                                                    <th scope="col">{!$Label.c.Amount}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <aura:iteration items="{!item.ItemList}" var="itemData">
+                                                    <tr class="slds-hint-parent">
+                                                        <td>
+                                                            <div class="slds-truncate" title="">{!itemData.BOENO}</div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title="">{!itemData.VADE}</div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title="">{!itemData.PORTF}</div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title=""><lightning:formattedNumber value="{!itemData.TUTAR}" currencyCode="TRY" currencyDisplayAs="code" style="currency"/></div>
+                                                        </td>
+                                                    </tr>
+                                                </aura:iteration>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </lightning:accordionSection>
+                            </aura:iteration>
+                        </lightning:accordion>
+                        
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.showRiskPopup}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon variant="border-filled" onclick="{!c.hidePopUp}" size="large" iconName="utility:close" class="fLeft"/>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Risk Sınıfı</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning:accordion aura:id="accordion" activeSectionName="A">
+                        <aura:iteration items="{!v.CreditRiskResponse.riskItems}" var="itemR">
+                            <lightning:accordionSection name="A" label="{!itemR.GJAHR}">
+                                <div class="slds-scrollable_x">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th class="" scope="col">YIL</th>
+                                            <th class="" scope="col">KMH</th>
+                                            <th class="" scope="col">KARŞILIKSIZ</th>
+                                            <th class="" scope="col">TEMDİT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate" title="">{!itemR.GJAHR}</div>
+                                            </td>
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate" title="">{!itemR.KMHYR}</div>
+                                            </td>
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate" title="">{!itemR.KRSLZ}</div>
+                                            </td>
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate" title="">{!itemR.TMDIT}</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table></div>
+                            </lightning:accordionSection>
+                        </aura:iteration>
+                    </lightning:accordion>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showIpotekDetay}">
+        <div title="{!$Label.c.Mortgage_Details}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideIpotekDetayPopUp}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Mortgage_Details}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium " id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelIpotek }" class="excelButton"/>
+                        <br/><br/>
+                        <div class="slds-scrollable_x">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Number}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Period}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Amount}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Expiry_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Bank}</b></th>
+                                </tr>
+                                <aura:iteration items="{!v.CreditRiskResponse.itemZ.IPOTEK_DETAY.item}" var="ipotek">
+                                    <tr>
+                                        <td>{!ipotek.BELNR}</td>
+                                        <td>{!ipotek.GJAHR}</td>
+                                        <td>{!ipotek.BUDAT}</td>
+                                        <td><lightning:formattedNumber value="{!ipotek.DMBTR}" currencyCode="TRY" currencyDisplayAs="code" style="currency" /></td>
+                                        <td>{!ipotek.NETDT}</td>
+                                        <td>{!ipotek.XBLNR}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.showTeminatDetay}">
+        <div title="{!$Label.c.Coverage_Details}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideTeminatDetayPopUp}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Coverage_Details}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelTeminat }" class="excelButton"/>
+                        <br/><br/><div class="slds-scrollable_x">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Number}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Period}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Amount}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Expiry_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Bank}</b></th>
+                                </tr>
+                                <aura:iteration items="{!v.CreditRiskResponse.itemZ.TEMINAT_DETAY.item}" var="teminat">
+                                    <tr>
+                                        <td>{!teminat.BELNR}</td>
+                                        <td>{!teminat.GJAHR}</td>
+                                        <td>{!teminat.BUDAT}</td>
+                                        <td><lightning:formattedNumber value="{!teminat.DMBTR}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></td>
+                                        <td>{!teminat.NETDT}</td>
+                                        <td>{!teminat.XBLNR}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+     <aura:if isTrue="{!v.showTeminatIpotegiDetay}">
+        <div title="{!$Label.c.Coverage_Mortgage_Details}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideTeminatIpotegiDetayPopUp}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Coverage_Mortgage_Details}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelTeminatIpotegi }" class="excelButton"/>
+                        <br/><br/>
+                        <div class="slds-scrollable_x">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Number}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Period}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Amount}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Expiry_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Bank}</b></th>
+                                </tr>
+                                <aura:iteration items="{!v.CreditRiskResponse.itemZ.TEMINATIPOTEK_DETAY.item}" var="tmtIp">
+                                    <tr>
+                                        <td>{!tmtIp.BELNR}</td>
+                                        <td>{!tmtIp.GJAHR}</td>
+                                        <td>{!tmtIp.BUDAT}</td>
+                                        <td><lightning:formattedNumber value="{!tmtIp.DMBTR}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></td>
+                                        <td>{!tmtIp.NETDT}</td>
+                                        <td>{!tmtIp.XBLNR}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.showDtstmckDetay}">
+        <div title="{!$Label.c.DTS_Checkout_Details}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideDtstmckDetayPopUp}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.DTS_Checkout_Details}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelDtsKasaCeki }" class="excelButton"/>
+                        <br/><br/>
+                        <div class="slds-scrollable_x">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Number}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Period}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Amount}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Expiry_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Bank}</b></th>
+                                </tr>
+                                <aura:iteration items="{!v.CreditRiskResponse.itemZ.DTSTEMCEK_DETAY.item}" var="dts">
+                                    <tr>
+                                        <td>{!dts.BELNR}</td>
+                                        <td>{!dts.GJAHR}</td>
+                                        <td>{!dts.BUDAT}</td>
+                                        <td><lightning:formattedNumber value="{!dts.DMBTR}" currencyCode="TRY" currencyDisplayAs="code" style="currency"  /></td>
+                                        <td>{!dts.NETDT}</td>
+                                        <td>{!dts.XBLNR}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.showYenilenecekTeminat}">
+        <div title="Yenilenecek Teminat Detayları">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideTeminat}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Yenilenecek Teminatlar</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelYenilenecekTeminat }" class="excelButton"/>
+                        <br/><br/>
+                        <div class="slds-scrollable_x">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="slds-border"><b>{!$Label.c.e_fiscal_year}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Number}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Date}</b></th>
+                                    <th class="slds-border"><b>Vade Tarihi</b></th>
+                                    <th class="slds-border"><b>Tutar</b></th>
+                                    <th class="slds-border"><b>Banka</b></th>
+                                </tr>
+                                <aura:iteration items="{!v.CreditRiskResponse.itemZ.YENILENECEK_KLM.item}" var="teminatKalem">
+                                    <tr>
+                                        <td>{!teminatKalem.GJAHR}</td>
+                                        <td>{!teminatKalem.BELNR}</td>
+                                        <td>{!teminatKalem.BUDAT}</td>
+                                        <td>{!teminatKalem.NETDT}</td>
+                                        <td>{!teminatKalem.DMBTR}</td>
+                                        <td>{!teminatKalem.BANKA}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table></div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showBaglantiFaturaDetay}">
+        <div title="{!$Label.c.Invoice_Detail}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideBaglantiFaturaDetayPopUp}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Invoice_Detail}</h2>
+                    </header>
+                    
+                    <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                        
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Number}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Period}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Amount}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Expiry_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Date}</b></th>
+                                </tr>
+                                <aura:iteration items="{!v.SelectedBaglantiFaturaDetay.item}" var="faturaItem">
+                                    <tr>
+                                        <td>{!faturaItem.BELNR}</td>
+                                        <td>{!faturaItem.GJAHR}</td>
+                                        <td>{!faturaItem.NETDT}</td>
+                                        <td>{!faturaItem.DMBTR}</td>
+                                        <td>{!faturaItem.H_BUDAT}</td>
+                                        <td>{!faturaItem.H_BLDAT}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.showBaglantiCekDetay}">
+        <br/><br/>
+        <div title="{!$Label.c.Check_Detail}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container baglanticek-pop" >
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideBaglantiCekDetayPopUp}" size="large" iconName="utility:close" class="fLeft"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{!$Label.c.Check_Detail}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium"  id="modal-content-id-1">
+                        <lightning:button iconName="utility:download" label="Excel" title="Excel" onclick="{! c.downloadExcelBaglantiCekDetay}" class="excelButton"/>
+                       <br/>
+                        <div class="slds-scrollable">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr>
+                                    <th class="slds-border"><b>{!$Label.c.Document_Number}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Period}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Amount}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.Expiry_Date}</b></th>
+                                    <th class="slds-border"><b>{!$Label.c.portfolio}</b></th>
+                                </tr>
+                                <aura:iteration items="{!v.SelectedBaglantiCekDetay.item}" var="cekItem">
+                                    <tr>
+                                        <td class="font-resp">{!cekItem.BELNR}</td>
+                                        <td class="font-resp">{!cekItem.GJAHR}</td>
+                                        <td class="font-resp">{!cekItem.NETDT}</td>
+                                        <td class="font-resp"><lightning:formattedNumber value="{!cekItem.DMBTR}" currencyCode="TRY" currencyDisplayAs="code" style="currency"/></td>
+                                        <td class="font-resp">{!cekItem.H_BUDAT}</td>
+                                        <td class="font-resp">{!cekItem.PORTF}</td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table></div> </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+</aura:component>

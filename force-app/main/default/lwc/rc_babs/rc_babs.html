@@ -1,0 +1,365 @@
+<template>
+  <article class="slds-card">
+    <div class="slds-card__header slds-grid" style="border-bottom: 1px solid lightgray;background-color: #DF2027;color: white;padding: 7px;margin: 0;">
+      <div class="slds-media">
+        <div class="slds-media__figure">
+           <span class="slds-assistive-text">opportunity</span>
+           <lightning-icon class="my-icon" icon-name="utility:adjust_value" style="--sds-c-icon-color-foreground-default: white;"></lightning-icon>
+        </div>
+        <div class="slds-media__body">
+           <div class="slds-page-header__name">
+              <div class="slds-page-header__name-title">
+                 <h1>
+                    <span class="slds-page-header__title slds-truncate" title="BA & BS Alım Satım Raporu">BA & BS Alım Satım Raporu</span>
+                 </h1>
+              </div>
+           </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="slds-card__footer" style="padding-top: 0;">
+      <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+          <legend class="slds-text-heading_small slds-p-vertical_medium" align="left" style="width: auto;">
+            Filtre
+        </legend>
+        <div class="slds-grid">
+          <div class="slds-col">
+            <div style="width: 90%">
+              <lightning-combobox
+                name="ay"
+                value={month}
+                placeholder="Ay Seçimi Yapın"
+                options={months}
+                onchange={handleMonthChange}
+                class="combobox"
+              >
+              </lightning-combobox>
+            </div>
+          </div>
+          <div class="slds-col">
+            <div style="width: 90%">
+              <lightning-combobox
+                name="yıl"
+                value={year}
+                placeholder="Yıl Seçimi Yapın"
+                options={years}
+                onchange={handleYearChange}
+                class="combobox"
+              >
+              </lightning-combobox>
+            </div>
+          </div>
+          <div class="slds-col">
+              <lightning-button
+                label="Ara"
+                onclick={getOzet}
+                class="lightning-button-element noTopMargin"
+                icon-name="utility:search"
+              >
+              </lightning-button> 
+          </div>
+        </div>
+        </fieldset>
+    </footer>
+  </article>
+  <div class="app slds-p-around_x-large">
+
+    <br />
+
+    <template if:true={showOzet}>
+      <div class="card-style"> 
+        <div class="slds-page-header">
+          <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+              <div class="slds-media">
+                <div class="slds-media__figure">
+                  <span class="slds-assistive-text">opportunity</span>
+                  <lightning-icon
+                    icon-name="utility:description"
+                    size="small"
+                    alternative-text="Description"
+                    title="Description"
+                    style="--sds-c-icon-color-foreground-default: #df2027;"
+                  ></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                  <div class="slds-page-header__name">
+                    <div class="slds-page-header__name-title">
+                      <h1>
+                        <span
+                          class="slds-page-header__title slds-truncate"
+                          title="Özet Raporu"
+                          style="color: black;margin-top: 0;"
+                          >Özet Raporu</span
+                        >
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background: white; color: black;height: auto;" class="slds-th__action">
+          <lightning-datatable
+            key-field="id"
+            data={ozetData}
+            hide-checkbox-column="false"
+            columns={ozetColumns}
+            onrowaction={handleRowAction}
+            style="color: black;margin-top: 0;"
+          >
+          </lightning-datatable>
+        </div>
+      </div>
+    </template>
+
+    <template if:true={showBADetay}>
+      <div class="card-style" style="margin-top: 1rem;"> 
+      <div class="slds-page-header">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <span class="slds-assistive-text">opportunity</span>
+                <lightning-icon
+                  icon-name="utility:copy"
+                  size="small"
+                  alternative-text="Description"
+                  title="Description"
+                  style="--sds-c-icon-color-foreground-default: #df2027;"
+                ></lightning-icon>
+              </div>
+              <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                    <h1>
+                      <span
+                        class="slds-page-header__title slds-truncate"
+                        title="Özet Raporu"
+                        style="color: black;margin-top: 0;"
+                        >Detay Raporu</span
+                      >
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="slds-clearfix">
+        <div class="slds-float_right">
+          <lightning-layout>
+            <lightning:layoutItem size="2" class="slds-float_right" style="float: right;">
+              <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                   <lightning-button icon-name="utility:download" label="Dışa Aktar" onclick={downloadBaTable}></lightning-button>
+                </div>
+             </div>
+            </lightning:layoutItem>
+    
+          </lightning-layout>
+        </div>
+      </div>
+
+     
+
+     <br>
+ 
+      <div style="height: 500px">
+        <lightning-datatable
+          key-field="id"
+          data={detayDataOnScreenBA}
+          hide-checkbox-column="true"
+          columns={detayColumns}
+        >
+        </lightning-datatable>
+      </div>
+      <br />
+      <br />
+      <br />
+      <template if:true={showPagingBA}>
+        <lightning-layout horizontal-align="space">
+          <lightning-layout-item flexibility="auto">
+            <lightning-button
+              label="Previous"
+              icon-name="utility:chevronleft"
+              onclick={previousHandlerBA}
+            >
+            </lightning-button>
+          </lightning-layout-item>
+          <lightning-layout-item flexibility="auto">
+            Page {pageBA} of {totalPageBA}
+          </lightning-layout-item>
+          <lightning-layout-item flexibility="auto">
+            <lightning-button
+              label="Next"
+              icon-name="utility:chevronright"
+              icon-position="right"
+              onclick={nextHandlerBA}
+            ></lightning-button>
+          </lightning-layout-item>
+        </lightning-layout>
+      </template>
+      </div>
+    </template>
+
+    <template if:true={showBSDetay}>
+      <div class="card-style" style="margin-top: 1rem;"> 
+        <div class="slds-page-header">
+          <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+              <div class="slds-media">
+                <div class="slds-media__figure">
+                  <span class="slds-assistive-text">opportunity</span>
+                  <lightning-icon
+                    icon-name="utility:copy"
+                    size="small"
+                    alternative-text="Description"
+                    title="Description"
+                    style="--sds-c-icon-color-foreground-default: #df2027;"
+                  ></lightning-icon>
+                </div>
+                <div class="slds-media__body">
+                  <div class="slds-page-header__name">
+                    <div class="slds-page-header__name-title">
+                      <h1>
+                        <span
+                          class="slds-page-header__title slds-truncate"
+                          title="Özet Raporu"
+                          style="color: black;margin-top: 0;"
+                          >Detay Raporu</span
+                        >
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br>
+
+        <lightning-layout>
+          <div class="slds-form-element">
+            <div class="slds-form-element__control">
+              <lightning-button icon-name="utility:download" label="Excel" onclick={downloadBsTable}></lightning-button>
+            </div>
+        </div>
+        </lightning-layout>
+
+      <br>
+
+        <div style="height: 500px">
+          <lightning-datatable
+            key-field="id"
+            data={detayDataOnScreenBS}
+            hide-checkbox-column="true"
+            columns={detayColumns}
+          >
+          </lightning-datatable>
+        </div>
+        <br />
+        <br />
+        <br />
+        <template if:true={showPagingBS}>
+          <lightning-layout horizontal-align="space">
+            <lightning-layout-item flexibility="auto">
+              <lightning-button
+                label="Previous"
+                icon-name="utility:chevronleft"
+                onclick={previousHandlerBS}
+              >
+              </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto">
+              Page {pageBS} of {totalPageBS}
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto">
+              <lightning-button
+                label="Next"
+                icon-name="utility:chevronright"
+                icon-position="right"
+                onclick={nextHandlerBS}
+              ></lightning-button>
+            </lightning-layout-item>
+          </lightning-layout>
+        </template>
+      </div>
+    </template>
+
+    <template if:true={isErrorPopOpen}>
+      <!-- Modal/Popup Box LWC starts here -->
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-describedby="modal-content-id-1"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container">
+          <!-- Modal/Popup Box LWC header here -->
+          <header class="slds-modal__header">
+            <button
+              class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+              title="Close"
+              onclick={closeModal}
+            >
+              <lightning-icon
+                icon-name="utility:close"
+                alternative-text="close"
+                variant="inverse"
+                size="small"
+              ></lightning-icon>
+              <span class="slds-assistive-text">Ok</span>
+            </button>
+            <h2
+              id="modal-heading-01"
+              class="slds-text-heading_medium slds-hyphenate"
+            >
+              Error Message
+            </h2>
+          </header>
+          <!-- Modal/Popup Box LWC body starts here -->
+          <div
+            class="slds-modal__content slds-p-around_medium"
+            id="modal-content-id-1"
+          >
+            <p>
+              <b> İlgili dönem için görüntülenecek rapor bulunamadı. </b>
+            </p>
+          </div>
+          <!-- Modal/Popup Box LWC footer starts here -->
+          <footer class="slds-modal__footer">
+            <button
+              class="slds-button slds-button_brand"
+              title="OK"
+              onclick={closeModal}
+            >
+              OK
+            </button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={isLoading}>
+      <div class="spinner">
+        <lightning-spinner
+          alternative-text="Loading"
+          variant="brand"
+          size="large"
+        >
+        </lightning-spinner>
+      </div>
+    </template>
+  </div>
+</template>

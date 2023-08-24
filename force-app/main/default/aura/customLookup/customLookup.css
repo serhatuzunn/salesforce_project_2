@@ -1,0 +1,8 @@
+.THIS .leftPaddingClass {
+    padding-left: 2rem;
+}
+.THIS .mySpinner { 
+  position: relative;
+  height: 1rem;
+  width: 1rem; 
+}

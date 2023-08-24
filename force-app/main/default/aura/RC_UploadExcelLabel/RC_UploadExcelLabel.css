@@ -1,0 +1,27 @@
+.THIS .customBtn {
+    color: white;
+    width: 120px;
+}
+
+.THIS .customWhiteBG  {
+    background-color: white !important;
+}
+
+.THIS .slds-file-selector_files .slds-file-selector__button,.THIS .slds-file-selector--files .slds-file-selector__button {
+    max-height: 10.625rem;
+    line-height: 1.625rem;
+}
+
+.THIS .slds-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.THIS .slds-file-selector__button{
+    background: #DF2027;
+    height: 32px;
+    border-radius: 4px;
+    color: white;
+}

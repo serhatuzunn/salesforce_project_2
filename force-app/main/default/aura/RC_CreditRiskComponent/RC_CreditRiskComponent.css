@@ -1,0 +1,100 @@
+.THIS .fLeft{
+    float:left !important;
+}
+.THIS .underline{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.THIS .rspTbl
+{
+    display:none !important;
+}
+.THIS .dskTbl
+{
+    display:block !important;
+} 
+.THIS .dskTbl table tbody{
+    width: 100%;
+    display: table;
+}
+.THIS .slds-button
+{
+    color:black;
+}
+.THIS .slds-page-header__name-title{
+    margin-top: 7px;
+}
+@media only screen and (max-device-width: 720px) {
+    .THIS .rspTbl
+    {
+        display:block !important;
+    }
+    .THIS .dskTbl
+    {
+        display:none !important;
+    }
+    .THIS table{
+        width: 100%;
+    	overflow: scroll;
+    }
+}
+@media only screen and (max-device-width: 600px) {
+    .THIS .slds-tabs_card{
+        width: 50% !important;
+    }
+    .THIS .slds-size_1-of-12{
+        width: 100%;
+        margin-left: 30px;
+        margin-top: -2rem;
+    }
+    .THIS .slds-size_3-of-12{
+        width: 33%;
+    }
+    .THIS .slds-border
+    {
+        font-size:11px;
+    }
+    .THIS .font-resp
+    {
+        font-size:11px;
+    }
+    .THIS .pdf-button{
+        padding-top: 0 !important;
+        margin-bottom: 1rem;
+        float: right;
+    	margin-right: 2rem;
+    }
+    .THIS .slds-truncate{
+        font-size:11px;
+    }
+    .THIS .rspTbl  td{
+    	width: 70%;
+    }
+    .THIS .baglanticek-pop{
+        max-height:25%;
+        height:25%;
+    }
+    .THIS{
+        font-size:10px;
+    }
+    .THIS .excelButton
+    {
+        font-size:10px !important;
+        float:right;
+        display:none;
+    }
+    
+}
+
+@media only screen and (min-width: 768px) and (max-width:1024px) {
+    .THIS .slds-size_1-of-12{
+        margin-left: -20px;
+        margin-top: -3px;
+    }
+    .THIS .slds-size_3-of-12{
+        width: 20%;
+    }
+}
+.THIS .excelButton{
+    float: right;
+}

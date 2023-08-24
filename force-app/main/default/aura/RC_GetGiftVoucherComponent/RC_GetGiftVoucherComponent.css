@@ -1,0 +1,68 @@
+.THIS{
+    font-family: 'Salesforce Sans';
+}
+.THIS .CekSorgula{
+    float:left !important;
+}
+
+.THIS .CekGirisi{
+    float:right !important;
+}
+.THIS .my-icon{
+    background-color: white;
+}
+.THIS .slds-card__header{
+    background-color: red !important;
+    padding: 7px;
+}
+.THIS .lightning-button-element{
+background: #FFFFFF;
+border: 1px solid #d68c8e;
+box-sizing: border-box;
+border-radius: 4px !important;
+color: #DF2027;
+float: right;
+margin-top: 1.4rem;
+}
+.THIS .slds-form-element__label{
+    font-size: 14px;
+    float: left;
+}
+
+.THIS .lightning-button-element:hover{
+background: #FFFFFF;
+border: 1px solid #DF2027;
+box-sizing: border-box;
+border-radius: 4px !important;
+margin-top: 1.4rem;
+color: #DF2027;
+transform: translateY(-1px);
+box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+.THIS .page-title{
+    font-family: 'Salesforce Sans';
+    font-size: 18px;
+    font-weight: 400;
+    padding-left: 10px;
+    color: white;
+}
+
+.THIS .redHeader{
+    background-color: #df2027;
+    color: white;
+    margin: 0;
+}
+
+.THIS .spinner{
+--lwc-brandPrimary: rgb(218 35 54);
+}
+
+.THIS legend{
+    width: 2.5%;
+    font-size:medium;
+}
+
+.THIS input:focus, .THIS select:focus{
+    border-color:#DF2027 !important;
+}

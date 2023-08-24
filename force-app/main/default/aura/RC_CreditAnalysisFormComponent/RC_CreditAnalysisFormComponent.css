@@ -1,0 +1,12 @@
+.THIS {
+}
+.THIS .modalClose{
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100vh;
+    display: flex;
+}
+.THIS .modalCloseButton{
+    justify-content: flex-end;
+    display: flex;
+}

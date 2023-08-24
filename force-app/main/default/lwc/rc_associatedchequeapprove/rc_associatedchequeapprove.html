@@ -1,0 +1,223 @@
+<!-- sldsValidatorIgnore -->
+<template>
+  <div class="c-container">
+
+  </div>
+  <lightning-spinner if:true={showSpinner} alternative-text="Loading" size="large"></lightning-spinner>
+
+  <div class="slds-page-header slds-m-bottom_x-large redHeader">
+    <div class="slds-page-header__row">
+      <div class="slds-page-header__col-title">
+        <div class="slds-media">
+          <div class="slds-media__figure">
+            <span class="slds-assistive-text">Bağlantı Bordro Onay Listesi</span>
+            <lightning-icon icon-name="standard:expense"></lightning-icon>
+          </div>
+          <div class="slds-media__body">
+            <div class="slds-page-header__name">
+              <div class="slds-page-header__name-title">
+                <h1>
+                  <span class="slds-page-header__title slds-truncate title" title="Bağlantı Bordro Onay
+                    Listesi">Bağlantı Bordro Onay
+                    Listesi</span>
+                </h1>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slds-clearfix">
+    <lightning-layout>
+      <lightning-layout-item size="12" padding="around-small">
+        <fieldset class="slds-box slds-theme--default">
+          <legend class="slds-text-heading--small slds-p-vertical--small bold">Filtre</legend>
+          <lightning-layout horizontal-align="spread">
+            <lightning-layout-item size="6" padding="around-small">
+              <lightning-combobox name="kanal" label="Uygulama Kanalı" value={uygulamaKanal}
+                options={uygulamaKanalOptions} onchange={handleCombobox}>
+              </lightning-combobox>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="6" padding="around-small">
+              <lightning-combobox name="donem" label="Bağlantı Dönemi" value={cariDonem} options={cariDonemOptions}
+                onchange={handleCombobox}>
+              </lightning-combobox>
+            </lightning-layout-item>
+          </lightning-layout>
+          <lightning-layout horizontal-align="spread">
+            <lightning-layout-item size="10" padding="around-small">
+              <lightning-input label="Bayi Kırılımını Göster" type="checkbox" value={bayiKirilim} name="bayiKirilim"
+                onchange={handleCheckbox}> </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto" size="2" padding="around-small">
+              <lightning-button icon-name="utility:search" label="Ara" title="" onclick={handleSearch}
+                class="slds-float-right slds-m-left_x-small lightning-button-element">
+              </lightning-button>
+            </lightning-layout-item>
+          </lightning-layout>
+        </fieldset>
+
+      </lightning-layout-item>
+    </lightning-layout>
+    <template if:true={showMainData}>
+      <lightning-layout multiple-rows="true" class="slds-p-around_small">
+        <lightning-layout-item size="12">
+          <div class="slds-box slds-m-around_small" style="margin-top: 12px;">
+            <table>
+              <tr>
+                <th style="height: 50px; width: 30%;">Ad Soyad</th>
+                <th>Onaylanan Ortalama Vade</th>
+                <th>Onaylanan Tutar Bakiye</th>
+                <th>Ortalama Vade (Hesaplanan + Onaylanan)</th>
+                <th>Tutar Bakiye (Hesaplanan + Onaylanan)</th>
+              </tr>
+              <template for:each={kullaniciHiyerarsi} for:item="kullanici">
+                <template if:true={kullanici.dataGoster}>
+                  <tr key={kullanici.kullaniciID} class={kullanici.backgroundClass}>
+                    <td style="padding-left: 0.3rem;">
+                      <div style="width: 100%; float: right; clear: both;">
+                        <div class={kullanici.hieararcyLevelClass} style="float: left; ">
+                          <lightning-input type="checkbox" class="checkboxCustom" data-ukkey={kullanici.uygulamaKanal}
+                            data-hl={kullanici.hierarchyLevel} data-id={kullanici.kullaniciID}
+                            data-parent-id={kullanici.parentID} value={kullanici.isChecked} name="userCheckInput"
+                            onchange={handleCheckbox}> </lightning-input>
+                        </div>
+                        <div onclick={handleDivClick} data-ukkey={kullanici.uygulamaKanal}
+                          data-hl={kullanici.hierarchyLevel} data-id={kullanici.kullaniciID}
+                          data-parent-id={kullanici.parentID} data-is-satis-uzmani={kullanici.isSatisUzmani}>
+                          {kullanici.kullaniciAd} -
+                          {kullanici.uygulamaKanalLabel}</div>
+                      </div>
+                    </td>
+                    <td>
+                      <lightning-formatted-date-time value={kullanici.onaylananOrtVade} year="numeric" month="2-digit"
+                        day="2-digit"></lightning-formatted-date-time>
+                    </td>
+                    <td>
+                      <lightning-formatted-number value={kullanici.onaylananTotalAmount} format-style="currency"
+                        maximum-fraction-digits="2">
+                      </lightning-formatted-number>
+                    </td>
+                    <td>
+                      <lightning-formatted-date-time value={kullanici.totalOrtVade} year="numeric" month="2-digit"
+                        day="2-digit"></lightning-formatted-date-time>
+                    </td>
+                    <td>
+                      <lightning-formatted-number value={kullanici.totalAmount} format-style="currency"
+                        maximum-fraction-digits="2">
+                      </lightning-formatted-number>
+                    </td>
+                  </tr>
+                  <template if:true={kullanici.isSatisUzmani}>
+                    <template if:true={kullanici.showBayiKirilim}>
+                      <template if:true={kullanici.showDataList}>
+                        <tr key={kullanici.kullaniciID} data-key="bayikirilim">
+                          <td colspan="5">
+                            <table style="width: 80%; margin: auto;">
+                              <tr>
+                                <th>#</th>
+                                <th>Bayi</th>
+                                <th>Dönem</th>
+                                <th>Kredi Kontrol Alanı</th>
+                                <th>Çek Türü</th>
+                                <th>Ödeme Koşulu</th>
+                                <th>Onaylanan Ortalama Vade</th>
+                                <th>Onaylanan Tutar Bakiye</th>
+                                <th>Ortalama Vade (Hesaplanan + Onaylanan)</th>
+                                <th>Tutar Bakiye (Hesaplanan + Onaylanan)</th>
+                                <th>Ek Bağlantı</th>
+                              </tr>
+                              <template for:each={kullanici.dataList} for:item="data">
+                                <tr key={data.Id} class={data.backgroundClass}>
+                                  <td style="padding-left: 0.3rem;">
+                                    <template if:true={data.canApproveItem}>
+                                      <lightning-input value={data.isChecked} class="checkboxCustom" type="checkbox"
+                                        data-ukkey={kullanici.uygulamaKanal} data-hl={kullanici.hierarchyLevel}
+                                        data-id={data.Id} data-parent-id={kullanici.kullaniciID} name="dataCheckInput"
+                                        onchange={handleCheckbox}>
+                                      </lightning-input>
+                                    </template>
+                                    <template if:false={data.canApproveItem}>
+                                      #
+                                    </template>
+                                  </td>
+                                  <td>{data.bayiInfo}</td>
+                                  <td>{data.RC_Term_ID__r.RC_Payment_Form__c} - {data.paymentFormDesc}</td>
+                                  <td>{data.RC_KKA_Defination__c}</td>
+                                  <td>{data.bordroTipDef}</td>
+                                  <td>{data.odemeKosul}</td>
+                                  <td>
+                                    <lightning-formatted-date-time value={data.RC_Average_Due_Date__c} year="numeric"
+                                      month="2-digit" day="2-digit"></lightning-formatted-date-time>
+                                  </td>
+                                  <td>
+                                    <lightning-formatted-number value={data.RC_Amount__c} format-style="currency"
+                                      currency-code="TRY" currency-display-as="symbol" maximum-fraction-digits="2">
+                                    </lightning-formatted-number>
+                                  </td>
+                                  <td>
+                                    <lightning-formatted-date-time value={data.RC_Average_Due_Date__c} year="numeric"
+                                      month="2-digit" day="2-digit"></lightning-formatted-date-time>
+                                  </td>
+                                  <td>
+                                    <lightning-formatted-number value={data.RC_Amount__c} format-style="currency"
+                                      currency-code="TRY" currency-display-as="symbol" maximum-fraction-digits="2">
+                                    </lightning-formatted-number>
+                                  </td>
+                                  <td>{data.RC_IsExtra__c}</td>
+                                </tr>
+                              </template>
+                            </table>
+                          </td>
+                        </tr>
+                      </template>
+                    </template>
+                  </template>
+                </template>
+              </template>
+            </table>
+          </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12">
+          <lightning-layout class="slds-float_right" horizontal-align="spread">
+            <lightning-layout-item padding="around-small">
+              <fieldset class="slds-box slds-theme--default">
+                <div class="slds-grid slds-wrap">
+                  <div class="slds-col slds-size_1-of-1">
+                    <span>
+                      <lightning-textarea name="aciklama" label="Açıklama" onchange={handleComment}
+                        value={selectedComment}
+                        style="background-color: rgb(242, 242, 242); width:260px; border: none;background-color: transparent;resize: none;outline: none;">
+                      </lightning-textarea>
+                    </span>
+                    <div class="slds-float_right" style="margin-top: 1%;">
+                      <span>
+                        <lightning-button label="Reddet" title="" name="red" onclick={handleButtonClick}
+                          class="slds-m-left_small">
+                        </lightning-button>
+                      </span>
+                      <span>
+                        <lightning-button label="Onayla" title="" variant="destructive-text" name="onay"
+                          onclick={handleButtonClick} class="slds-m-left_x-small">
+                        </lightning-button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </lightning-layout-item>
+          </lightning-layout>
+        </lightning-layout-item>
+      </lightning-layout>
+
+
+    </template>
+  </div>
+
+
+
+</template>

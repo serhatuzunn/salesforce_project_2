@@ -1,0 +1,55 @@
+.THIS .left-align {
+    text-align: left;
+}
+.THIS .right-align {
+    text-align: right;
+    padding-left: 5px;
+}
+
+
+.THIS .padding {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.THIS .buttonHeader{
+    float: left;
+}
+.THIS .slds-modal__container{
+    width:100% !important;
+}
+.THIS .underline{
+    text-decoration: underline;
+    cursor: pointer;
+}
+.THIS .colour
+{
+    background-color:#53565A;
+    color: white;
+}
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: #e4002b;
+        
+    }
+    .THIS .slds-table_bordered tbody td{
+        text-align:center !important;
+    }
+    .THIS .slds-table_bordered tbody tr th{
+        text-align:center !important;
+    }
+    .THIS    .slds-modal__container{ 
+        height : 100%; width: auto; max-width: 80%; max-height:80%; 
+    } 
+    .THIS   .modal-body{ 
+        height : 60vh !important; 
+        max-height: 60vh !important; 
+    } 
+    .THIS   .slds-modal__footer{ 
+        display: inline !important; 
+    }
+    .THIS .margin{
+        margin-top: 4px;
+    }
+    .THIS .corporate-color{
+        background-color:#e4002b;
+        color:white;
+    }

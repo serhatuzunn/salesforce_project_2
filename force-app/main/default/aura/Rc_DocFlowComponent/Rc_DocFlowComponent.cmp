@@ -1,0 +1,88 @@
+<aura:component controller="RC_DocFlowComponentController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <ltng:require styles="{!$Resource.popupCSS}" />
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" /> 
+    
+    <aura:attribute name="loading" 	type="boolean" default="false"/>
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="DocFlowResponse" type="RC_DocFlowComponentController.initWrapper"/>
+    
+    <div title="Güncel Durum"></div>
+    
+    <div class="slds-page-header">
+        <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="custom:custom98" size="small" alternativeText="Teslimat Raporu" title="Teslimat Raporu" />
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title slds-truncate" title="Teslimat Raporu">Teslimat Raporu</span>
+                                </h1>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><br/>
+    
+    <aura:if isTrue="{!v.loading}">
+        
+        <div class="slds-spinner--brand slds-spinner">
+            <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+        </div>
+        
+        <aura:set attribute="else">
+            <aura:if isTrue="{!not(empty(v.DocFlowResponse.cargoResponseModel.CargoItemList))}">
+                
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <tbody>
+                        <tr>     
+                            <td data-label="Detail" scope="row">
+                                <div class="slds-truncate"><b>{!$Label.c.Delivery_No}</b></div>
+                            </td>
+                            <td data-label="Report" scope="row">
+                                <div class="slds-truncate"><b>{!$Label.c.Item_No}</b></div>
+                            </td>
+                            <td data-label="Detail" scope="row">
+                                <div class="slds-truncate"><b>{!$Label.c.Delivery_Status}</b></div>
+                            </td>
+                            <td data-label="Detail" scope="row">
+                                <div class="slds-truncate"><b>{!$Label.c.Cargo_Company}</b></div>
+                            </td>
+                            <td data-label="Report" scope="row">
+                                <div class="slds-truncate"><b>{!$Label.c.Bill_Number}</b></div>
+                            </td>
+                            <td data-label="Report" scope="row">
+                                <div class="slds-truncate"><b>{!$Label.c.Document_Exit_No}</b></div>
+                            </td>
+                        </tr>
+                        <aura:iteration items="{!v.DocFlowResponse.cargoResponseModel.CargoItemList}" var="CargoItem">
+                            <tr>
+                                <td>{!CargoItem.ZTM_DELIVEY_NO}</td>
+                                <td>{!CargoItem.POSNR_VA}</td>              
+                                <td>{!CargoItem.ZZ_ENH_DELIVERY_ST_TXT}</td>
+                                <td>{!CargoItem.CARGO_COMPANY}</td>
+                                <td>{!CargoItem.VBELN_VF}</td>
+                                <td>{!CargoItem.VBELN_CKS}</td>
+                            </tr>
+                        </aura:iteration>   
+                    </tbody>
+                </table>
+                
+                <aura:set attribute="else">
+                    <ui:message title="Uyarı" severity="warning" closable="false">
+                        Siparişe ait teslimat bulunamadı.
+                    </ui:message>
+                </aura:set>
+                
+            </aura:if> 
+        </aura:set>
+        
+    </aura:if>
+    
+</aura:component>

@@ -1,0 +1,164 @@
+* {
+  font-size: 13px;
+  font-family: "Salesforce Sans","Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+.table-container {
+  display: table;
+}
+
+.table-group {
+  display: table-row-group;
+}
+
+.row {
+  display: table-row;
+}
+
+.col {
+  display: table-cell;
+  padding: 5px;
+  text-align: center;
+}
+
+/* .table-group[data-parent="100"] .col:first-child {
+  padding-left: 15px;
+} */
+
+.slds-size_2-of-12 li button {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+.redHeader{
+  background-color: #df2027 !important;
+}
+
+.lightning-button-element button{
+  background: #DF2027;
+  height: 32px;
+  border-radius: 4px;
+  color: white;
+  margin-top: 1.4em;
+  margin-left: 1%;
+  border: 1px solid #DF2027;
+  float: right;
+}
+
+.lightning-button-element button:hover{
+  background: #DF2027;
+  height: 32px;
+  border-radius: 4px;
+  margin-top: 1.4em;
+  margin-left: 1%;
+  color: white;
+  border: 1px solid #DF2027;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+input:focus, select:focus{
+  border-color:#DF2027 !important;
+}
+
+.buttonClass{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.c-container {
+  background-color: #fff;
+  margin: 2px 0 20px 0;
+  height: max-content;
+  /* min-height: 700px !important; */
+  overflow: hidden;
+}
+
+.title{
+  font-size: 20px !important;
+  margin: 4px;
+  color: white;
+  font-weight: 400 !important;
+}
+
+.bm,
+.sm,
+.su,
+.dealer {
+  display: none;
+}
+
+.bm .col:first-child {
+  padding-left: 2em;
+  background-color: #f1f1f1;
+}
+
+.sm .col:first-child {
+  padding-left: 3em;
+  background-color: #f3f3f3;
+}
+
+.su .col:first-child {
+  padding-left: 4em;
+  background-color: #f6f6f6;
+}
+
+.dealer .col:first-child {
+  padding-left: 5em;
+  background-color: #f9f9f9;
+}
+
+.opened {
+  display: table-row-group;
+}
+
+.hierarcyOne {
+  margin-left:1rem;
+}
+
+.hierarcyTwo {
+  margin-left:2rem;
+}
+
+.hierarcyThree {
+  margin-left:3rem;
+}
+
+.hierarcyFour {
+  margin-left:4rem;
+}
+
+.dropdownOpen{
+  max-width: 100%;
+  width: 100%;
+  background: white;
+  top: 32px;
+  min-width: 160px;
+}
+
+.hierarcyFive {
+  margin-left:5rem;
+}
+
+.hierarcySix {
+  margin-left:6rem;
+}
+
+.redBack{
+  background-color: red;
+  color: white;
+}
+
+.transparentBack{
+  background-color: transparent;
+  color: black;
+}
+
+.checkboxCustom{
+  --sds-c-checkbox-color-background: white;
+  --sds-c-checkbox-color-border: white;
+  --sds-c-checkbox-color-border-checked: rgb(29, 78, 242);
+  --sds-c-checkbox-color-background-checked: rgb(29, 78, 242);
+  --sds-c-checkbox-mark-color-foreground: white;
+  --sds-c-checkbox-radius-border: 0.200rem;
+}

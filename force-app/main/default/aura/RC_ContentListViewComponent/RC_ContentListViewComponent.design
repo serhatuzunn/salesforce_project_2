@@ -1,0 +1,10 @@
+<design:component>
+    <design:attribute name="ContentTitle" label="Topic Name" description="Name of the topic you want to add" />
+    <design:attribute name="ContentName" label="Title" description="Name of the title you want to add" />
+    <design:attribute name="FirstContentDetailButton" label="Content-1 Link" description="Tüm içeriklerin listeleneceği içerik sayfasının linkini giriniz." />
+    <design:attribute name="ButtonText" label="Button Text" description="Name of the button text you want to add" />
+    <design:attribute name="SecondContentTitle" label="Topic-2 Name" description="Name of the topic you want to add" />
+    <design:attribute name="SecondContentName" label="Title 2" description="Name of the title you want to add" />
+    <design:attribute name="SecondContentDetailButton" label="Content-2 Link" description="Tüm içeriklerin listeleneceği içerik sayfasının linkini giriniz." />
+    <design:attribute name="SecondButtonText" label="Button Text 2" description="Name of the button text you want to add" />
+</design:component>

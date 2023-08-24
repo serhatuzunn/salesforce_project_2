@@ -1,0 +1,283 @@
+<apex:page extensions="RC_VestelQuoteKamuPdfController" standardStylesheets="false" standardController="Quote" renderAs="pdf" applyBodyTag="false"  applyHtmlTag="false" showHeader="false" title="Kamu Teklif Çıktısı" language="TR" >
+    <head>
+        <style type="text/css" media="print">
+            
+            @page
+            {
+            margin-top:10%; 
+            margin-left: 5%;
+            margin-right:5%;
+            margin-bottom:12%;           
+            size: A4;
+            
+            background-size: auto;       
+            background-repeat: no-repeat;
+            background-position: center top;
+            
+            
+            @top-left
+            {
+            content : element(top-left-div);
+            }
+            
+            @top-center
+            {
+            content : element(top-center-div);
+            }
+            
+            @top-right
+            {           
+            content : element(top-right-div);
+            }
+            
+            @bottom-left
+            {
+            content : element(bottom-left-div);
+            }
+            
+            @bottom-center
+            {
+            content : element(bottom-center-div);
+            <!--"Sayfa " counter(page) " / " counter(pages);-->
+            }
+            
+            @bottom-right
+            {
+            content : element(bottom-right-div);
+            }
+            
+            }
+            
+            
+            
+            .top-left-div
+            {
+            position: running(top-left-div);
+            text-align:left;  
+            }
+            
+            .top-center-div
+            {
+            position: running(top-center-div);
+            text-align:center;
+            padding-left:8px;
+            padding-right:8px;
+            padding-bottom:8px;
+            }
+            
+            .top-right-div
+            {
+            position: running(top-right-div);               
+            text-align:right;
+            margin-top:10px;
+            }
+            
+            .bottom-left-div
+            {
+            position: running(bottom-left-div);   
+            text-align:left; 
+            
+            }
+            .bottom-center-div
+            {
+            position: running(bottom-center-div);
+            text-align:center;  
+            margin-left:-25px;
+            }
+            .bottom-right-div
+            {
+            position: running(bottom-right-div);
+            text-align:right;
+            }           
+            
+            .pagenumber:before 
+            {
+            content: counter(page);
+            }
+            
+            .pagecount:before 
+            {
+            content: counter(pages);
+            }
+            
+            
+            table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            }
+            
+            body{
+            font-family: Arial Unicode MS  !important;
+            }
+            .content{
+            	margin-top:15%;
+            }
+            
+        </style>
+        <!-- HEADER INFO BEGIN-->
+        <div class="top-left-div "></div>
+        <div class="top-center-div "></div>
+        <div class="top-right-div "><apex:image height="50px" url="{!URLFOR($Resource.adres_header)}" /></div>
+        <!-- HEADER INFO END-->
+        
+        <!-- FOOTER INFO BEGIN-->
+        <div class="bottom-left-div "><apex:image height="15px" url="{!URLFOR($Resource.zorlu_logo)}"/></div>
+        <div class="bottom-center-div ">
+            <div style="font-size:7px">
+            VESTEL TİCARET A..Ş. İSTANBUL ŞUBESİ Ceyhun Atuf Kansu Cd.No:114 D Blok 6.Kat Balgat-Çankaya / ANKARA
+            </div>
+        </div>
+        <div class="bottom-right-div "><div style="font-size:10px">Sayfa <span style="font-size:10px" class="pagenumber"/> / <span style="font-size:10px" class="pagecount"/></div></div>
+        <!-- FOOTER INFO END--> 
+    </head>
+    <body>
+        <div class="content">
+            <div>
+                <apex:image url="{!URLFOR($Resource.Vestel_Logo_XL)}" style="margin-top:10%;width: 100%;"/>
+            </div>
+            
+            <div style="margin-top:10%;background:black;color:white;">
+                <h1 style="text-align:center;font-size:40px;">
+                    VESTEL TİCARET A.Ş.
+                </h1>
+                <h1 style="text-align:center;font-size:40px;margin-top:-3%;">
+                    
+                </h1>
+                <h1 style="text-align:center;font-size:40px;margin-top:-3%;">
+                    TEKLİF MEKTUBU
+                </h1>
+            </div>
+            
+            <div style="page-break-before:always;"> 
+                <h1 style="text-align:center;">TEKLİF MEKTUBU</h1>
+                <table style="width:100%">
+                     <tr>
+                        <td width="30%">TEKLİF VEREN</td>
+                        <td width="70%" >{!org.Name}</td>
+                    </tr>	
+                    <tr>
+                        <td width="30%">VERGİ DAİRESİ VE NO   </td>
+                        <td width="70%" >MARMARA KURUMLAR - 9250002626 </td>
+                    </tr>
+                    <tr>
+                        <td width="30%">ADRESİ </td>
+                        <td width="70%" >Levent 199 Büyükdere Caddesi No: 199 PK: 34394 Levent Şişli/İstanbul</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">TİCARET SİCİL NO</td>
+                        <td width="70%" >845004</td>
+                    </tr>
+                      <tr>
+                        <td width="30%">İNTERNET SİTESİ</td>
+                        <td width="70%" >www.vestel.com.tr</td>
+                    </tr>
+                      <tr>
+                        <td width="30%">FAKS</td>
+                        <td width="70%" >{!org.Fax}</td>
+                    </tr>
+                     <tr>
+                        <td width="30%">SATIŞ YETKİLİSİ</td>
+                        <td width="70%" >{!usr.Name}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">E-MAIL</td>
+                         <td width="70%" >{!usr.SenderEmail}</td>
+                    </tr>
+                  
+                    <tr>
+                        <td width="30%">TEL</td>
+                         <td width="70%" >{!usr.MobilePhone}</td>
+                    </tr>
+                </table>
+                <br/>
+                <table style="width:100%">
+                    <tr>
+                        <td width="30%">KURUM</td>
+                        <td width="70%" >{!quote.Account}</td>
+                    </tr>
+                    <tr>
+                        <td width="30%">KİME</td>
+                       <td width="70%" >{!quote.RC_Quote_Account__c}</td>
+                    </tr>
+                </table>   
+                <div>
+                    <p>
+                        Sayın Yetkili,<br/><br/>
+                        
+                        Talep etmiş olduğunuz ürünlerimize ait kurumsal fiyatlarımız ve teklif koşullarımız aşağıda sunulmuştur.<br/><br/>
+                        
+                        Saygılarımızla,<br/><br/>
+                        
+                        VESTEL TİCARET A.Ş.<br/><br/>
+                    </p>
+                </div>
+            </div> 
+            
+            <div class="">
+                <div style="background:black;color:white;">
+                    PROJE ADI: 
+                </div>
+                <table style="width:100%">
+                    <thead>
+                        <tr>
+                            <td width="5%" style="text-align:center;">Marka</td> 
+                            <td width="15%" style="text-align:center;">Ürün Kodu</td>
+                            <td width="30%" style="text-align:center;">Ürün</td>
+                            <td width="5%" style="text-align:center;">Adet</td>
+                            <td width="20%" style="text-align:center;">Birim Fiyat</td>
+                            <td width="20%" style="text-align:center;">Toplam Fiyat</td>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat var="item" value="{!lineItems}"> 
+                            <tr>
+                                <td width="5%" style="text-align:right;">{!item.Product2.RC_VP_Brand__c}</td> 
+                                <td width="15%" style="text-align:center;">{!item.Product2.ProductCode}</td>
+                                <td width="30%" style="text-align:left;">{!item.Product2.Name}</td>
+                                <td width="5%" style="text-align:center;">{!item.Quantity}</td>
+                                <td width="20%" style="text-align:right;">
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}" >
+                                        <apex:param value="{!item.UnitPrice}"/>
+                                    </apex:outputText>
+                                </td>
+                                <td width="20%" style="text-align:right;">
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}" >
+                                        <apex:param value="{!item.TotalPrice}"/>
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                        <tr style="background:black;">
+                        <td colspan="6"></td>
+                        </tr>
+                        <tr style="background:#b8b8b8;">
+                            <td colspan="5">TOPLAM</td>
+                            <td style="text-align:right;">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" >
+                                    <apex:param value="{!quote.TotalPrice}"/>
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div>
+                    <p>
+                        <apex:outputText escape="false" value="{!quote.RC_Notes__c}"/>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="">
+                <div style="page-break-before:always;">
+                	<h1 style="text-align:center;">GENEL ŞARTLAR</h1>
+                    <div>
+                        <p>
+                            <apex:outputText escape="false" value="{!quote.RC_Public_General_Terms__c}"/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>   
+    </body>
+</apex:page>

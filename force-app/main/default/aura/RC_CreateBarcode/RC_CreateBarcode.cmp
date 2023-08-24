@@ -1,0 +1,189 @@
+<aura:component controller="RC_CreateBarcodeController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">    
+    <!--Attributes-->
+    <aura:attribute name="loading" type="boolean" default="false"/>
+    <aura:attribute name="message" type="String"/>
+    
+    <aura:attribute name="hierarchyList"  type="List" default="[]"/>
+    <aura:attribute name="hierarchy2List"  type="List" default="[]"/>
+    <aura:attribute name="hierarchy3List"  type="List" default="[]"/>
+    
+    <aura:attribute name="selectedHierarchy" type="String"/>
+    <aura:attribute name="selectedHierarchy2" type="String"/>
+    <aura:attribute name="selectedHierarchy3" type="String"/>
+    
+    <aura:attribute name="columnList"  type="List" default="[]"/>
+    <aura:attribute name="dataList"  type="List" default="RC_CreateBarcodeController.ProductWrapper[]"/>
+    <aura:attribute name="columnListSelected"  type="List" default="[]"/>
+    <aura:attribute name="dataListSelected"  type="List" default="[]"/>
+    <aura:attribute name="pdfButtonVisible" type="boolean" default="false"/>
+    
+    <aura:attribute name="visibleProductTable" type="Boolean"/>
+    
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="utility:service_territory_policy" class="my-icon" size="medium" alternativeText="Ürün Barkod" title="Ürün Barkod" />
+            <span class="page-title">Ürün Barkod</span>     
+        </aura:set>
+        <aura:set attribute="footer">
+       	<fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+                <ui:message severity="error" closable="true" class="slds-hide" aura:id="errorMsg">
+                    {!v.message}
+                </ui:message>
+                <legend id="createBarcode" style="width: 2.5%;" class="slds-text-heading_small slds-p-vertical_medium" align="left">Filtre</legend>
+                
+                <!-- Filtreleme Kısmı -->
+                <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+                    <div class="slds-size_12-of-12" >
+                        <lightning:layout>
+                            <lightning:layoutItem flexibility="auto" size="6" padding="around-small" >
+                                <lightning:select aura:id="hierarchy" name="hierarchy" label="Kademe 1" 
+                                                  value="{!v.selectedHierarchy}" 
+                                                  onchange="{!c.handleSelectedHierarchy}"
+                                                  required="true" >
+                                    <aura:iteration items="{!v.hierarchyList}" var="option">
+                                        <option text="{!option.label}" value="{!option.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem flexibility="auto" size="6" padding="around-small">
+                                <lightning:select aura:id="hierarchy2" name="hierarchy2" label="Kademe 2" 
+                                                  value="{!v.selectedHierarchy2}" 
+                                                  onchange="{!c.handleSelectedHierarchy2}"
+                                                  required="true" >
+                                    <aura:iteration items="{!v.hierarchy2List}" var="option">
+                                        <option text="{!option.label}" value="{!option.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </div>
+                    <div class="slds-size_12-of-12">
+                        <lightning:layout>
+                            <lightning:layoutItem flexibility="auto" size="6" padding="around-small" >
+                                <lightning:select aura:id="hierarchy3" name="hierarchy3" label="Kademe 3" 
+                                                  value="{!v.selectedHierarchy3}" 
+                                                  onchange="{!c.handleSelectedHierarchy3}"
+                                                  required="false" >
+                                    <aura:iteration items="{!v.hierarchy3List}" var="option">
+                                        <option text="{!option.label}" value="{!option.value}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem flexibility="auto" size="6" padding="around-small" >
+                                <lightning:input aura:id="productCode"
+                                                 label="Ürün Kodu"
+                                                 placeholder="Ürün Kodu"/> 
+                            </lightning:layoutItem>
+                        </lightning:layout> 
+                    </div>
+                    <div class="slds-size_12-of-12 buttons-area" style="margin-left: -5px;">
+                        <lightning:layout>
+                            <lightning:layoutItem flexibility="auto" class="searchButton">
+                                <lightning:button label="Ara" class="slds-m-top_medium search-button" iconName="utility:search" iconPosition="left" onclick="{! c.clickFilter }" />
+                            </lightning:layoutItem>
+                            <lightning:layoutItem flexibility="auto" >
+                                <lightning:button label="Ekle" class="slds-m-top_medium add-button" iconName="utility:add" iconPosition="left" onclick="{! c.clickAdd }" />
+                            </lightning:layoutItem>
+                            <lightning:layoutItem flexibility="auto" >
+                                <lightning:button label="Tümünü Temizle" class="slds-m-top_medium clear-button" iconName="utility:recycle_bin_full" iconPosition="left" onclick="{! c.clickAllClear }" />
+                            </lightning:layoutItem>
+                            <aura:if isTrue="{!v.pdfButtonVisible==true}">
+                            <lightning:layoutItem flexibility="auto" >
+                                <lightning:button label="PDF Al" class="slds-m-top_medium pdf-button" iconName="utility:pdf_ext" iconPosition="left" onclick="{! c.clickPDF }" />
+                            </lightning:layoutItem>
+                                </aura:if>
+                              <aura:if isTrue="{!v.pdfButtonVisible==true}">
+                            <lightning:layoutItem flexibility="auto" >
+                                <lightning:button label="PDF Al(EAN)" class="slds-m-top_medium pdf-ex-button" iconName="utility:pdf_ext" iconPosition="left" onclick="{! c.clickPDFEan }" />
+                            </lightning:layoutItem>
+                             </aura:if>
+                        </lightning:layout>
+                    </div>            
+                </div>
+            </fieldset>
+		</aura:set>
+    </lightning:card>
+
+    <br/>    
+    
+    <aura:if isTrue="{!v.visibleProductTable}"> 
+        <div class="slds-card">
+            <div class="slds-scrollable_x slds-scrollable_y" style="padding: 6px;">         
+                <div id="tableDiv" class="demo-only demo-only--sizing slds-grid slds-wrap" style="height: 460px; display:flex; flex-direction:column;">
+                    <table id="firstTable" style="width:50%; vertical-align:top">
+                        <tr style="width:50%; vertical-align:top">
+                            <!-- Birinci DT -->
+                            <td style="width:50%; vertical-align:top" >
+                                <div style="padding-left: 1px; padding-right: 1px; color:red">                    
+                                    <div  style="height: 460px; padding-left: 1px; padding-right: 1px; color:rgb(5, 98, 138);">                        
+                                        <lightning:datatable aura:id="linesTable"
+                                                             data="{!v.dataList}" 
+                                                             columns="{!v.columnList}" 
+                                                             keyField="ProductCode"
+                                                             errors="{! v.errors }"
+                                                             suppressBottomBar="false"
+                                                             hideCheckboxColumn="false"                                                                                                    
+                                                             showRowNumberColumn="true"
+                                                             selectedRows="{!v.selectedRows}"
+                                                             onrowaction="{!c.handleRowAction}"
+                                                             onrowselection="{!c.onRowSelection}"/>  
+                                        <br/><br/>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="secondTable" style="width:50%; vertical-align:top">
+                        <tr style="width:50%; vertical-align:top">
+                            <!-- Birinci DT -->
+                            <td style="width:50%; vertical-align:top" >
+                                <div style="padding-left: 1px; padding-right: 1px; color:red">                    
+                                    <div  style="height: 460px; padding-left: 1px; padding-right: 1px; color:rgb(5, 98, 138);">                        
+                                        <lightning:datatable aura:id="linesTableSelected"
+                                                             data="{!v.dataListSelected}" 
+                                                             columns="{!v.columnListSelected}" 
+                                                             keyField="ProductCode"
+                                                             errors="{! v.errors }"
+                                                             suppressBottomBar="false"
+                                                             hideCheckboxColumn="true"                                                                                                    
+                                                             showRowNumberColumn="true"
+                                                             onrowaction="{!c.handleRowAction}"/>  
+                                        <br/><br/>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                            <!-- Ikinci DT -->
+                            <!-- <td id="secondTable" style="width:50%; vertical-align:top; padding-left:15px" class="slds-scrollable_x">
+                                <div style="padding-left: 1px; padding-right: 1px; color:red">                    
+                                    <div  style="height: 460px; padding-left: 1px; padding-right: 1px; color:rgb(5, 98, 138);">                        
+                                        <lightning:datatable aura:id="linesTableSelected"
+                                                             data="{!v.dataListSelected}" 
+                                                             columns="{!v.columnListSelected}" 
+                                                             keyField="ProductCode"
+                                                             errors="{! v.errors }"
+                                                             suppressBottomBar="false"
+                                                             hideCheckboxColumn="true"                                                                                                    
+                                                             showRowNumberColumn="true"
+                                                             onrowaction="{!c.handleRowAction}"/>  
+                                        <br/><br/>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table> -->
+                </div>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

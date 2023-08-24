@@ -1,0 +1,519 @@
+<template>
+      <div class="slds-page-header redHeader">
+                  <div class="slds-page-header__row">
+                     <div class="slds-page-header__col-title">
+                        <div class="slds-media">
+                           <div class="slds-media__figure">
+                              <span class="slds-assistive-text">Çek/Senet Giriş Kontrolü</span>
+                              <lightning-icon icon-name="standard:drafts"></lightning-icon>
+                           </div>
+                           <div class="slds-media__body">
+                              <div class="slds-page-header__name">
+                                 <div class="slds-page-header__name-title">
+                                    <h1>
+                                       <span class="slds-page-header__title slds-truncate title" title="Çek/Senet Giriş Kontrolü">Çek/Senet Giriş Kontrolü</span>
+                                    </h1>
+                                 </div>
+                              </div>
+            
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+      </div>
+
+      <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+         <legend class="slds-text-heading_small slds-p-vertical_medium" align="left" style="width: auto;">
+               Filtre
+          </legend>     
+
+          <lightning-tabset variant="scoped">
+            <lightning-tab label="Bağlantı-Çek Senet Kontrolü" onactive={handleClick}>
+               <lightning-layout multiple-rows="true" vertical-align="end">
+               <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6"
+                  padding="around-small">                           
+                      
+                        <div class="slds-grid slds-gutters" style="width: 200%;">
+                                    <div class="slds-col slds-size_1-of-3">
+                                       <div class="slds-form-element">
+                                          <div class="slds-form-element__control">
+                                             <c-search-component obj-name="Account" icon-name="standard:account" label-name="Account"
+                                                placeholder="Bayi" fields={fields} display-fields={displayFields}
+                                                onlookup={handleLookup}>
+                                             </c-search-component>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                       <div class="slds-form-element">
+                                          <div class="slds-form-element__control">
+                                             <lightning-combobox name="cmbBordroStatu" value={bordroStatu} placeholder="Bordro durumu"
+                                             options={objBordroStatu} onchange={handleSearchBordroStatu} label="Bordro Durumu">
+                                          </lightning-combobox>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                       <div class="slds-form-element">
+                                          <div class="slds-form-element__control" >
+                                             <lightning-combobox name="cmbDocType" value={docType} placeholder="Belge Türü"
+                                                options={objDocType} onchange={handleSearchDocType} label="Belge Türü">
+                                             </lightning-combobox>
+                                          </div>
+                                       </div>
+                                    </div>
+                        </div>
+
+                        <div class="slds-grid slds-gutters" style="width: 200%;">
+                                    <div class="slds-col slds-size_1-of-3">
+                                       <div class="slds-form-element">
+                                          <div class="slds-form-element__control">
+                                             <lightning-combobox name="cmbBaglantiDonem" value={baglantiDonem} placeholder="Bağlantı Dönemi"
+                                             options={objBaglantiDonem} onchange={handleSearchBaglantiDonem} label="Bağlantı Dönemi">
+                                          </lightning-combobox>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                       <div class="slds-form-element">
+                                          <div class="slds-form-element__control">
+                                             <lightning-combobox name="cmbCreditControl" value={creditControl} placeholder="Kredi Kontrol Alanı"
+                                             options={objCreditControl} onchange={handleCreditControl} label="Kredi Kontrol Alanı">
+                                          </lightning-combobox>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                       <div class="slds-form-element">
+                                          <div class="slds-form-element__control" >                           
+                                          </div>
+                                       </div>
+                                    </div>
+                        </div>
+                        <br />
+                        <div class="slds-grid slds-gutters" style="width: 200%;">
+                                    <div class="slds-col slds-size_3-of-3">
+                                       <div class="slds-form-element" >
+                                          <div class="slds-form-element__control">
+                                             <lightning-button icon-name="utility:search" class="lightning-button-element" label="Ara" variant="destructive" onclick={handleSearch}></lightning-button>
+                                          </div>
+                                       </div>
+                                    </div>
+                        </div>
+                  
+               <br />                        
+               </lightning-layout-item>
+               </lightning-layout>
+            </lightning-tab>
+
+          <lightning-tab label="Hesap Kapama Kontrolü" onactive={handleClick}>
+                     <lightning-layout multiple-rows="true" vertical-align="end">
+                     <lightning-layout-item size="12" small-device-size="10" medium-device-size="8" large-device-size="6"
+                        padding="around-small">
+
+                        <div class="slds-grid slds-gutters" style="width: 200%;">                        
+                           <div class="slds-col slds-size_1-of-3">
+                              <div class="slds-form-element">
+                                 <div class="slds-form-element__control">
+                                    <c-search-component obj-name="Account" icon-name="standard:account" label-name="Account"
+                                       placeholder="Bayi" fields={fields} display-fields={displayFields}
+                                       onlookup={handleLookupClosing}>
+                                    </c-search-component>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="slds-col slds-size_1-of-3">
+                              <div class="slds-form-element">
+                                 <div class="slds-form-element__control">
+                                    <lightning-combobox name="cmbBordroStatuClosing" value={bordroStatuClosing} placeholder="Bordro durumu"
+                                    options={BordroStatusOptionsClosing} onchange={handleSearchBordroStatuClosing} label="Bordro Durumu">
+                                 </lightning-combobox>
+                                 </div>
+                              </div>
+                           </div>
+                         </div>
+                         <br />
+                        <div class="slds-grid slds-gutters" style="width: 200%;">
+                              <div class="slds-col slds-size_3-of-3">
+                                 <div class="slds-form-element" >
+                                    <div class="slds-form-element__control">
+                                       <lightning-button icon-name="utility:search" class="lightning-button-element" label="Ara" variant="destructive" onclick={handleSearchClosing}></lightning-button>
+                                    </div>
+                                 </div>
+                              </div>
+                        </div> 
+
+                       </lightning-layout-item>
+                     </lightning-layout>
+          </lightning-tab>
+         </lightning-tabset>
+
+         <template if:true={loaded}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+         </template>
+
+      </fieldset>
+      <br/>
+      <!-- Filtre Alanı ALtında Çıkan Tablo-->
+      <template if:true={showBordroDatatable}>
+         <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-5">
+             <div class="slds-text-align_right"><i>* Para birimi TL'dir.</i></div>
+             <div class="slds-text-align_right"><i>* Fiyatlara KDV dahildir.</i></div>
+             <lightning-datatable key-field="Id" show-row-number-column hide-checkbox-column suppress-bottom-bar
+                 onrowaction={handleRowAction} data={bordroList} columns={mainBordrocolumns}></lightning-datatable>
+         </div>
+     </template>
+ <!-- Filtre Alanı ALtında Çıkan Tabl2o-->
+     <template if:true={showBordroDatatableClosing}>
+      <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-6">
+          <div class="slds-text-align_right"><i>* Para birimi TL'dir.</i></div>
+          <div class="slds-text-align_right"><i>* Fiyatlara KDV dahildir.</i></div>
+          <lightning-datatable key-field="Id" show-row-number-column hide-checkbox-column suppress-bottom-bar
+              onrowaction={handleRowAction} data={bordroListClosing} columns={mainBordrocolumnsClosing}></lightning-datatable>
+      </div>
+  </template>
+     
+     <!-- Bordroya Bağlı Çekleri Göster butonunun açtığı modal -->
+    <template if:true={showChequeModal}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large"
+          aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+          <div class="slds-modal__container">
+              <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                      title="Close" onclick={closeChequeModal}>
+                      <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                          <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                      </svg>
+                      <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-02" class="slds-modal__title slds-hyphenate">Bordroya Bağlı Çekler</h2>
+              </header>
+              <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                 
+                  <!-- Excel Upload Component Eklenecek Alan -->
+                  <template if:true={showChequeDatatable}>
+                      <lightning-datatable key-field="Id" show-row-number-column hide-checkbox-column
+                          suppress-bottom-bar onrowaction={handleRowAction} data={chequeList} columns={chequeColumns}>
+                      </lightning-datatable>
+                  </template>
+                  <template if:false={showChequeDatatable}>
+                      <div class="alert warning">
+                          <strong>Bordro'ya çek/senet girişi yapınız.</strong>
+                      </div>
+                  </template>
+
+                  <div class="slds-card" style="width: 30%;margin-top: 2rem;">
+                      <div class="slds-p-around_large bordro-table">
+                          <table
+                              class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                              <tbody>
+                                  <tr>
+                                      <td style="font-weight: bold;background-color: #DF2027;color: white;">Bordro
+                                          Ortalama Vade</td>
+                                      <td>
+                                          {bordroVade}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td style="font-weight: bold;background-color: #DF2027;color: white;">Çek /
+                                          Senet Toplam</td>
+                                      <td>
+                                          <lightning-formatted-number value={bordroTutar} format-style="currency"
+                                              currency-code="TRY" currency-display-as="symbol"
+                                              maximum-fraction-digits="2"></lightning-formatted-number>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td style="font-weight: bold;background-color: #DF2027;color: white;">Çek /
+                                          Senet Ortalama Vade</td>
+                                      <td>
+                                          {girilenVade}
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td style="font-weight: bold;background-color: #DF2027;color: white;">Hesaplanan
+                                          Bakiye</td>
+                                      <td>
+                                          <lightning-formatted-number value={girilenTutar} format-style="currency"
+                                              currency-code="TRY" currency-display-as="symbol"
+                                              maximum-fraction-digits="2"></lightning-formatted-number>
+                                      </td>
+                                  </tr>
+                                  <tr>
+                                      <td style="font-weight: bold;background-color: #DF2027;color: white;">Bakiye
+                                      </td>
+                                      <td>
+                                          <lightning-formatted-number value={farkTutar} format-style="currency"
+                                              currency-code="TRY" currency-display-as="symbol"
+                                              maximum-fraction-digits="2"></lightning-formatted-number>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                          <br>
+                      </div>
+                  </div>                  
+
+                  <template if:true={ShowOnayGonder}><button class="slds-button slds-button_outline-brand create-plan-button" name="onayGonder"  onclick={doneControl}>KONTROL EDİLDİ</button></template>
+                  <template if:true={showSendSAP}><button class="slds-button slds-button_outline-brand create-plan-button" name="sendSAP" onclick={sendRecordSAP}>SAP KAYIT AKTAR</button></template>
+                  <template if:true={showReject}><button class="slds-button slds-button_outline-brand create-plan-button" name="reject" onclick={rejectRecord}>REDDET</button></template>
+              </div>
+          </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+   <!-- Çek Detay/Güncelle/Ekle Modalı -->
+   <template if:true={showChequeAddModal}>
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small"
+            aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-04" class="slds-modal__title slds-hyphenate">{chequeModalTitle}</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_small" id="modal-content-id-4" style="min-height: 10rem;">
+                    <div class="slds-form">
+                        <div class="slds-form-element slds-form-element_horizontal">
+                            <label class="slds-form-element__label" for="chequeType">Çek/Senet</label>
+                            <div class="slds-form-element__control">
+                                <lightning-combobox id="chequeType" value={selectedChequeType} variant="label-hidden"
+                                    options={status.chequeTypes} onchange={handleChequeTypeChange}
+                                    disabled={isChequeTypeReadonly}></lightning-combobox>
+                            </div>
+                        </div>
+                        <template if:true={showAllChequeField}>
+                            <template if:true={typeIsCheque}>
+                                <div class="slds-form-element slds-form-element_horizontal">
+                                    <label class="slds-form-element__label" for="chequePortfolio">Portföy Kodu</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-input type="text" id="chequePortfolio" value={selectedPortfolio}
+                                            disabled>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-form-element_horizontal">
+                                    <label class="slds-form-element__label" for="chequeNumber">Çek/Senet No</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-input type="text" id="chequeNumber" value={selectedChequeNum}
+                                            name="chequeNumber" onchange={handleFormChange} maxlength="7" minlength="7"
+                                            disabled={isChequeReadonly}
+                                            message-when-too-short="Çek Numara bilgisi 7 karakterden kısa olamaz.">
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="dueDate">Vade Tarihi</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="date" id="dueDate" value={relatedDueDate} date-style="short"
+                                        name="dueDate" onchange={handleFormChange} disabled={isReadonly}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="amount">Tutar</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="number" id="amount" value={relatedAmount} name="amount"
+                                        onchange={handleFormChange} formatter="currency" disabled={isReadonly}>
+                                    </lightning-input>
+                                </div>
+                            </div>
+
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="bayiCode">Müşteri Kodu</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="text" id="bayiCode" value={relatedBayiCode} disabled>
+                                    </lightning-input>
+                                </div>
+                            </div>
+
+                            <div class="slds-form-element slds-form-element_horizontal">
+                                <label class="slds-form-element__label" for="identificationNumber">TCKN / Vergi Num</label>
+                                <div class="slds-form-element__control">
+                                    <lightning-input type="text" id="identificationNumber"
+                                        value={selectedIdentificationNum} minlength="10" maxlength="11"
+                                        name="identificationNumber" onchange={handleFormChange}
+                                        disabled={isChequeReadonly}
+                                        message-when-too-short="TCKN/VKN bilgisi 10 karakterden kısa olamaz.">
+                                    </lightning-input>
+                                </div>
+                            </div>
+
+                            <template if:true={typeIsCheque}>
+                                <template if:false={isChequeReadonly}>
+                                    <div class="slds-form-element slds-form-element_horizontal">
+                                        <label class="slds-form-element__label" for="city">Banka Şube İli</label>
+                                        <div class="slds-form-element__control">
+                                            <c-search-component obj-name="RC_City_Region__c" fields={fieldsForCity}
+                                                display-fields={displayFieldsForCity} where-clause={whereClausesForCity}
+                                                onlookup={handleLookup}>
+                                            </c-search-component>
+                                        </div>
+                                    </div>
+
+                                    <div class="slds-form-element slds-form-element_horizontal">
+                                        <label class="slds-form-element__label" for="bankKey">Banka Anahtarı</label>
+                                        <div class="slds-form-element__control">
+                                            <c-search-component obj-name="RC_Bank_Informations__c"
+                                                fields={fieldsForBankKey} display-fields={displayFieldsForBankKey}
+                                                where-clause={whereClausesForBankKey} onlookup={handleLookup}>
+                                            </c-search-component>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <template if:true={isChequeReadonly}>
+                                    <div class="slds-form-element slds-form-element_horizontal">
+                                        <label class="slds-form-element__label" for="city">Banka İli</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" id="city" value={selectedCityName} disabled>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+
+                                    <div class="slds-form-element slds-form-element_horizontal">
+                                        <label class="slds-form-element__label" for="bankKey">Banka Anahtarı</label>
+                                        <div class="slds-form-element__control">
+                                            <lightning-input type="text" id="bankKey" value={selectedBankKeyName}
+                                                disabled>
+                                            </lightning-input>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <div class="slds-form-element slds-form-element_horizontal">
+                                    <label class="slds-form-element__label" for="bankAccNum">Banka Hesap No</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-input type="text" id="bankAccNum" value={selectedBankAccNum}
+                                            pattern="^[0-9]+$" message-when-pattern-mismatch="Sadece sayı girilebilir."
+                                            name="bankAccNum" onchange={handleFormChange} disabled={isChequeReadonly}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+
+                                <div class="slds-form-element slds-form-element_horizontal">
+                                    <label class="slds-form-element__label" for="drawerRegion">Keşide Yeri</label>
+                                    <div class="slds-form-element__control">
+                                        <lightning-input type="text" id="drawerRegion" value={selectDrawerReg}
+                                            name="drawerRegion" onchange={handleFormChange} disabled={isChequeReadonly}>
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+
+                        </template>                        
+
+                        <div class=" slds-float_right">
+                            <button class="slds-button slds-button_destructive" style="margin-top: 1rem;margin-bottom:1rem;"
+                                title="Close" onclick={closeChequeAddModal}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+      <!-- <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small"
+         aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+         <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                  <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                     title="Close" onclick={closeChequeAddModal}>
+                     <svg class="slds-button__icon slds-button__icon_small" aria-hidden="true">
+                        <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#close"></use>
+                     </svg>
+                     <span class="slds-assistive-text">Close</span>
+                  </button>
+                  <h2 id="modal-heading-04" class="slds-modal__title slds-hyphenate">{chequeModalTitle}</h2>
+            </header>
+            <div class="slds-modal__content slds-p-around_small" id="modal-content-id-4" style="min-height: 10rem;">
+                  <lightning-record-edit-form object-api-name="RC_Cheques__c" record-id={selectedChequeId}
+                     onsubmit={handleSubmit} onsuccess={handleSuccess} onerror={handleError}>
+                     <lightning-input-field disabled={isChequeTypeReadonly} field-name="RC_Cheque_Bill__c"
+                        value={selectedChequeType} onchange={handleChequeTypeChange}>
+                     </lightning-input-field>
+                     <template if:true={showAllChequeField}>
+                        <template if:true={typeIsCheque}>
+                              <lightning-input-field disabled={isChequeReadonly} field-name="RC_Cheque_Portfolio__c"
+                                 read-only></lightning-input-field>
+                              <lightning-input-field disabled={isChequeReadonly} field-name="RC_Cheque_Number__c">
+                              </lightning-input-field>
+                        </template>
+                        <lightning-input-field disabled={isChequeReadonly} field-name="RC_Due_Date__c"
+                              value={relatedDueDate}>
+                        </lightning-input-field>
+                        <lightning-input-field disabled={isChequeReadonly} field-name="RC_Amount__c"
+                              value={relatedAmount}></lightning-input-field>
+                        <lightning-input-field disabled="true" name="account" field-name="RC_Account_No__c"
+                              value={relatedBayiCode}>
+                        </lightning-input-field>
+                        <lightning-input-field disabled={isChequeReadonly} field-name="RC_Identification_Number__c">
+                        </lightning-input-field>
+                        <lightning-input-field disabled={isChequeReadonly} field-name="RC_Bank_Key__c"
+                              style="display: none;">
+                        </lightning-input-field>
+                        <lightning-input-field disabled={isChequeReadonly} field-name="RC_Type__c" value="Cheque"
+                              style="display: none;">
+                        </lightning-input-field>
+                        <template if:true={typeIsCheque}>
+                              <lightning-input-field disabled={isChequeReadonly} field-name="RC_City__c"
+                                 onchange={retrieveRelatedBankList}>
+                              </lightning-input-field>
+                              <div onkeyup={handleKeyUp} class="bank-key-element">
+                                 <label>Bank Key</label>
+                                 <lightning-input name="enter-search" disabled={isChequeReadonly} type="search"
+                                    class="bank-key-input" value={selectedBankKeyName}>
+                                 </lightning-input>
+                              </div>
+                              <template if:true={showBankList}>
+                                 <div id="searchRes" class="slds-form-element slds-lookup slds-is-open"
+                                    data-select="single">
+                                    <ul class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-lookup__menu slds"
+                                          role="listbox">
+                                          <template for:each={bankKeyList} for:item="bankItem">
+                                             <li key={bankItem.Id} data-id={bankItem.Id} role="presentation"
+                                                class="slds-listbox__item" onclick={selectBankKey}>
+                                                <span id={bankItem.Id}
+                                                      class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                                      role="option">
+                                                      <span class="slds-media__figure">
+                                                         <span class="slds-icon_container">
+                                                            <lightning-icon icon-name="standard:person_account">
+                                                            </lightning-icon>
+                                                         </span>
+                                                      </span>
+                                                      <span class="slds-media__body">
+                                                         <span>{bankItem.RC_BANKL__c} / {bankItem.RC_BANK__c} /
+                                                            {bankItem.RC_BRINCH__c}</span>
+                                                      </span>
+                                                </span>
+                                             </li>
+                                          </template>
+                                    </ul>
+                                 </div>
+                              </template>
+                              <lightning-input-field disabled={isChequeReadonly}
+                                 field-name="RC_Bank_Account_Number__c">
+                              </lightning-input-field>
+                              <lightning-input-field disabled={isChequeReadonly} field-name="RC_Drawer_Region__c">
+                              </lightning-input-field>
+                        </template>
+                        <template if:false={isChequeReadonly}>
+                              <div class="slds-var-m-top_medium">
+                                 <lightning-button variant="brand" type="submit" label="Save"
+                                    class="lightning-button-element"></lightning-button>
+                              </div>
+                        </template>
+                     </template>
+                     <lightning-input-field disabled={isChequeReadonly} field-name="RC_Bordro__c" value={bordroId}
+                        style="display: none;">
+                     </lightning-input-field>
+                  </lightning-record-edit-form>
+            </div>
+         </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div> -->
+   </template>
+
+</template>

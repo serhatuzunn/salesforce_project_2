@@ -1,0 +1,262 @@
+<aura:component controller="RC_MailOrderDefineController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    
+    
+    
+    <aura:attribute name="selectedAccount" type="sObject" default="{}"/>
+    <aura:attribute name="acc" type="boolean" default="true"/>
+    <aura:attribute name="altAccLabel" type="string"/>
+    <aura:attribute name="altAccWarning" type="string"/>
+    
+    <aura:attribute name="visiblePayment" type="boolean" default="false"/>
+    <aura:attribute name="isOpenPaymentType" type="boolean" default="false"/>
+    <aura:attribute name="isBtnSend" type="boolean" default="false"/>
+    
+    <aura:attribute name="accountId" type="Id"/>
+    <aura:attribute name="emailAdress" type="string"/>
+    <aura:attribute name="orderNo" type="string"/>
+    
+    <aura:attribute name="loading" type="boolean" default="false"/>
+    
+    <aura:attribute type="Object" name="draftValues"  default="[]"/>
+    <aura:attribute type="Object" name="draftValuesPartialPayment"  default="[]"/>
+    <aura:attribute type="Map" name="draftValueMap"  default="{}"/>
+    
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="paymentType" type="String" />
+    <aura:attribute name="selectedPaymentType" type="String" />
+    <aura:attribute name="paymentTypeList" type="List" default="[                                                                
+                                                                {'label': 'Peşin', 'value': 'cash'},
+                                                                {'label': 'Taksit', 'value': 'installment'}]"/>
+    <aura:attribute name="customerOrderList" type="RC_MailOrderDefineController.initWrapper"/>
+    <aura:attribute name="tempCustomerOrderList" type="List" default="[]"/>
+    <aura:attribute name="columns" type="List" default="[]"/>
+    <aura:attribute name="dataList" type="List" default="[]"/>
+    <aura:attribute name="columnsOrderDetail" type="List" default="[]"/>
+    <aura:attribute name="dataListOrderDetail" type="List" default="[]"/>
+    <aura:attribute name="isModalOpen" type="boolean" default="false"/>
+    <aura:attribute name="modalHeaderText" type="String" default="Sipariş Detayı"/>
+    <aura:attribute name="changeIndex" type="Integer" default="0"/>
+    <aura:attribute name="atomicChanges" type="Object" default="[]"/>
+    <aura:attribute name="deliveryNo" type="String" default=""/>
+    <aura:attribute name="totalAmount" type="Decimal" default="0.00"/>
+    
+    <aura:attribute name="assecoPaymentLink" type="string"/>
+    <!--Attributes-->
+    <aura:attribute name="showWarningDialog" type="boolean" default="false"/>
+    
+    
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.selectedAccount}" action="{!c.changeAccount}"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    
+    <div style="display: none;">
+        <form action="{!v.assecoPaymentLink}" method="POST"  aura:id="assecoForm">       
+            <input type="submit" aura:id="assecoSubmit"></input>                 
+        </form>
+    </div>
+    
+    
+    <!-- PAGE HEADER -->
+    <lightning:layout class="slds-page-header slds-page-header_object-home" >
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="Mail Order"/>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">                
+                <h2 class="slds-text-heading_medium">Mail Order</h2>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / PAGE HEADER -->
+    <lightning:layout>
+        <lightning:layoutItem padding="around-small" size="6">
+            <!-- [[ mail order define form goes here ]] -->
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+        <ui:message severity="error" closable="true" class="slds-hide" aura:id="errorMsg">
+            {!v.message}
+        </ui:message>
+        <legend id="newexpenseform" class="slds-text-heading_small
+                                           slds-p-vertical_medium">
+            Filtre
+        </legend>
+        <div class="c-container">
+            <lightning:layout>
+                <lightning:layoutItem flexibility="auto"  >
+                    <ui:outputText value="Müşteri Kodu" />
+                    <c:customLookup objectAPIName="Account" IconName="standard:account" selectedRecord="{!v.selectedAccount}"/>                    
+                </lightning:layoutItem>
+            </lightning:layout>
+            <lightning:layout>
+                <lightning:layoutItem flexibility="auto" >
+                    <lightning:button label="Listele" class="slds-m-top_medium search-button" iconName="utility:search" iconPosition="left" onclick="{! c.clickFilter }" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>             
+        
+    </fieldset>
+    <br/><br/>
+    
+    <div style="height: 300px">
+        
+        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+            <aura:if  isTrue="{!v.visiblePayment}"> 
+                <div class="slds-box">
+                    <div class="slds-grid slds-size_12-of-12 slds-gutters">
+                        <div class="slds-col slds-m-top_x-large">
+                            <lightning:input aura:id="emailAdress"
+                                             patternMismatch = 'E-mail formatı hatalıdır'                                   
+                                             type="email"
+                                             label="Email Adresi"
+                                             value="{!v.emailAdress}"/>  
+                        </div>
+                        <div class="slds-col slds-m-top_x-large">
+                            <lightning:select aura:id="paymentType" 
+                                              label="Ödeme Türü" 
+                                              required = "true"                              
+                                              value="{!v.selectedPaymentType}"
+                                              onchange="{!c.handleSelectedPaymentType}">
+                                <aura:iteration items="{!v.paymentTypeList}" var="option">
+                                    <option text="{!option.label}" value="{!option.value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div> 
+                        <div class="slds-col">               
+                            <!--  <lightning:button label="Bilgilendirme Maili" 
+                                      class="slds-m-top_medium search-button" 
+                                      iconName="utility:email" 
+                                      iconPosition="left" 
+                                      onclick="{! c.clickFilter }" />-->
+                       </div>
+                    </div>
+                    <div class="slds-m-around_xx-large slds-size_12-of-12">                    
+                        <!--Parçalı Ödeme ve Detay kısmını açan modal-popup -->  
+                        <aura:if isTrue="{!v.isModalOpen}">                        
+                            <!-- Modal/Popup Box starts here-->
+                            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                                <div class="slds-modal__container">
+                                    <!-- Modal/Popup Box Header Starts here-->
+                                    <header class="slds-modal__header">                                  
+                                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.modalHeaderText}</h2>
+                                    </header>
+                                    <!--Modal/Popup Box Body Starts here-->
+                                    <div class="slds-modal__content slds-p-around_medium">
+                                        <aura:if isTrue="{!v.isOpenPaymentType}">
+                                            <lightning:select aura:id="paymentTypeNew" 
+                                                              label="Ödeme Türü" 
+                                                              required = "true"                              
+                                                              value="{!v.selectedPaymentType}"
+                                                              onchange="{!c.handleSelectedPaymentType}">
+                                                <aura:iteration items="{!v.paymentTypeList}" var="option">
+                                                    <option text="{!option.label}" value="{!option.value}"/>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </aura:if>
+                                    </div>
+                                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                        <p>                                        
+                                            <div  style="padding-left: 10px; padding-right: 10px;">
+                                                
+                                                <lightning:datatable aura:id="tableOrderDetail"
+                                                                     data="{!v.dataListOrderDetail }" 
+                                                                     columns="{!v.columnsOrderDetail }" 
+                                                                     keyField="POSNR"
+                                                                     errors="{! v.errors }"
+                                                                     draftValues="{!v.draftValuesPartialPayment}"
+                                                                     wrap-text-max-lines="10"
+                                                                     hideCheckboxColumn="true"
+                                                                     suppressBottomBar="true"
+                                                                     selectedRows="{!v.selectedRows}"
+                                                                     oncellchange="{!c.handlecellchange}"
+                                                                     maxRowSelection="{!v.maxRowSelection}"
+                                                                     onrowselection="{!c.getSelectedAccName}"
+                                                                     showRowNumberColumn="false"/>
+                                            </div>
+                                            
+                                        </p>
+                                    </div>
+                                    <!--Modal/Popup Box Footer Starts here-->
+                                    <footer class="slds-modal__footer">
+                                        <lightning:button iconName="utility:close"
+                                                          variant="neutral"
+                                                          label="Kapat"
+                                                          title="Kapat"
+                                                          onclick="{! c.closeModel }"/>
+                                        <aura:if isTrue="{!v.isBtnSend}">
+                                            <lightning:button aura:id="btnModalSend"
+                                                              iconName="action:check"
+                                                              variant="brand"
+                                                              label="Gönder"
+                                                              title="Gönder"
+                                                              onclick="{!c.submitDetails}"/>
+                                        </aura:if>
+                                    </footer>
+                                </div>
+                            </section>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </aura:if>
+                    </div>
+                    
+                    <!--Gönder butonuna tıklandığında açılan uyarı modal-popup -->
+                    <div class="slds-m-around_xx-medium slds-size_12-of-12">                                       
+                        <aura:if isTrue="{!v.showWarningDialog}">
+                            <!--Modal Box Start-->
+                            <div role="dialog" class="slds-modal slds-fade-in-open ">
+                                <div class="slds-modal__container">
+                                    <!--Modal Box Header Start-->
+                                    <header class="slds-modal__header">
+                                        <h1 class="slds-text-heading--medium">Uyarı</h1>
+                                    </header>
+                                    <!--Modal Box Header End-->
+                                    
+                                    <!--Modal Box Content Start-->
+                                    <div class="slds-modal__content slds-p-around--medium">
+                                        <center><b>Yönlendirilen sipariş sizin tarafınızdan kredi kartı ödemeli olarak fiyat ve vadesi düşünülerek oluşturulmuş olmalıdır. Birim fiyatlarınızı kontrol etmeniz önerilir.</b></center>
+                                    </div>
+                                    <!--Modal Box Content End-->
+                                    
+                                    <!--Modal Box Button Start-->
+                                    <footer class="slds-modal__footer">
+                                        <lightning:button name='No' label='Iptal' onclick='{!c.handleConfirmDialogNo}'/>
+                                        <lightning:button variant="brand" name='Yes' label='Tamam' onclick='{!c.handleConfirmDialogYes}'/>
+                                    </footer>
+                                    <!--Modal Box Button End-->
+                                </div>
+                            </div>
+                            <div class="slds-backdrop slds-backdrop--open"></div>            
+                        </aura:if>
+                    </div>
+                    <!--Component End-->
+                    
+                    <div style="padding-left: 10px; padding-right: 10px; color:red">
+                        <p>* Cep Telefonu ile birlikte farklı bir ürün girişi yapılamaz.</p>
+                        <p>* Cep Telefonu siparişlerinizi ayrıca girmeniz gerekmektedir.</p><br/>
+                        <div  style="padding-left: 10px; padding-right: 10px; color:rgb(5, 98, 138);">                        
+                            <lightning:datatable aura:id="linesTable"
+                                                 data="{!v.dataList }" 
+                                                 columns="{!v.columns}" 
+                                                 keyField="VBELN"
+                                                 errors="{! v.errors }"
+                                                 draftValues="{!v.draftValues}"
+                                                 suppressBottomBar="false"
+                                                 hideCheckboxColumn="true" 
+                                                 selectedRows="{!v.selectedRows}"    
+                                                 onrowselection="{!c.UpdateSelectedRows}"
+                                                 showRowNumberColumn="true"                                 
+                                                 onrowaction="{! c.handleRowAction }"/>
+                            <br/><br/>
+                            
+                        </div>
+                    </div>
+                </div>
+            </aura:if>            
+        </div>
+        <br/><br/><br/><br/>
+    </div>
+</aura:component>

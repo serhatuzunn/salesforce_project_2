@@ -1,0 +1,1011 @@
+<apex:page extensions="RC_CreditRiskPDFController" standardController="Account" standardStylesheets="false" renderAs="pdf" applyBodyTag="false" applyHtmlTag="false" showHeader="false" title="Kredi Risk PDF" language="en_US">
+    <head>
+        <style type="text/css">
+            @page
+            {
+            margin-top:5%; 
+            margin-left: 3%;
+            margin-right:3%;
+            margin-bottom:10%;           
+            size: A4;
+            background-size: auto;       
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-color: white;  
+            
+            @top-left{
+            content: element(top-left-div);
+            }
+            
+            @top-center{
+            content: element(top-center-div);
+            }
+            
+            @top-right{           
+            content: element(top-right-div);
+            }
+            
+            @bottom-left{
+            content: element(bottom-left-div);
+            }
+            
+            @bottom-center{
+            content: element(bottom-center-div);
+            }
+            
+            @bottom-right{
+            content: element(bottom-right-div);
+            }
+            }
+            
+            .top-left-div{
+            position: running(top-left-div);
+            text-align: left;     
+            }
+            
+            .top-center-div{
+            position: running(top-center-div);
+            text-align: center;
+            }
+            
+            .top-right-div{
+            position: running(top-right-div);               
+            text-align: right;
+            }
+            
+            .bottom-left-div{
+            position: running(bottom-left-div);   
+            text-align: left;
+            }
+            
+            .bottom-center-div{
+            position: running(bottom-center-div);
+            text-align: center;
+            }
+            
+            .bottom-right-div{
+            position: running(bottom-right-div);
+            text-align: right;
+            }
+            
+            .pagenumber:before{
+            content: counter(page);
+            }
+            
+            .pagecount:before{
+            content: counter(pages);
+            }
+        </style>
+        <div class="top-left-div"></div>
+        <div class="top-center-div"></div>
+        <div class="top-right-div"></div>
+        
+        <div class="bottom-left-div"></div>
+        <div class="bottom-center-div">
+            <div style="font-size:11px; margin-top:0px;">
+                <span style="font-size:11px" class="pagenumber"/> / <span style="font-size:11px" class="pagecount"/>
+            </div>
+        </div>
+        <div class="bottom-right-div"></div>
+    </head>
+    <body style="font-family: Arial Unicode MS  !important;">
+        <table style="width:100%">
+            <tr>
+                <td><h6 style="font-size:20px !important; text-align:left; width:70%"><b><apex:outputText value="{!$Label.Finansal_Durum_zeti}"/></b></h6></td> 
+                <td style="text-align:center; width:30%;"><b>KKA:</b> {!KKA}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:left; font-size:12px;"><apex:outputText value="{!$Label.MusteriAdi}"/> : {!account.Name}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:left; font-size:12px; padding-bottom:15px;"><apex:outputText value="{!$Label.MusteriNumarasi}"/> : {!account.RC_SAP_ID__c}</td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <td style="width:21%; font-size:12px"><b><apex:outputText value="{!$Label.Acik_Hesap_Borcu}"/></b></td>
+                <td style="width:26%; font-size:12px"><b><apex:outputText value="{!$Label.Acik_Hesap_Valoru}"/></b></td>
+                <td style="width:21%; font-size:12px"><b><apex:outputText value="{!$Label.Acik_Hesap_Vadesi}"/></b></td>
+                <td style="width:18%; font-size:12px"><b><apex:outputText value="{!$Label.Bayi_Olu_Tarihi}"/></b></td>
+                <td style="width:14%; font-size:12px"><b><apex:outputText value="{!$Label.Kredi_Tarihi}"/></b></td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:21%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.ACIK_BAGSIZ}"/>
+                    </apex:outputText>
+                </td>
+                <td style="width:26%; font-size:12px">{!responseWrp.creditRiskResponse.itemZ.ACIK_HESAP_VALORU}</td>
+                <td style="width:21%; font-size:12px">{!responseWrp.creditRiskResponse.itemZ.ACIK_BAGSIZ_TARIH}</td>
+                <td style="width:18%; font-size:12px">{!responseWrp.creditRiskResponse.itemZ.BAYI_OLUS_TARIHI}</td>
+                <td style="width:14%; font-size:12px">{!responseWrp.creditRiskResponse.itemZ.KREDI_TARIHI}</td>
+            </tr>
+            <tr>
+                <td style="padding-bottom:5px;" colspan="5"><!--<hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/>--></td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <td style="background-color:#D3D3D3" colspan="2">
+                    <h6 style="font-size:20px !important; text-align:left; width:70%; margin-bottom:5px; margin-top:5px; margin-left:0px; margin-right:0px; padding:0px;"><b><apex:outputText value="{!$Label.Risk_Durumu}"/></b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Asim_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.FARK_ASIM}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Toplam_Kredi}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.TOP_KREDI}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Risk}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.TOP_RISK}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Risk_Ciro}"/></td>
+                <td style="width:50%; font-size:12px">{!responseWrp.creditRiskResponse.itemZ.RISK_CIRO}</td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Odeme_Gun_Sayisi}"/></td>
+                <td style="width:50%; font-size:12px">{!creditRiskResp.odemeGunSayisi}</td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Open_Account_Average_Maturity_Days}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.ACIK_BAGSIZ_VALOR}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Dip_Bakiye}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.ACIK_BKY}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Bottom_Balance_Average_Maturity_Days}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.ACIK_VALOR}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;"><apex:outputText value="{!$Label.Dip_Bakiye_Tarihi}"/></td> 
+                <td style="width:50%; font-size:12px; padding-bottom:5px;">{!responseWrp.creditRiskResponse.itemZ.ACIK_VADE_TARIH}</td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <td style="background-color:#D3D3D3" colspan="2">
+                    <h6 style="font-size:20px !important; text-align:left; width:50%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Kredi_Limit_Detaylar}"/></b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.A_k_Kredi_Limiti}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.ACIK_KREDI}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+             <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.teminat_ipote_i}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditRiskResp.TEMINATIPOTEK}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Ge_erli_potek}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditRiskResp.IPOTEK}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Banka_Teminat_Mektubu}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditRiskResp.TEMINAT}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Aval_Kredisi}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.AVAL_KREDI}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Ek_Y_netim_Limiti_2}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.EKYONETIM_LMT2}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Alacak_Sigortas}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.ALACAK_SIGORTA}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.KMH_Limiti}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KMH_LIMIT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.KMH_Borcu}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KMH}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.DBS_Limiti}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.DBS_LIMIT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.DBS_Borcu}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.DBSBORC}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.DTS_Kasa_eki}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditRiskResp.DTSTEMCEK}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Aval_Bonosu}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.AVAL_BONOSU}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Yenilenecek_Teminat}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!creditRiskResp.YENILENECEK_TMNT}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%; page-break-inside:avoid;">
+            <tr>
+                <td style="background-color:#D3D3D3" colspan="2">
+                    <h6 style="font-size:20px !important; text-align:left; width:50%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Ek_Limit_Detaylar}"/></b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Klima_Derin_Dondurucu_Kul_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KUL_KLIMA_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Klima_Derin_Dondurucu_Ek_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.EK_KLIMA_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Cep_Tel_Kul_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KUL_CEPTEL_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Cep_Tel_Ek_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.EK_CEPTEL_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.KEA_S_p_Kul_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KUL_KEA_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.KEA_S_p_Ek_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.EK_KEA_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Ank_Ve_M_Kul_Limit}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KUL_ACM_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;"><apex:outputText value="{!$Label.Ank_Ve_M_Ek_Limit}"/></td>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.EK_ACM_LMT}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <td style="background-color:#D3D3D3" colspan="2">
+                    <h6 style="font-size:20px !important; text-align:left; width:50%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.ek_Senet_Detaylar}"/></b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.ahsi_ekler}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!cekSenetResp.CEK_SAHSI_TOP}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.ahsi_Senetler}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!cekSenetResp.SENET_SAHSI_TOP}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.M_teri_ekleri}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!cekSenetResp.CEK_MUSTERI_TOP}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.M_teri_Senetleri}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!cekSenetResp.SENET_MUSTERI_TOP}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.DTS_ekleri}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!cekSenetResp.CEK_DTS_TOP}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Ba_lant_ekleri}"/></td>
+                <td style="width:50%; font-size:12px">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!cekSenetResp.CEK_BAGLANTI_TOP}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;"><apex:outputText value="{!$Label.Ba_lant_Senetleri}"/></td>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;">
+                    <u>TRY 
+                        <apex:outputText value="{0, number, ###,##0.00}">
+                            <apex:param value="{!cekSenetResp.SENET_BAGLANTI_TOP}"/>
+                        </apex:outputText>
+                    </u>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <td style="background-color:#D3D3D3" colspan="2">
+                    <h6 style="font-size:20px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Kar_l_ks_z_ade_ek_Senet}"/></b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Kar_l_ks_z_ekler}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KARSILIKSIZ_CEKLER}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Protestolu_Senetler}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.PROTESTOLU_SENETLER}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.ade_ekler}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.IADELI_CEKLER}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;"><apex:outputText value="{!$Label.ade_Senetler}"/></td>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.IADELI_SENETLER}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%">
+            <tr>
+                <td style="background-color:#D3D3D3" colspan="2">
+                    <h6 style="font-size:20px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Stok_Bilgileri}"/></b></h6>
+                </td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px"><apex:outputText value="{!$Label.Konsinye}"/></td>
+                <td style="width:50%; font-size:12px">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.KONSINYE}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+            </tr>
+            <tr>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;"><apex:outputText value="{!$Label.Emanet_Stok}"/></td>
+                <td style="width:50%; font-size:12px; padding-bottom:5px;">TRY 
+                    <apex:outputText value="{0, number, ###,##0.00}">
+                        <apex:param value="{!creditRiskResp.EMANET}"/>
+                    </apex:outputText>
+                </td>
+            </tr>
+        </table>
+        <apex:outputPanel rendered="{!isShowConnectionDetail}">
+            <table style="width:100%; page-break-inside:avoid;">
+                <tr>
+                    <td style="background-color:#D3D3D3" colspan="8">
+                        <h6 style="font-size:20px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Connection_Details}"/></b></h6>
+                    </td>
+                </tr>
+                <apex:repeat var="item" value="{!baglntiRespList}">
+                    <!--<apex:outputText rendered="{!item.SOZLESME_NO != ''}">-->
+                    <tr>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Connection_Start}"/></td>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Connection_Finish}"/></td>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Connection_Amount}"/></td>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Connection_Term}"/></td>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Marked_Invoice_Amount}"/></td>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Remaining_Amount}"/></td>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Check_Amount}"/></td>
+                        <td style="font-size:12px;"><apex:outputText value="{!$Label.Check_Maturity1}"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:11px;">{!item.SOZLESME_BAS}</td>
+                        <td style="font-size:11px;">{!item.SOZLESME_BIT}</td>
+                        <td style="font-size:11px;">TRY {!item.TOPLAM_CEK}
+                            <!--<apex:outputText value="{0, number, ###,##0.00}">
+<apex:param value="{!item.TOPLAM_CEK}"/>
+</apex:outputText>-->
+                        </td>
+                        <td style="font-size:11px;">{!item.VADE_TARIH}</td>
+                        <td style="font-size:11px;">TRY {!item.FAT_TOTAL}
+                            <!--<apex:outputText value="{0, number, ###,##0.00}">
+<apex:param value="{!item.FAT_TOTAL}"/>
+</apex:outputText>-->
+                        </td>
+                        <td style="font-size:11px;">TRY 
+                            <apex:outputText value="{0, number, ###,##0.00}">
+                                <apex:param value="{!item.remainingAmount}"/>
+                            </apex:outputText>
+                        </td>
+                        <td style="font-size:11px;">
+                            <u>TRY {!item.BAGCEK_TOTAL1}
+                                <!--<apex:outputText value="{0, number, ###,##0.00}">
+<apex:param value="{!item.BAGCEK_TOTAL1}"/>
+</apex:outputText>-->
+                            </u>
+                        </td>
+                        <td style="font-size:11px;">{!item.BAGCEK_VADE_TARIH}</td>
+                    </tr>
+                    <!--</apex:outputText>-->
+                </apex:repeat>
+            </table>
+        </apex:outputPanel> 
+        <apex:outputPanel rendered="{!isShowCekSenetAltDetay}">
+            <table style="width:100%">
+                <tr>
+                    <td style="background-color:#D3D3D3" colspan="2">
+                        <h6 style="font-size:17px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Cek_Senet_Alt_Detaylar}"/></b></h6>
+                    </td>
+                </tr>
+                <apex:outputPanel rendered="{!isShowSahsiCek}">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="background-color:#df2027; color:white;" colspan="6">
+                                <h6 style="font-size:13px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.ahsi_ekler}"/></b></h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;"></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Number}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Maturity}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.portfolio}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Amount}"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="6"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                        </tr>
+                        <apex:repeat var="month" value="{!SahsiCek}">
+                            <tr>
+                                <td style="font-size:12px;" rowspan="{!month.ItemList.size + 1}"><apex:outputText value="{!month.MonthAndYear}"/></td>
+                                <apex:repeat var="item" value="{!month.ItemList}">
+                                    <tr>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.BOENO}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.VADE}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.PORTF}"/></td>
+                                        <td style="font-size:12px;">{!item.WAERS}
+                                            <apex:outputText value="{0, number, ###,##0.00}">
+                                                <apex:param value="{!item.TUTAR}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="4"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                            </tr>
+                        </apex:repeat>   
+                    </table>
+                </apex:outputPanel> 
+                <apex:outputPanel rendered="{!isShowSahsiSenet}">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="background-color:#df2027; color:white;" colspan="6">
+                                <h6 style="font-size:13px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.ahsi_Senetler}"/></b></h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;"></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Number}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Maturity}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.portfolio}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Amount}"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="6"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                        </tr>
+                        <apex:repeat var="month" value="{!sahsiSenet}">
+                            <tr>
+                                <td style="font-size:12px;" rowspan="{!month.ItemList.size + 1}"><apex:outputText value="{!month.MonthAndYear}"/></td>
+                                <apex:repeat var="item" value="{!month.ItemList}">
+                                    <tr>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.BOENO}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.VADE}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.PORTF}"/></td>
+                                        <td style="font-size:12px;">{!item.WAERS}
+                                            <apex:outputText value="{0, number, ###,##0.00}">
+                                                <apex:param value="{!item.TUTAR}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="4"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                            </tr>
+                        </apex:repeat>   
+                    </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isShowSahsiMusteriCek}">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="background-color:#df2027; color:white;" colspan="6">
+                                <h6 style="font-size:13px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.M_teri_ekleri}"/></b></h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;"></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Number}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Maturity}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.portfolio}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Amount}"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="6"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                        </tr>
+                        <apex:repeat var="month" value="{!musteriCek}">
+                            <tr>
+                                <td style="font-size:12px;" rowspan="{!month.ItemList.size + 1}"><apex:outputText value="{!month.MonthAndYear}"/></td>
+                                <apex:repeat var="item" value="{!month.ItemList}">
+                                    <tr>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.BOENO}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.VADE}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.PORTF}"/></td>
+                                        <td style="font-size:12px;">{!item.WAERS}
+                                            <apex:outputText value="{0, number, ###,##0.00}">
+                                                <apex:param value="{!item.TUTAR}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="4"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                            </tr>
+                        </apex:repeat>   
+                    </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isShowSahsiMusteriSenet}">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="background-color:#df2027; color:white;" colspan="6">
+                                <h6 style="font-size:13px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.M_teri_Senetleri}"/></b></h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;"></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Number}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Maturity}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.portfolio}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Amount}"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="6"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                        </tr>
+                        <apex:repeat var="month" value="{!musteriSenet}">
+                            <tr>
+                                <td style="font-size:12px;" rowspan="{!month.ItemList.size + 1}"><apex:outputText value="{!month.MonthAndYear}"/></td>
+                                <apex:repeat var="item" value="{!month.ItemList}">
+                                    <tr>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.BOENO}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.VADE}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.PORTF}"/></td>
+                                        <td style="font-size:12px;">{!item.WAERS}
+                                            <apex:outputText value="{0, number, ###,##0.00}">
+                                                <apex:param value="{!item.TUTAR}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="4"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                            </tr>
+                        </apex:repeat>   
+                    </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isShowSahsiDtsCek}">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="background-color:#df2027; color:white;" colspan="6">
+                                <h6 style="font-size:13px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.DTS_ekleri}"/></b></h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;"></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Number}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Maturity}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.portfolio}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Amount}"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="6"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                        </tr>
+                        <apex:repeat var="month" value="{!dtsCek}">
+                            <tr>
+                                <td style="font-size:12px;" rowspan="{!month.ItemList.size + 1}"><apex:outputText value="{!month.MonthAndYear}"/></td>
+                                <apex:repeat var="item" value="{!month.ItemList}">
+                                    <tr>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.BOENO}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.VADE}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.PORTF}"/></td>
+                                        
+                                        <td style="font-size:12px;">{!item.WAERS}
+                                            <apex:outputText value="{0, number, ###,##0.00}">
+                                                <apex:param value="{!item.TUTAR}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="4"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                            </tr>
+                        </apex:repeat>   
+                    </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isShowSahsiBaglantiCek}">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="background-color:#df2027; color:white;" colspan="6">
+                                <h6 style="font-size:13px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Ba_lant_ekleri}"/></b></h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;"></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Number}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Maturity}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.portfolio}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Amount}"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="6"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                        </tr>
+                        <apex:repeat var="month" value="{!baglantiCek}">
+                            <tr>
+                                <td style="font-size:12px;" rowspan="{!month.ItemList.size + 1}"><apex:outputText value="{!month.MonthAndYear}"/></td>
+                                <apex:repeat var="item" value="{!month.ItemList}">
+                                    <tr>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.BOENO}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.VADE}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.PORTF}"/></td>
+                                        <td style="font-size:12px;">{!item.WAERS}
+                                            <apex:outputText value="{0, number, ###,##0.00}">
+                                                <apex:param value="{!item.TUTAR}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="4"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                            </tr>
+                        </apex:repeat>   
+                    </table>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!isShowSahsiBaglantiSenet}">
+                    <table style="width:100%">
+                        <tr>
+                            <td style="background-color:#df2027; color:white;" colspan="6">
+                                <h6 style="font-size:13px !important; text-align:left; width:70%; margin-bottom:5px; margin-left:0px; margin-right:0px; margin-top:5px; padding:0px;"><b><apex:outputText value="{!$Label.Ba_lant_Senetleri}"/></b></h6>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="font-size:12px;"></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Number}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Maturity}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.portfolio}"/></td>
+                            <td style="font-size:12px;"><apex:outputText value="{!$Label.Amount}"/></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="6"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                        </tr>
+                        <apex:repeat var="month" value="{!baglantiSenet}">
+                            <tr>
+                                <td style="font-size:12px;" rowspan="{!month.ItemList.size + 1}"><apex:outputText value="{!month.MonthAndYear}"/></td>
+                                <apex:repeat var="item" value="{!month.ItemList}">
+                                    <tr>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.BOENO}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.VADE}"/></td>
+                                        <td style="font-size:12px;"><apex:outputText value="{!item.PORTF}"/></td>
+                                        <td style="font-size:12px;">{!item.WAERS}
+                                            <apex:outputText value="{0, number, ###,##0.00}">
+                                                <apex:param value="{!item.TUTAR}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        
+                                    </tr>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="4"><hr style="margin:0px; padding:0px; height:1px; border-width:0; color:#D3D3D3; background-color:#D3D3D3;"/></td>
+                            </tr>
+                        </apex:repeat>   
+                    </table>
+                </apex:outputPanel>       
+            </table>
+        </apex:outputPanel> 
+    </body>
+</apex:page>

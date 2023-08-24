@@ -1,0 +1,76 @@
+<aura:component controller="RC_CustomSliders" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    
+    <aura:attribute name="contentData" type="RC_CustomSliders.ContentClass[]" />
+    <aura:attribute name="loading" 	   type="boolean" default="false"/>
+    <aura:attribute name="ContentTitle" type="string"/>
+    <aura:attribute name="DesiredTitle" type="string"/>
+    <aura:attribute name="TitleShow" type="boolean" default="true" />
+    <aura:attribute name="UseDesiredTitle" type="boolean" default="false" />
+    <aura:attribute name="ContentIcon" type="string"/>
+    <aura:attribute name="Site" type="string"/>
+    <aura:attribute name="defaultImage" type="string"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    <lightning:card>
+        
+        <aura:if isTrue="{!v.TitleShow}">
+            <div aura:id="titleDiv" class="slds-card__header slds-grid clsTitle">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <span class="slds-text-heading_small slds-truncate">
+                                <lightning:icon iconName="{!v.ContentIcon}" class="my-icon" size="medium" alternativeText="{!v.ContentTitle}" title="{!v.ContentTitle}" />
+                                
+                                <aura:if isTrue="{!v.UseDesiredTitle}">
+                                <span class="slds-assistive-text">{!v.DesiredTitle}</span>
+                                <span class="page-title" style="font-size:15px;padding-left:10px;" data-aura-rendered-by="27:2;a">{!v.DesiredTitle}</span>
+                               	<aura:set attribute="else">
+                                <span class="slds-assistive-text">{!v.ContentTitle}</span>
+                                <span class="page-title" style="font-size:15px;padding-left:10px;" data-aura-rendered-by="27:2;a">{!v.ContentTitle}</span>
+                                </aura:set>
+                                </aura:if>
+                                </span>
+                        </h2>
+                    </div>
+                </header>
+            </div>
+        </aura:if>
+        
+        
+        <aura:set attribute="footer">
+            <ul class="row">
+                <aura:iteration items="{!v.contentData}" var="content">
+                    <aura:if isTrue="{!content.ContentIsShow}">
+                        <li class="col col-12 col-lg-3">
+                            <a class="col-anchor" href="{!content.ContentDetailLink}">
+                                <aura:if isTrue="{!content.ContentImage!=null}">
+                                    <div id="imageDiv">
+                                        <img class="col-img" src="{!content.ContentImage}" height="256" width="356" alt="" />
+                                    </div>
+                                    <aura:set attribute="else">
+                                        <div class="listContent">
+                                            <div class="slds-size_12-of-12" id="headerDiv">
+                                            <h2>{!content.ContentTitle}</h2>
+                                             </div>
+                                         <img class="col-def-img" src="{!v.defaultImage}" height="15" width="15" alt="" />
+                                         </div>
+                                    </aura:set>
+
+                                </aura:if>
+                                
+                                <span class="shortdesc">
+                                    <strong>{!content.ContentTitle}</strong>
+                                    <div class="clearfix"></div>
+                                    <span class="detail-btn">İNCELE</span>
+                                </span>
+                            </a>
+                        </li>
+                    </aura:if>
+                </aura:iteration>
+            </ul>
+        </aura:set>
+    </lightning:card>
+</aura:component>

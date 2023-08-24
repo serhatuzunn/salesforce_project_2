@@ -1,0 +1,139 @@
+<aura:component controller="RC_CustomSliders" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" /> 
+    
+    <aura:attribute name="contentData" type="RC_CustomSliders.ContentClass[]" />
+    <aura:attribute name="loading" 	   type="boolean" default="false"/>
+    
+    <aura:attribute name="Content1" type="string"/>
+    <aura:attribute name="Content2" type="string"/>
+    <aura:attribute name="Content3" type="string"/>
+    <aura:attribute name="Content4" type="string"/>
+    <aura:attribute name="Content5" type="string"/>
+    <aura:attribute name="Content6" type="string"/>
+    <aura:attribute name="Content7" type="string"/>
+    <aura:attribute name="Content8" type="string"/>
+    <aura:attribute name="Content9" type="string"/>
+    <aura:attribute name="Content10" type="string"/>
+    <aura:attribute name="Content1Icon" type="string"/>
+    <aura:attribute name="Content2Icon" type="string"/>
+    <aura:attribute name="Content3Icon" type="string"/>
+    <aura:attribute name="Content4Icon" type="string"/>
+    <aura:attribute name="Content5Icon" type="string"/>
+    <aura:attribute name="Content6Icon" type="string"/>
+    <aura:attribute name="Content7Icon" type="string"/>
+    <aura:attribute name="Content8Icon" type="string"/>
+    <aura:attribute name="Content9Icon" type="string"/>
+    <aura:attribute name="Content10Icon" type="string"/>
+    <aura:attribute name="Content1Link" type="string"/>
+    <aura:attribute name="Content2Link" type="string"/>
+    <aura:attribute name="Content3Link" type="string"/>
+    <aura:attribute name="Content4Link" type="string"/>
+    <aura:attribute name="Content5Link" type="string"/>
+    <aura:attribute name="Content6Link" type="string"/>
+    <aura:attribute name="Content7Link" type="string"/>
+    <aura:attribute name="Content8Link" type="string"/>
+    <aura:attribute name="Content9Link" type="string"/>
+    <aura:attribute name="Content10Link" type="string"/>
+    <aura:attribute name="Content1DisplayName" type="string"/>
+    <aura:attribute name="Content2DisplayName" type="string"/>
+    <aura:attribute name="Content3DisplayName" type="string"/>
+    <aura:attribute name="Content4DisplayName" type="string"/>
+    <aura:attribute name="Content5DisplayName" type="string"/>
+    <aura:attribute name="Content6DisplayName" type="string"/>
+    <aura:attribute name="Content7DisplayName" type="string"/>
+    <aura:attribute name="Content8DisplayName" type="string"/>
+    <aura:attribute name="Content9DisplayName" type="string"/>
+    <aura:attribute name="Content10DisplayName" type="string"/>
+    
+    
+    <aura:attribute name="ContentAllItemLink" type="string"/>
+    <aura:attribute name="TopicList" type="List"/>
+    <aura:attribute name="communityPath" type="string"/>
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>
+    </aura:if>
+    <div>
+        <lightning:layout class="content-slider">
+            <lightning:layoutItem size="3" class="icons-line slds-scrollable_y">
+                <aura:if isTrue="{!not(v.Content1DisplayName==null)}">
+                    <div class="shadow-box shadow-box-active" aura:id="div-content" data-id="1" onclick="{!c.iconClick}" data-name="{!v.Content1}" data-link="{!v.Content1Link}">
+                        <lightning:icon iconName="{!v.Content1Icon}"  aura:id="icon-content"  class="icon-active" data-id="1" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content1DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content2DisplayName==null)}">                   
+                    <div class="shadow-box" aura:id="div-content" data-id="2"  onclick="{!c.iconClick}" data-name="{!v.Content2}" data-link="{!v.Content2Link}">
+                        <lightning:icon iconName="{!v.Content2Icon}"  aura:id="icon-content" data-id="2" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content2DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content3DisplayName==null)}">                    
+                    <div class="shadow-box" aura:id="div-content" data-id="3" onclick="{!c.iconClick}" data-name="{!v.Content3}" data-link="{!v.Content3Link}">
+                        <lightning:icon iconName="{!v.Content3Icon}"  aura:id="icon-content" data-id="3" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content3DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content4DisplayName==null)}">
+                    <div class="shadow-box" aura:id="div-content" data-id="4" onclick="{!c.iconClick}" data-name="{!v.Content4}" data-link="{!v.Content4Link}">
+                        <lightning:icon iconName="{!v.Content4Icon}"  aura:id="icon-content" data-id="4" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content4DisplayName}</span></div>
+                </aura:if> 
+                <aura:if isTrue="{!not(v.Content5DisplayName==null)}">                    
+                    <div class="shadow-box" aura:id="div-content" data-id="5" onclick="{!c.iconClick}" data-name="{!v.Content5}" data-link="{!v.Content5Link}">
+                        <lightning:icon iconName="{!v.Content5Icon}"  aura:id="icon-content" data-id="5" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content5DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content6DisplayName==null)}">                   
+                    <div class="shadow-box" aura:id="div-content" data-id="6" onclick="{!c.iconClick}" data-name="{!v.Content6}" data-link="{!v.Content6Link}">
+                        <lightning:icon iconName="{!v.Content6Icon}" aura:id="icon-content"  data-id="6" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content6DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content7DisplayName==null)}">                    
+                    <div class="shadow-box" aura:id="div-content" data-id="7" onclick="{!c.iconClick}" data-name="{!v.Content7}" data-link="{!v.Content7Link}">
+                        <lightning:icon iconName="{!v.Content7Icon}" aura:id="icon-content"  data-id="7" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content7DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content8DisplayName==null)}">                   
+                    <div class="shadow-box" aura:id="div-content" data-id="8" onclick="{!c.iconClick}" data-name="{!v.Content8}" data-link="{!v.Content8Link}">
+                        <lightning:icon iconName="{!v.Content8Icon}" aura:id="icon-content"  data-id="8" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content8DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content9DisplayName==null)}">                    
+                    <div class="shadow-box" aura:id="div-content" data-id="9" onclick="{!c.iconClick}" data-name="{!v.Content9}" data-link="{!v.Content9Link}">
+                        <lightning:icon iconName="{!v.Content9Icon}" aura:id="icon-content"  data-id="9" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content9DisplayName}</span></div>
+                </aura:if>
+                <aura:if isTrue="{!not(v.Content10DisplayName==null)}">                    
+                    <div class="shadow-box" aura:id="div-content" data-id="10" onclick="{!c.iconClick}" data-name="{!v.Content10}" data-link="{!v.Content10Link}">
+                        <lightning:icon iconName="{!v.Content10Icon}" aura:id="icon-content" data-id="10" class="my-icon" size="large" alternativeText="" title="" />
+                        <span class="padding list-header">{!v.Content10DisplayName}</span></div>
+                </aura:if>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="9">
+                    <div class="list-view-responsive-element slds-scrollable_y">
+                        <ul class="responsive-table padding-left">
+                            <aura:iteration items="{!v.contentData}" var="content">
+                                <aura:if isTrue="{!content.ContentIsShow}">
+                                    <a href="{!content.ContentDetailLink}">
+                                        
+                                        <li class="table-row right-row">
+                                            <div class="col-12" style="font-style: italic;padding-left: 0;">
+                                                <h4 style="font-weight: bold;color:#212529; font-size:15px;">{!content.ContentTitle} </h4>
+                                                
+                                                {!content.ShortText}
+                                                <h4 style="font-weight: bold; font-size:14px; float: right;padding-top: 10px">İncele >> </h4>
+                                            </div>
+                                            .
+                                            
+                                        </li></a>
+                                    
+                                </aura:if>
+                            </aura:iteration>
+                        </ul>
+                        <a class="href-button" href="{!v.ContentAllItemLink}">Tümünü Göster</a>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout></div>
+        
+        
+        
+    </aura:component>

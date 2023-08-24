@@ -1,0 +1,104 @@
+@font-face {
+    font-family: 'Neutraface Display';
+    src: url('/assets/localdev/fonts/NeutrafaceDisplay.woff2') format('woff2'),
+        url('/assets/localdev/fonts/NeutrafaceDisplay.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+}
+.main-content {
+    max-width: unset !important;
+}
+.header {
+    display: none
+}
+localdevserver-header {
+    display: none !important
+}
+div.container {
+    width: 100% !important;
+}
+
+.redHeader{
+    background-color: #df2027 !important;
+}
+
+.title{
+    font-size: 20px !important;
+    margin: 4px;
+    color: white;
+    font-weight: 400 !important;
+}
+
+.modalHeader{
+    font-size: 1.5em !important;
+}
+
+.success-button{
+    margin-right:1.5%;
+    float:right;
+}
+
+.slds-form-element__label{
+    padding-right:0 !important;
+}
+.slds-checkbox_faux{
+    margin-right: 0 !important;
+}
+.slds-table{
+    font-size: 0.7rem;
+}
+
+.slds-table thead th{
+    padding: 0.25rem 0rem !important;
+}
+.slds-table tbody td{
+    padding: 0.25rem 0.2rem !important;
+}
+.slds-table thead th{
+    text-align: center;
+}
+.radio-class .slds-form-element__control .slds-radio{
+    display: inline-block !important;
+    padding-left: 7px;
+}
+
+.lightning-button-element button{
+background: #DF2027;
+height: 32px;
+border-radius: 4px;
+color: white;
+margin-top: 1.4em;
+margin-left: 1%;
+border: 1px solid #DF2027;
+float: right;
+}
+
+.lightning-button-element button:hover{
+background: #DF2027;
+height: 32px;
+border-radius: 4px;
+margin-top: 1.4em;
+margin-left: 1%;
+color: white;
+border: 1px solid #DF2027;
+transform: translateY(-1px);
+box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+
+input:focus, select:focus{
+border-color:#DF2027 !important;
+}
+
+.slds-radio_faux{
+    margin-right: 0.32rem !important;
+}
+
+.approve-modal{
+    min-width: 20rem !important;
+    max-width: 32rem !important;
+}
+@media screen and (min-width: 1300px) {
+    .slds-table{
+        font-size: 0.8rem;
+    }
+}

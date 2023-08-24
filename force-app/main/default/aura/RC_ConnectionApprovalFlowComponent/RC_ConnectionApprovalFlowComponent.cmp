@@ -1,0 +1,295 @@
+<aura:component controller="RC_ConnectionApprovalFlow" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" /> 
+    
+    <aura:attribute name="loading" 	type="boolean" default="false"/>
+    <aura:attribute name="initWrapper" type="RC_ConnectionApprovalFlow.InitWrapper"/>
+    <aura:attribute name="fields" type="List"/>
+    <aura:attribute name="selectedAccount" type="string"/>
+    <aura:attribute name="selectedConnection" type="string"/>
+    <aura:attribute name="selectedPayrollType" type="string"/>
+    <aura:attribute name="selectedPayroll" type="string"/>
+    <aura:attribute name="connectionData" type="RC_Financial_Process_Definition__c[]"/>
+    <aura:attribute name="showDeleteConnModal" type="boolean" default="false" />
+    <aura:attribute name="showSkipApprovalModal" type="boolean" default="false" />
+    <aura:attribute name="showRecordUpdateModal" type="boolean" default="false" />
+    <aura:attribute name="selectedAccountNo" type="string" />
+    <aura:attribute name="selectedBordro"  type="string" />
+    <aura:attribute name="selectedPayrollForUpdate"  type="string" />
+    <aura:attribute name="selectedBordroId"  type="string" />
+    <aura:attribute name="selectedConnId"   type="string" />
+    <aura:attribute name="approvalStatusList" type="RC_Financial_Process_Definition__c[]"/>
+    <aura:attribute name="selectedStatus" type="string"/>
+    <aura:attribute name="chequeData" type="RC_Cheques__c[]"/>
+    <aura:attribute name="userName" type="string"/>
+    <aura:attribute name="approvalStatusChanged" type="boolean" default="false"/>
+    <aura:attribute name="deleteDescription" type="string"/>
+    <aura:attribute name="avgMaturity" type="string"/>
+    <aura:attribute name="totalAmount" type="string"/>
+    <aura:attribute name="updateMaturityDesc" type="string"/>
+    <aura:attribute name="approvalData" type="RC_ConnectionApprovalFlow.ApprovalModal"/>
+    <aura:attribute name="newApproverUser" type="string"/>
+    <aura:attribute name="approvalDesc" type="string"/>
+    
+    
+    <aura:if isTrue="{!v.loading}">
+        <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>   
+    </aura:if>
+    
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="utility:flow" class="my-icon" size="medium" alternativeText="Bağlantı Sözleşme İşlemleri" title="Bağlantı Sözleşme İşlemleri" />
+            <span class="page-title" style="font-size:15px;padding-left:10px;">Bağlantı Sözleşme İşlemleri</span>     
+        </aura:set>
+        <aura:set attribute="footer">
+            <div style="box-sizing: border-box;">
+                <fieldset class="slds-box slds-theme_default slds-container_xlarge form-box">
+                    <legend class="slds-text-heading_small slds-p-vertical_medium" align="left">
+                        Filtre
+                    </legend>
+                    <lightning:layout>  
+                        <lightning:layoutItem size="5" class="left-align padding">
+                            <lightning:select name="slctConnectionPeriod" aura:id="slctConnectionPeriod" label="Bağlantı Dönemi" value="{!v.selectedConnection}" >
+                                <option value="">Seçiniz...</option>
+                                <aura:iteration items="{!v.initWrapper.ConnectionPeriods}" var="option" >
+                                    <option text="{!option.Label}" value="{!option.Value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        <br/>
+                        
+                        <lightning:layoutItem size="5" class="left-align padding">
+                            <lightning:select name="slctPayrollTypes" aura:id="slctPayrollTypes" label="Bordro Tipi" value="{!v.selectedPayrollType}">
+                                <option value="">Seçiniz...</option>
+                                <aura:iteration items="{!v.initWrapper.BordroTypes}" var="option">
+                                    <option text="{!option.Label}" value="{!option.Value}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                        
+                    </lightning:layout> 
+                    <lightning:layout>
+                        
+                        <lightning:layoutItem size="5" class="left-align padding">
+                            <c:searchComponent name="searchComponent" objName="Account" onlookup="{!c.handleLookup}"  fields="{!v.fields}" labelName="Bayi Seçimi" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="5" class="left-align padding">
+                            <lightning:input label="Bordro No" name="payrollNo" value="{!v.selectedPayroll}"></lightning:input>
+                            
+                        </lightning:layoutItem>
+                        
+                    </lightning:layout>
+                    
+                    <lightning:layout>
+                        <lightning:layoutItem size="10" class="right-align padding">
+                            <lightning:button class="filter-button" iconName="utility:search" label="Ara" onclick="{!c.filterHandleClick }" ></lightning:button>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    
+                </fieldset>  
+                
+            </div>
+            <aura:if isTrue="{!not(empty(v.connectionData))}">
+                <div id="connections" class="connections">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-scrollable_x">
+                        <thead>
+                            <tr class="slds-line-height_reset corporate-color">     
+                                <th data-label="Detail" scope="row">
+                                    <div class="slds-truncate">Bayi No</div>
+                                </th>
+                                <th data-label="Detail" scope="row">
+                                    <div class="slds-truncate">Bayi Adı</div>
+                                </th>
+                                <th data-label="Detail" scope="row">
+                                    <div class="slds-truncate">Bordro No</div>
+                                </th>
+                                <th data-label="Detail" scope="row">
+                                    <div class="slds-truncate">Tutar</div>
+                                </th>
+                                <th data-label="Detail" scope="row">
+                                    <div class="slds-truncate">Vade Tarihi</div>  
+                                </th>
+                                <th data-label="Detail" scope="row">
+                                    <div class="slds-truncate">Onay Durumu</div>
+                                </th>
+                                <th data-label="Detail" scope="row">
+                                    <div class="slds-truncate">İşlemler</div>
+                                </th>
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <aura:iteration items="{!v.connectionData}" var="item">
+                                <tr>
+                                    
+                                    <td>{!item.RC_Account__r.RC_SAP_ID__c}</td>
+                                    <td>{!item.RC_Account__r.Name}</td>
+                                    <td>{!item.RC_Bordro_No__r.RC_Bordro_No__c}</td>
+                                    <td><lightning:formattedNumber style="currency" currencyCode="TRY" currencyDisplayAs="symbol" value="{!item.RC_Amount__c}"></lightning:formattedNumber></td>
+                                    <td>
+                                    	<lightning:formattedDateTime value="{!item.RC_Average_Due_Date__c}" year="numeric" month="2-digit" day="2-digit"/>
+                                    </td>
+                                    <td>{!item.RC_Text__c}</td>
+                                    <td>
+                                        <aura:if isTrue="{!item.RC_Bordro_No__r.RC_Bordro_No__c!=null}">
+                                            <lightning:buttonIcon value="{!item.RC_Bordro_No__r.RC_Bordro_No__c + '-' +item.RC_Account__r.RC_SAP_ID__c + '-' + item.RC_Bordro_No__r.Id + '-' + item.Id}" iconName="utility:delete" onclick="{!c.deleteConnModal}" class="deleteIcon" size="medium" alternativeText="Sil" title="Sil" />
+                                        </aura:if>
+                                        <aura:if isTrue="{!item.RC_Bordro_No__r.RC_Bordro_No__c==null}">
+                                            <lightning:buttonIcon value="{!item.Id + '-' + item.RC_Account__r.Id}" iconName="utility:user" onclick="{!c.skipApprovalModal}" class="approvalIcon" size="medium" alternativeText="Onay Atlat" title="Onay Atlat" />
+                                        </aura:if>
+                                        <aura:if isTrue="{!item.RC_Bordro_No__r.RC_Bordro_No__c!=null}">
+                                            <lightning:buttonIcon value="{!item.RC_Bordro_No__r.Id + '-' + item.Id}"  class="updateIcon" iconName="utility:edit_form" onclick="{!c.recordUpdateModal}" size="medium" alternativeText="Güncelle" title="Güncelle" />
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:iteration>   
+                        </tbody>
+                    </table>
+                </div>
+            </aura:if>
+        </aura:set>
+        
+        <aura:if isTrue="{!v.showDeleteConnModal}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        
+                        <lightning:buttonIcon variant="border-filled" onclick="{!c.hideDeleteConnModal}" size="large" iconName="utility:close" class="fRight"/>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate" style="font-size:bold;">Bordro Sil</h2>
+                        
+                    </header>
+                    
+                    <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                        <lightning:card>
+                            <p style="text-align:center;">
+                                <b>{!v.selectedAccountNo}</b> numaralı bayiye ait <b>{!v.selectedBordro}</b> numaralı bordro belgesi silinecektir. Onaylıyor musunuz ? 
+                            </p><br/>
+                            <lightning:textarea label="Açıklama : " maxlength="300" value="{!v.deleteDescription}" /><br/>
+                            <div style="float:right;">
+                                
+                                <lightning:button label="Sil" variant="destructive" iconName="utility:delete" onclick="{!c.deletePayroll}"></lightning:button>
+                                <lightning:button label="İptal" onclick="{!c.hideDeleteConnModal}"></lightning:button></div>
+                        </lightning:card>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showSkipApprovalModal}">
+            <div title="Onay Atlat">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            
+                            <lightning:buttonIcon variant="border-filled" onclick="{!c.hideSkipApprovalModal}" size="large" iconName="utility:close" class="fRight"/>
+                            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate" style="font-size:bold;">Onay Atlat</h2>
+                            
+                        </header>
+                        
+                        <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                            <lightning:card>
+                                
+                                <lightning:select name="slctApprovalStatus" aura:id="slctApprovalStatus" label="Adım : " value="{!v.approvalData.selectedStatus}" onchange="{!c.changeApprovalType}">
+                                    <option value="X" selected="true">Seçiniz...</option>
+                                    <aura:iteration items="{!v.approvalStatusList}" var="option">
+                                        <aura:if isTrue="{!or(option.RC_SAP_ID__c=='5',option.RC_SAP_ID__c=='1')}">
+                                            <option text="{!option.RC_Text__c}" value="{!option.RC_SAP_ID__c}" disabled="true" style="color:lightgray;"/>
+                                            <aura:set attribute="else">
+                                                <option text="{!option.RC_Text__c}" value="{!option.RC_SAP_ID__c}"/>
+                                                
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </lightning:select><br/>
+                                <lightning:textarea value="{!v.approvalDesc}" label="Açıklama : " maxlength="300" /><br/>
+                                <div style="float:right;">
+                                    <lightning:button label="Kaydet" variant="destructive" onclick="{!c.saveApprovalChange}" iconName="utility:save"></lightning:button>
+                                    <lightning:button label="İptal" onclick="{!c.hideSkipApprovalModal}"></lightning:button></div>
+                                <aura:if isTrue="{!v.approvalStatusChanged}">
+                                    <p>
+                                        <b>Onaya Gönderilecek Kişi : {!v.newApproverUser.UserName}</b>
+                                    </p><br/>
+                                </aura:if>
+                                
+                            </lightning:card>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showRecordUpdateModal}">
+            <div title="Silinecek Çekler">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            
+                            <lightning:buttonIcon variant="border-filled" onclick="{!c.hideRecordUpdateModal}" size="large" iconName="utility:close" class="fRight"/>
+                            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate" style="font-size:bold;">Silinecek Çekler</h2>
+                            
+                        </header>
+                        
+                        <div class="slds-modal__content slds-p-around_medium slds-scrollable" id="modal-content-id-1">
+                            <lightning:card>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-scrollable">
+                                    <thead>
+                                        <tr class="slds-line-height_reset corporate-color">     
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">Onay</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">Çek No</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">Tutar</div>
+                                            </th>
+                                            <th data-label="Detail" scope="row">
+                                                <div class="slds-truncate">Vade Tarihi</div>  
+                                            </th>    
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                        <aura:iteration items="{!v.chequeData}" var="item" indexVar="indx">
+                                            <tr>
+                                                <td>    
+                                                    <label class="slds-checkbox">
+                                                        <ui:inputCheckbox text="{!item.RC_Cheque_Number__c}" 
+                                                                          aura:id="boxPack" 
+                                                                          value=""/>
+                                                        <span class="slds-checkbox--faux"></span>
+                                                    </label></td>
+                                                <td>{!item.RC_Cheque_Number__c}</td>
+                                                <td><lightning:formattedNumber style="currency" currencyCode="TRY" currencyDisplayAs="symbol" value="{!item.RC_Amount__c}"></lightning:formattedNumber></td>
+                                                <td>
+                                                	<lightning:formattedDateTime value="{!item.RC_Due_Date__c}" year="numeric" month="2-digit" day="2-digit"/>
+                                                </td>
+                                            </tr>
+                                        </aura:iteration>   
+                                    </tbody>
+                                </table>
+                                <br/>
+                                <span><b>Toplam Tutar  : </b><lightning:input type="number" disabled="true" value="{!v.totalAmount}" step=".01" formatter="currency"></lightning:input></span>
+                                <br/><br/>
+                                <span><b>Ortalama Vade : </b><lightning:input type="date" disabled="true" value="{!v.avgMaturity}" dateStyle="short"></lightning:input></span>
+                                <br/>
+                                <lightning:textarea label="Açıklama : " maxlength="300" value="{!v.updateMaturityDesc}" /><br/>
+                                <div style="float:right;">
+                                    <lightning:button label="Ortalama Vade Hesapla" variant="success" iconName="utility:metrics" onclick="{!c.calcAvgMaturity}"></lightning:button>
+                                    <lightning:button label="Kaydet" variant="destructive" iconName="utility:save" onclick="{!c.saveUpdateMaturity}"></lightning:button>
+                                    <lightning:button label="İptal" onclick="{!c.hideRecordUpdateModal}"></lightning:button></div>
+                            </lightning:card>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </aura:if>
+    </lightning:card>
+    
+    
+    
+</aura:component>

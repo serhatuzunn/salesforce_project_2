@@ -1,0 +1,220 @@
+<template>
+  <div class="app slds-p-around_x-large">
+    <h1 class="slds-text-heading_medium">BA & BS Alım Satım Raporu</h1>
+    <br />
+
+    <lightning-combobox
+      name="ay"
+      value={month}
+      placeholder="Ay Seçimi Yapın"
+      options={months}
+      onchange={handleMonthChange}
+    >
+    </lightning-combobox>
+
+    <lightning-combobox
+      name="yıl"
+      value={year}
+      placeholder="Yıl Seçimi Yapın"
+      options={years}
+      onchange={handleYearChange}
+    >
+    </lightning-combobox>
+
+    <br />
+
+    <div class="slds-float_right"  style="margin-bottom: 0rem !important;">
+      <lightning-button
+        variant="destructive-text"
+        label="Rapor Görüntüle"
+        onclick={getOzet}
+        class="slds-m-left_x-small"
+      >
+      </lightning-button>
+    </div>
+
+    <br />
+    <br />
+    <br />
+
+    <lightning-tabset>
+      <lightning-tab label="BA Alımlar">
+        <template if:true={showOzet}>
+          <div style="height: 300px">
+            <lightning-datatable
+              key-field="id"
+              data={ozetDataBA}
+              hide-checkbox-column="true"
+              columns={ozetColumns}
+              onrowaction={getDetay}
+            >
+            </lightning-datatable>
+          </div>
+        </template>
+        <br />
+        <br />
+
+        <template if:true={isErrorPopOpen}>
+          <!-- Modal/Popup Box LWC starts here -->
+          <section
+            role="dialog"
+            tabindex="-1"
+            aria-labelledby="modal-heading-01"
+            aria-modal="true"
+            aria-describedby="modal-content-id-1"
+            class="slds-modal slds-fade-in-open"
+          >
+            <div class="slds-modal__container">
+              <!-- Modal/Popup Box LWC header here -->
+              <header class="slds-modal__header">
+                <button
+                  class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                  title="Close"
+                  onclick={closeModal}
+                >
+                  <lightning-icon
+                    icon-name="utility:close"
+                    alternative-text="close"
+                    variant="inverse"
+                    size="small"
+                  ></lightning-icon>
+                  <span class="slds-assistive-text">Ok</span>
+                </button>
+                <h2
+                  id="modal-heading-01"
+                  class="slds-text-heading_medium slds-hyphenate"
+                >
+                  Error Message
+                </h2>
+              </header>
+              <!-- Modal/Popup Box LWC body starts here -->
+              <div
+                class="slds-modal__content slds-p-around_medium"
+                id="modal-content-id-1"
+              >
+                <p>
+                  <b> Detay bilgileri gösterilirken hata oluştu. </b>
+                </p>
+              </div>
+              <!-- Modal/Popup Box LWC footer starts here -->
+              <footer class="slds-modal__footer">
+                <button
+                  class="slds-button slds-button_brand"
+                  title="OK"
+                  onclick={closeModal}
+                >
+                  OK
+                </button>
+              </footer>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={isLoading}>
+          <div class="spinner">
+            <lightning-spinner
+              alternative-text="Loading"
+              variant="brand"
+              size="large"
+            >
+            </lightning-spinner>
+          </div>
+        </template>
+
+        <template if:true={showBADetay}>
+          <h1 class="slds-text-heading_small">Detay Raporu</h1>
+          <div style="height: 500px">
+            <lightning-datatable
+              key-field="id"
+              data={detayDataOnScreenBA}
+              hide-checkbox-column="true"
+              columns={detayColumns}
+            >
+            </lightning-datatable>
+          </div>
+          <br />
+          <br />
+          <br />
+          <lightning-layout horizontal-align="space">
+            <lightning-layout-item flexibility="auto">
+              <lightning-button
+                label="Previous"
+                icon-name="utility:chevronleft"
+                onclick={previousHandlerBA}
+              >
+              </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto">
+              Page {page} of {totalPage}
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto">
+              <lightning-button
+                label="Next"
+                icon-name="utility:chevronright"
+                icon-position="right"
+                onclick={nextHandlerBA}
+              ></lightning-button>
+            </lightning-layout-item>
+          </lightning-layout>
+        </template>
+      </lightning-tab>
+
+      <lightning-tab label="BA Satımlar">
+        <template if:true={showOzet}>
+          <div style="height: 300px">
+            <lightning-datatable
+              key-field="id"
+              data={ozetDataBS}
+              hide-checkbox-column="true"
+              columns={ozetColumns}
+              onrowaction={getDetay}
+            >
+            </lightning-datatable>
+          </div>
+        </template>
+        <br />
+        <br />
+
+        <template if:true={showBSDetay}>
+          <h1 class="slds-text-heading_small">Detay Raporu</h1>
+          <div style="height: 500px">
+            <lightning-datatable
+              key-field="id"
+              data={detayDataOnScreenBS}
+              hide-checkbox-column="true"
+              columns={detayColumns}
+            >
+            </lightning-datatable>
+          </div>
+
+          <br />
+          <br />
+          <br />
+
+          <lightning-layout horizontal-align="space">
+            <lightning-layout-item flexibility="auto">
+              <lightning-button
+                label="Previous"
+                icon-name="utility:chevronleft"
+                onclick={previousHandlerBS}
+              >
+              </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto">
+              Page {page} of {totalPage}
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto">
+              <lightning-button
+                label="Next"
+                icon-name="utility:chevronright"
+                icon-position="right"
+                onclick={nextHandlerBS}
+              ></lightning-button>
+            </lightning-layout-item>
+          </lightning-layout>
+        </template>
+      </lightning-tab>
+    </lightning-tabset>
+  </div>
+</template>

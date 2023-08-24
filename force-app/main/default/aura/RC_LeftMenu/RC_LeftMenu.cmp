@@ -1,0 +1,53 @@
+<aura:component controller="RC_LeftMenuController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" extends="forceCommunity:navigationMenuBase">
+    <aura:handler name="init" value="{!this}" action="{!c.Init}" />
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="userName" type="string" />
+    <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical"  onclick="{!c.toggleVisibility}">
+      <div aura:id="dropdown" class="leftMenuMobile MobileMenu">
+       <div class="user-info" style="font-size:16px;">
+                    <a href=""><span style="font-size:16px;">
+                        Merhaba</span>
+                        <div class="clearfix">
+                        </div>
+                        {!v.userName}
+                    </a>
+       </div>
+       <ul onclick="{!c.onClick}" class="leftMenu">
+           <aura:iteration items="{!v.menuItems}" var="item">
+               <li class="{!item.active ? 'slds-is-active' : ''}">
+                   		
+						    <a href="javascript:void(0);" data-toggle="collapse" data-menu="{!item.subMenu}" data-target="{! '#itemid_' + item.id }" title="{!item.label}" data-menu-item-id="{!item.id}" class="slds-navigation-list--vertical__action slds-text-link--reset leftMenuItem">
+							
+                                <aura:if isTrue="{!item.label=='Anasayfa'}"> <i class="fa fa-home" aria-hidden="true"></i></aura:if>  
+                                <aura:if isTrue="{!item.label=='Bayi Dünyası'}"><i class="fa fa-globe" aria-hidden="true"></i></aura:if>  
+                                <aura:if isTrue="{!item.label=='Sipariş İşlemleri'}"><i class="fa fa-file" aria-hidden="true"></i></aura:if>  
+                                <aura:if isTrue="{!item.label=='Tahsilat İşlemlerim'}"><i class="fa fa-credit-card" aria-hidden="true"></i></aura:if>
+                                <aura:if isTrue="{!item.label=='Hesap Bilgilerim'}"><i class="fa fa-user-md" aria-hidden="true"></i></aura:if>   
+                                <aura:if isTrue="{!item.label=='Ürün Bilgileri'}"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></aura:if> 
+                                <aura:if isTrue="{!item.label=='Raporlar'}"><i class="fa fa-file" aria-hidden="true"></i></aura:if>  
+                                <aura:if isTrue="{!item.label=='Geri Bildirim'}"><i class="fa fa-comment" aria-hidden="true"></i></aura:if>  
+                                <aura:if isTrue="{!item.label=='Bağlantılı Linkler'}"><i class="fa fa-calendar" aria-hidden="true"></i></aura:if> 
+									 {!item.label} 
+                                
+                                <aura:if isTrue="{!item.subMenu}">
+                                	<i class="fa fa-fw fa-angle-down pull-right"></i>
+								</aura:if>		
+							</a>
+							<ul id="{! 'itemid_' + item.id }" class="collapse">
+											<aura:iteration items="{!item.subMenu}" var="subItem">
+												<li> <a data-menu-item-id="{!subItem.id}" href="">{!subItem.label}</a></li>
+											</aura:iteration>
+							</ul>
+                   		
+               			
+               </li>
+           </aura:iteration>
+       </ul>
+    <div>
+       <div class="logout">
+            <a href="#"><i class="fas fa-sign-out-alt"></i>ÇIKIŞ YAP</a>
+       </div>
+    </div>
+   </div>
+  </div>
+</aura:component>

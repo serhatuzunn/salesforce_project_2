@@ -1,0 +1,99 @@
+*{
+    font-size: 13px;
+}
+.c-container {
+    background-color: transparent;
+    margin: 2px 0 20px 0;
+    height: max-content;
+    /* min-height: 700px !important; */
+    overflow: hidden;
+}
+.lightning-button-element button{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    float: right;
+    margin-top: 1.4rem;
+}
+input:focus, select:focus{
+    border-color:#DF2027 !important;
+}
+.lightning-button-element button:hover{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+    transform: translateY(-1px);
+    margin-top: 1.4rem;
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);           
+}
+.title{
+    font-size: 15px;
+    margin-top: 8px;
+  }
+.mrgTop{
+    margin-top : 20px !important;
+}
+
+.slds-radio {
+    display: inline-block !important;
+}
+
+.slds-scrollable{
+    height: 500px !important; 
+    max-height:500px !important
+}
+.mrg{
+   margin-top: -10% !important;
+}
+
+table th {
+    text-align: center;
+}
+
+table.new {
+    width: 50% !important;
+}
+
+.slds-select:focus{
+    border: 1px solid #DF2027;
+    box-sizing: border-box;      
+}
+.spinner{
+    --lwc-brandPrimary: rgb(218 35 54);
+}
+
+.corporate-color{
+    font-weight: bold;
+    background-color:#DF2027;
+    color:white;
+    height: 32px;
+}
+
+.slds-modal__content .slds-table .corporate-color{
+         font-weight: bold;
+        background-color:#DF2027;
+        color:white;
+        height: 32px;
+}
+
+.slds-table thead th{
+	background: none;
+    color: white;
+}
+
+.slds-table thead th .slds-input{
+    color:#999;
+}
+
+.slds-card__footer{
+    text-align: left !important;
+}
+
+.sClass {
+    font-size: 17px;
+    margin-left: 5px;
+}

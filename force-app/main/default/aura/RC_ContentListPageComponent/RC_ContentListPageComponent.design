@@ -1,0 +1,52 @@
+<design:component>
+    <design:attribute name="Content1" label="Content Topic Name-1" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content1DisplayName" label="Content Display Name -1" description="Display Name of the content you want to add" />
+    <design:attribute name="Content1Icon" label="Content Icon Path-1" description="Icon path of the title you want to add" />
+    <design:attribute name="Content1Link" label="Content Link-1" description="Name of the topic you want to add" />
+
+    <design:attribute name="Content2" label="Content Topic Name-2" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content2DisplayName" label="Content Display Name -2" description="Display Name of the content you want to add" />
+    <design:attribute name="Content2Icon" label="Content Icon Path-2" description="Icon path of the title you want to add" />
+    <design:attribute name="Content2Link" label="Content Link-2" description="Link to all content" />
+      
+    <design:attribute name="Content3" label="Content Topic Name-3" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content3DisplayName" label="Content Display Name -3" description="Display Name of the content you want to add" />
+    <design:attribute name="Content3Icon" label="Content Icon Name-3" description="Icon path of the title you want to add" />
+    <design:attribute name="Content3Link" label="Content Link Name-3" description="Link to all content" />
+    
+    <design:attribute name="Content4" label="Content Topic Name-4" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content4DisplayName" label="Content Display Name -4" description="Display Name of the content you want to add" />
+    <design:attribute name="Content4Icon" label="Content Icon Name-4" description="Icon path of the title you want to add" />
+    <design:attribute name="Content4Link" label="Content Link Name-4" description="Link to all content" />
+    
+    <design:attribute name="Content5" label="Content Topic Name-5" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content5DisplayName" label="Content Display Name -5" description="Display Name of the content you want to add" />
+    <design:attribute name="Content5Icon" label="Content Icon Name-5" description="Icon path of the title you want to add" />
+    <design:attribute name="Content5Link" label="Content Link Name-5" description="Link to all content" />
+    
+    <design:attribute name="Content6" label="Content Topic Name-6" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content6DisplayName" label="Content Display Name -6" description="Display Name of the content you want to add" />
+    <design:attribute name="Content6Icon" label="Content Icon Name-6" description="Icon path of the title you want to add" />
+    <design:attribute name="Content6Link" label="Content Link Name-6" description="Link to all content" />
+    
+    <design:attribute name="Content7" label="Content Topic Name-7" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content7DisplayName" label="Content Display Name -7" description="Display Name of the content you want to add" />
+    <design:attribute name="Content7Icon" label="Content Icon Name-7" description="Icon path of the title you want to add" />
+    <design:attribute name="Content7Link" label="Content Link Name-7" description="Link to all content" />
+    
+    <design:attribute name="Content8" label="Content Topic Name-8" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content8DisplayName" label="Content Display Name -8" description="Display Name of the content you want to add" />
+    <design:attribute name="Content8Icon" label="Content Icon Name-8" description="Icon path of the title you want to add" />
+    <design:attribute name="Content8Link" label="Content Link Name-8" description="Link to all content" />
+    
+    <design:attribute name="Content9" label="Content Topic Name-9" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content9DisplayName" label="Content Display Name -9" description="Display Name of the content you want to add" />
+    <design:attribute name="Content9Icon" label="Content Icon Name-9" description="Icon path of the title you want to add" />
+    <design:attribute name="Content9Link" label="Content Link Name-9" description="Link to all content" />
+    
+    <design:attribute name="Content10" label="Content Topic Name-10" datasource="apex://RC_BindTopicListForCommunity" description="Name of the topic you want to add" />
+    <design:attribute name="Content10DisplayName" label="Content Display Name -10" description="Display Name of the content you want to add" />
+    <design:attribute name="Content10Icon" label="Content Icon Name-10" description="Icon path of the title you want to add" />
+    <design:attribute name="Content10Link" label="Content Link Name-10" description="Link to all content" />
+    
+</design:component>

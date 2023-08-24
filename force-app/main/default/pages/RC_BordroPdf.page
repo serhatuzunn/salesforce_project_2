@@ -1,0 +1,239 @@
+<apex:page extensions="RC_BordroPdfController" standardStylesheets="false" standardController="RC_Bordro__c" renderAs="pdf" applyBodyTag="false"  applyHtmlTag="false" showHeader="false" title="Bordro" language="TR" >
+    <head>       
+        
+        <style type="text/css" media="print">
+            
+            @page
+            {
+            margin-top:10%; 
+            margin-left: 5%;
+            margin-right:5%;
+            margin-bottom:12%;           
+            size: A4;
+            background-size: auto;       
+            background-repeat: no-repeat;
+            background-position: center top;
+            }
+            
+            @top-left
+            {
+            content : element(top-left-div);
+            }
+            
+            @top-center
+            {
+            content : element(top-center-div);
+            }
+            
+            @top-right
+            {           
+            content : element(top-right-div);
+            }
+            
+            @bottom-left
+            {
+            content : element(bottom-left-div);
+            }
+            
+            @bottom-center
+            {
+            content : element(bottom-center-div);
+            <!--"Sayfa " counter(page) " / " counter(pages);-->
+            }
+            
+            @bottom-right
+            {
+            content : element(bottom-right-div);
+            }
+            
+            }
+            
+            .top-left-div
+            {
+            position: running(top-left-div);
+            text-align:left;  
+            }
+            
+            .top-center-div
+            {
+            position: running(top-center-div);
+            text-align:center;
+            padding-left:8px;
+            padding-right:8px;
+            padding-bottom:8px;
+            }
+            
+            .top-right-div
+            {
+            position: running(top-right-div);               
+            text-align:right;
+            margin-top:10px;
+            }
+            
+            .bottom-left-div
+            {
+            position: running(bottom-left-div);   
+            text-align:left; 
+            
+            }
+            .bottom-center-div
+            {
+            position: running(bottom-center-div);
+            text-align:center;  
+            margin-left:-25px;
+            }
+            .bottom-right-div
+            {
+            position: running(bottom-right-div);
+            text-align:right;
+            }           
+            
+            .pagenumber:before 
+            {
+            content: counter(page);
+            }
+            
+            .pagecount:before 
+            {
+            content: counter(pages);
+            }
+            
+            
+            
+            body{
+            font-family: 'Arial Unicode MS' !important;
+            font-size:12px !important;
+            }
+            .content{
+            margin-top:15%;
+            }
+            .floatright
+            {
+            float: right !important;
+            }
+            .boldSummary{
+            font-weight: bold !important;
+            }
+            .hrStyle{
+            height:0px;
+            border-width:0;
+            }
+            table, td, th {
+            border: 1px solid black;
+            }
+            
+            table {
+            width: 100%;
+            border-collapse: collapse;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <div style="margin-top:10%">
+                <h1 style="text-align:center;">
+                    ÇEK BORDROSU
+                </h1>
+            </div>
+            <div style="margin-top:10%">
+                <h4 style="text-align:left;">
+                    Bayi No : {!bayiNo} 
+                </h4>
+                <h4 style="text-align:left;">
+                    Bayi Adı : {!bayiAdi} 
+                </h4>
+                <h4 style="text-align:left;">
+                    Bordro No : {!bordroNumarasi} 
+                </h4>
+            </div>
+            
+            <div>
+                <h4 style="text-align:right;">
+                    Tarih : {!tarih} 
+                </h4>
+            </div>
+            
+            <div>
+                <table style="width:100%; border: 1px solid black">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center;">Tarih</th> 
+                            <th width="14%" style="text-align:center;">Çek / Senet Numarası</th>
+                            <th width="14%" style="text-align:center;">Banka</th>
+                            <th width="14%" style="text-align:center;">Şube</th>
+                            <th width="14%" style="text-align:center;">Keşide Yeri</th>
+                            <th width="14%" style="text-align:center;">Çek Tutarı</th>
+                            <th width="14%" style="text-align:center;">Vade Tarihi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat var="cqItem" value="{!chequeItemList}"> 
+                            <tr>
+                                <td width="14%" style="text-align:center;">{!cqItem.tarih}</td> 
+                                <td width="14%" style="text-align:center;">{!cqItem.cekNo}</td> 
+                                <td width="14%" style="text-align:center;">{!cqItem.banka}</td> 
+                                <td width="14%" style="text-align:center;">{!cqItem.sube}</td> 
+                                <td width="14%" style="text-align:center;">{!cqItem.kesideYeri}</td> 
+                                <td width="14%" style="text-align:right;">
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}" >
+                                        <apex:param value="{!cqItem.cekTutari}"/>
+                                    </apex:outputText>
+                                </td>
+                                <td width="14%" style="text-align:center;">{!cqItem.vadeTarihi}</td> 
+                            </tr>
+                        </apex:repeat>
+                        <tr style="background:#b8b8b8;">
+                            <td colspan="5">Genel Toplam</td>
+                            <td style="text-align:right;">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" >
+                                    <apex:param value="{!genelToplam}"/>
+                                </apex:outputText>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr style="background:#b8b8b8;">
+                            <td colspan="6">Ortalama Vade</td>
+                            <td style="text-align:right;">
+                                <apex:outputText value="{!ortalamaVade}" >
+                                    
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7">{!toplamCekSayisi} adet belge alınmıştır.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="width:100%">
+                <div style="border: 1px solid black; width:33%; margin-top:10px; float:left; height:150px">
+                    <h4 style="text-align:center">
+                        SAHA TEMSİLCİSİ'NİN
+                    </h4>
+                    <h4 style="text-align:left;">
+                        Kodu : {!userKodu} 
+                    </h4>
+                    <h4 style="text-align:left;">
+                        Satış Grubu : {!satisGrubu} 
+                    </h4>
+                    <h4 style="text-align:left;">
+                        Adı Soyadı : {!adiSoyadi} 
+                    </h4>
+                </div>
+                <div style="border: 1px solid black; width:33%; margin-top:10px; float:left; height:150px">
+                    <h4 style="text-align:center">
+                        TESLİM ALAN
+                    </h4>
+                </div>
+                <div style="border: 1px solid black; width:33%; margin-top:10px; float:left; height:150px">
+                    <h4 style="text-align:center">
+                        TESLİM EDEN
+                    </h4>
+                </div>
+            </div>
+            
+            
+        </div>
+    </body>
+</apex:page>

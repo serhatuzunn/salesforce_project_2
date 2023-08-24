@@ -1,0 +1,136 @@
+.THIS {
+     font-family: 'Salesforce Sans';
+}
+
+.THIS h1{    
+    text-align: left;
+    padding: 8px;
+}
+
+.THIS .form-box{
+
+}
+.THIS .page-title{
+    font-family: 'Salesforce Sans';
+    font-size:18px; 
+    font-weight:400;
+    padding-left:10px;
+}
+
+
+.THIS .slds-card__header slds-grid{
+    display:none;
+}
+
+.THIS .slds-modal__container{
+    max-width:80rem !important;
+    width:80% !important;
+}
+
+.THIS .slds-form_stacked{
+    width: 40%;
+    margin-left: 30%;
+}
+
+.THIS .my-icon {
+    --sds-c-icon-color-foreground-default: white;
+}
+
+.THIS .search-button{
+    background: #FFFFFF;
+    border: 1px solid #DF2027;
+    box-sizing: border-box;
+    border-radius: 4px !important;
+    color: #DF2027;
+	font-family: 'Salesforce Sans';
+}
+
+.THIS .lightning:layout{
+    height : 78px;
+}
+
+.THIS .buttons-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+    
+.THIS .buttons-area{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.THIS .search-button:hover{
+   transform: translateY(-1px);
+   box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);            
+}
+
+.THIS input:focus, .THIS select:focus{
+    border-color:#DF2027 !important;
+}
+
+.THIS .slds-cell-fixed{
+    background: #DF2027;
+}
+
+.THIS .slds-th__action{    
+    background: #DF2027;
+    color: white;
+}
+
+.THIS .slds-th__action:hover{    
+    background: #DF2027;
+}
+.THIS .slds-th__action:focus{    
+    background: #DF2027;
+}
+
+.THIS .slds-th__action .slds-button{
+    color:white;
+}
+
+.THIS .slds-button_icon-bare{
+ display: none !important;
+} 
+    
+.THIS legend{
+    width: 2.5%;
+}
+    
+.THIS .slds-form-element__label{
+   float: left;
+}
+    
+.THIS .slds-card__header{
+    border-bottom: 1px solid lightgray;
+    background-color: #DF2027;
+	color: white;
+    padding: 7px;
+    margin: 0;
+}
+    
+.THIS .slds-card__footer{
+  padding-top: 0;
+}
+    
+    
+@media screen and (max-width: 600px) {
+	.THIS fieldset{
+          min-width: 100%;
+     }
+	.THIS .slds-grid{
+     	display: flex;
+    	flex-direction: column;
+	}
+    .THIS .slds-size_3-of-12{
+        width: 100%;
+    }
+    .THIS .search-button{
+        margin-top: 1rem; 
+		width: 100%;
+    }
+    .THIS .buttons-area .slds-grid{
+        width: 100%;
+    }
+}

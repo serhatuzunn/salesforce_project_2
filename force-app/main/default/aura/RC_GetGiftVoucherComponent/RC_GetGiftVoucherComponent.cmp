@@ -1,0 +1,134 @@
+<aura:component controller="RC_GetGiftVoucherCheckController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    
+    <ltng:require styles="{!$Resource.select2CustomCSS}" />
+        
+    
+    <ltng:require scripts="{!$Resource.RC_FileSaver}" />
+    
+    
+    <aura:attribute name="CheckResponse" type="RC_GetGiftVoucherCheckController.CheckResponseModel"/>
+    <aura:attribute name="UseCheckResponse" type="RC_GetGiftVoucherCheckController.UseGiftResponseModel"/>
+	<aura:attribute name="cekSorgulama" type="boolean" default="false"/>
+    <aura:attribute name="cekKullan" type="boolean" default="false"/>
+	<aura:attribute name="loading" 	type="boolean" default="false"/>
+    <aura:attribute name="cekSorguKullan" type="boolean" default="false"/>
+    
+       <aura:if isTrue="{!v.loading}">
+           <div class="spinner">
+            <lightning:spinner alternativeText="Loading" size="large" variant="brand"/>   
+           </div>
+        </aura:if>
+        <lightning:card>
+            <aura:set attribute="title">
+            <lightning:icon iconName="utility:database" class="my-icon" size="medium" alternativeText="Hediye Çek Sorgulama ve Çek Girişi" title="Hediye Çek Sorgulama ve Çek Girişi" />
+            <span class="page-title">Hediye Çek Sorgulama ve Çek Girişi</span>     
+            </aura:set>
+                <aura:set attribute="footer">
+                <fieldset class="slds-box slds-theme_default slds-container_x-large form-box">
+                    <legend class="slds-text-heading_small slds-p-vertical_medium" align="left">
+                        Filtre
+                    </legend>
+                    <lightning:layout>  
+                        <lightning:layoutItem size="12" class="left-align padding">
+                            <!-- <p>Hediye Çek Sorgulama</p> -->
+                            <lightning:input  aura:id="IT_CHECK_NO" label="Çek No" /> <br/>
+                            <lightning:button class="lightning-button-element"  aura:id="button" label="Ara" iconName="utility:search" title="{!$Label.c.Gift_Check_Inquire}" onclick="{! c.handLeInquireClick }" /> 
+                            <aura:if isTrue="{!v.cekSorguKullan}">
+                                <lightning:button class="lightning-button-element"  aura:id="button" label="Çeki Kullan" title="{!$Label.c.Gift_Check_Use}" onclick="{! c.handLeCheckUseObjeClick }" /> 
+                            </aura:if>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </fieldset>
+          </aura:set>
+        </lightning:card>
+        <br/>
+        <aura:if isTrue="{!v.cekSorgulama}">     
+            <div class="slds-card">
+                <table class="slds-table slds-table_cell-buffer">
+                    <thead>
+                        <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_No}</b></div>
+                            </td>
+                           <td data-label="Çek No" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.CEKNO}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_Customer}</b></div>
+                            </td>
+                           <td data-label="Müşteri" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.ADSOYAD}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_CheckDate}</b></div>
+                            </td>
+                           <td data-label="Çek Tarihi" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.CDATE}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_Statu}</b></div>
+                            </td>
+                           <td data-label="Durum" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.DURUM}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_Type}</b></div>
+                            </td>
+                           <td data-label="Çek Tipi" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.CEKTIPI}</div>
+                            </td>
+                        </tr>
+                         <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_Bayi}</b></div>
+                            </td>
+                           <td data-label="Bayi No" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.BAYI}</div>
+                            </td>
+                        </tr>
+                         <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_ExpiryDate}</b></div>
+                            </td>
+                           <td data-label="Kullanım Tarihi" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.CDATE}</div>
+                            </td>
+                        </tr>
+                         <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_Amount}</b></div>
+                            </td>
+                           <td data-label="Tutar" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.TUTAR}  {!v.CheckResponse.ES_CEK_S.WAERS}</div>
+                            </td>
+                        </tr>
+                    
+                        <tr class="slds-hint-parent corporate-color">
+                            <td  scope="row">
+                                <div class="slds-truncate" title=""><b>{!$Label.c.Gift_Check_MatbuNo}</b></div>
+                            </td>
+                           <td data-label="Matbu No" scope="row">
+                                <div class="slds-truncate" title="">{!v.CheckResponse.ES_CEK_S.MATBUNO}</div>
+                            </td>
+                        </tr>
+                    </thead>
+                   
+                </table>
+            </div>
+        </aura:if>
+
+       
+            
+    
+    
+    
+</aura:component>

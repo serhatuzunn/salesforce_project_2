@@ -1,0 +1,650 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<template>
+    <div class="c-container">
+        <lightning-spinner if:true={showSpinner} alternative-text="Loading" size="large"></lightning-spinner>
+        <div class="slds-page-header slds-m-bottom_x-large redHeader">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <span class="slds-assistive-text">Bağlantı Plan Girişi</span>
+                            <lightning-icon icon-name="standard:form"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <span class="slds-page-header__title slds-truncate title"
+                                            title="Bağlantı Plan Girişi">Bağlantı Plan Girişi</span>
+                                    </h1>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-clearfix">
+            <lightning-layout class="slds-float_left slds-size_12-of-12" horizontal-align="spread">
+                <lightning-layout-item size="12" padding="around-small">
+                    <fieldset class="slds-box slds-theme--default">
+                        <legend class="slds-text-heading--small slds-p-vertical--small bold">Filtre</legend>
+                        <lightning-layout horizontal-align="spread">
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-combobox name="krediKontrol" label="Uygulama Kanalı" value={krediKontrolVal}
+                                    options={krediKontrolOptions} onchange={handleComboboxChange}></lightning-combobox>
+                                </br> </br>
+                                <div class="slds-form-element__row slds-m-bottom_large">
+                                    <div class="slds-size_1-of-2">
+                                        <div class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <lightning-input type="checkbox" label="Hepsini Aç" name="AllOpen"
+                                                    onchange={handleMainCheckInput}>
+                                                </lightning-input>
+                                                </br>
+                                                <lightning-input type="checkbox" label="Hepsini Seç" name="AllCheck"
+                                                    onchange={handleMainCheckInput}>
+                                                </lightning-input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-combobox name="baglantiDonem" label="Baglantı Dönem" value={baglantiDonemVal}
+                                    options={baglantiDonemOptions} onchange={handleComboboxChange}></lightning-combobox>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="4" padding="around-small">
+                                <lightning-combobox name="bayi" label="Bayi" value={bayiVal} options={bayiOptions}
+                                    onchange={handleComboboxChange}></lightning-combobox>
+                                </br> </br> </br>
+                                <lightning-button
+                                    label="Ara"
+                                    onclick={handleSearchClick}
+                                    class="lightning-button-element"
+                                    icon-name="utility:search"
+                                >
+                                </lightning-button> 
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </fieldset>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <template if:true={showMainDataTable}>
+            <article class="slds-box" style="margin: 12px;">
+                <article class="slds-card slds-box">
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <span>Genel Bilgi</span>
+                                </h2>
+                            </div>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="font-weight: bold;background-color: #DF2027;color: white;">
+                                        Toplam Bakiye
+                                    </th>
+                                    <th style="font-weight: bold;background-color: #DF2027;color: white;">
+                                        Toplam Ortalama Vade
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <lightning-formatted-number value={totalAmount} format-style="currency"
+                                            currency-code="TRY" currency-display-as="symbol"
+                                            maximum-fraction-digits="2">
+                                        </lightning-formatted-number>
+                                    </td>
+                                    <td>
+                                        {totalMaturity}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article class="slds-card slds-box">
+                    <div>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                            <thead>
+                                <tr>
+                                    <th style="font-weight: bold;background-color: #DF2027;color: white;"></th>
+                                    <th style="font-weight: bold;background-color: #DF2027;color: white;">
+                                        Bayi Kodu
+                                    </th>
+                                    <th style="font-weight: bold;background-color: #DF2027;color: white;">
+                                        Bayi Adı
+                                    </th>
+                                    <th style="font-weight: bold;background-color: #DF2027;color: white;">
+                                        Toplam Tutar
+                                    </th>
+                                    <th style="font-weight: bold;background-color: #DF2027;color: white;">
+                                        Toplam Ortalama Vade
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={resultList} for:item="data">
+                                    <tr key={data.Id} data-key={data.Id} onclick={handleDivClick}>
+                                        <td style="font-weight: bold;">
+                                            <lightning-icon icon-name="utility:chevronright" size="x-small"
+                                                title="headerIcon" data-key={data.Id}></lightning-icon>
+                                        </td>
+                                        <td style="font-weight: bold;">
+                                            {data.header.bayiNo}
+                                        </td>
+                                        <td style="font-weight: bold;">
+                                            {data.header.bayiAd}
+                                        </td>
+                                        <td style="font-weight: bold;">
+                                            <lightning-formatted-number value={data.header.totalTutar}
+                                                format-style="currency" currency-code="TRY" currency-display-as="symbol"
+                                                maximum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </td>
+                                        <td style="font-weight: bold;">
+                                            {data.header.ortVade}
+                                        </td>
+                                    </tr>
+                                    <tr data-key="ROOT" data-parent-id={data.Id} key={data.Id} style="display: none;">
+                                        <td colspan="5">
+                                            <div class="innerTableDiv slds-scrollable_x">
+                                                <table class="baglantiTablo">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>
+                                                                #
+                                                            </th>
+                                                            <th>
+                                                                Dönem
+                                                            </th>
+                                                            <th>
+                                                                Kredi Kontrol
+                                                            </th>
+                                                            <th>
+                                                                Çek Türü
+                                                            </th>
+                                                            <th>
+                                                                Açıklama
+                                                            </th>
+                                                            <th>
+                                                                Bağlantı Başlangıç Tarihi
+                                                            </th>
+                                                            <th>
+                                                                Ödeme Koşulu
+                                                            </th>
+                                                            <th>
+                                                                Vade
+                                                            </th>
+                                                            <th>
+                                                                Tutar KDV Dahil
+                                                            </th>
+                                                            <th>
+                                                                Bayi Türü
+                                                            </th>
+                                                            <th>
+                                                                Onaylanma Durumu
+                                                            </th>
+                                                            <th>
+                                                                Bordro Onay Durumu
+                                                            </th>
+                                                            <th>
+                                                                İşlem
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <template for:each={data.childs} for:item="child">
+                                                            <tr key={child.Id} data-parent-id={data.Id}
+                                                                style="max-width: 100%;">
+                                                                <td>
+                                                                    <template if:false={child.readonly}>
+                                                                        <lightning-input type="checkbox"
+                                                                            name="formCheckBox" class="checkboxCustom"
+                                                                            label="Is Checked" variant="label-hidden"
+                                                                            value={child.isChecked}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}
+                                                                            onchange={handleCheckBoxSelect}
+                                                                            disabled={child.readonly}>
+                                                                        </lightning-input>
+                                                                    </template>
+                                                                </td>
+                                                                <td>
+                                                                    {child.donem}
+                                                                </td>
+                                                                <td>
+                                                                    {child.krediKontrolID} - {child.krediKontrolCode}
+                                                                </td>
+                                                                <td>
+                                                                    {child.bordroType} - {child.bordroTypeDesc}
+                                                                </td>
+                                                                <td style="min-width: 10rem;">
+                                                                    <lightning-textarea name="formTextArea"
+                                                                        label="Açıklama" variant="label-hidden"
+                                                                        value={child.aciklama}
+                                                                        data-related-id={child.Id}
+                                                                        data-parent-id={data.Id}
+                                                                        onchange={handleTextAreaSelect}
+                                                                        disabled={child.readonly}>
+                                                                    </lightning-textarea>
+                                                                </td>
+                                                                <td>
+                                                                    {child.baglantiBaslangicTarihFormatted}
+                                                                </td>
+                                                                <td>
+                                                                    <template if:false={child.readonly}>
+                                                                        <lightning-combobox name="formOdemeKosul"
+                                                                            label="Ödeme Koşulu" variant="label-hidden"
+                                                                            value={child.odemeKosul}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}
+                                                                            options={child.odemeKosulOptions}
+                                                                            onchange={handleComboboxChange}>
+                                                                        </lightning-combobox>
+                                                                    </template>
+                                                                    <template if:true={child.readonly}>
+                                                                        <lightning-combobox name="formOdemeKosul"
+                                                                            label="Ödeme Koşulu" variant="label-hidden"
+                                                                            value={child.odemeKosul}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}
+                                                                            options={child.odemeKosulOptions}
+                                                                            onchange={handleComboboxChange} disabled>
+                                                                        </lightning-combobox>
+                                                                    </template>
+                                                                </td>
+                                                                <td style="min-width: 10rem;">
+                                                                    <template if:false={child.readonly}>
+                                                                        <lightning-input type="date"
+                                                                            name="formDatePicker" label="Başlangıç Date"
+                                                                            variant="label-hidden" date-style="short"
+                                                                            value={child.cekVade}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}
+                                                                            onchange={handleDatePickerSelect}>
+                                                                        </lightning-input>
+                                                                    </template>
+                                                                    <template if:true={child.readonly}>
+                                                                        <lightning-input type="date"
+                                                                            name="formDatePicker" label="Başlangıç Date"
+                                                                            variant="label-hidden" date-style="short"
+                                                                            value={child.cekVade}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}
+                                                                            onchange={handleDatePickerSelect} disabled>
+                                                                        </lightning-input>
+                                                                    </template>
+                                                                </td>
+                                                                <td>
+                                                                    <lightning-input variant="label-hidden" type="number"
+                                                                        label="Tutar" name="formInputCurrency"
+                                                                        value={child.tutar} formatter="currency"
+                                                                        data-related-id={child.Id}
+                                                                        data-parent-id={data.Id}
+                                                                        disabled={child.readonly}
+                                                                        onchange={handleInputCurrencyChange}>
+                                                                    </lightning-input>
+                                                                </td>
+                                                                <td>
+                                                                    {child.bayiTur}
+                                                                </td>
+                                                                <td>
+                                                                    {child.onayDurum}
+                                                                </td>
+                                                                <td>
+                                                                    {child.bordroDurum}
+                                                                </td>
+                                                                <td>
+                                                                    <template if:true={child.canDelete}>
+                                                                        <lightning-button variant="destructive-text"
+                                                                            title="Sil" icon-name="utility:close"
+                                                                            value="delete"
+                                                                            onclick={handleDataButtonClick}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}>
+                                                                        </lightning-button>
+                                                                    </template>
+                                                                    <template if:true={child.isMultiple}>
+                                                                        <lightning-button variant="Neutral"
+                                                                            title="Ek Bağlantı Oluştur"
+                                                                            icon-name="utility:add" value="addEntry"
+                                                                            onclick={handleDataButtonClick}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}>
+                                                                        </lightning-button>
+                                                                    </template>
+                                                                    <template if:true={child.showHistory}>
+                                                                        <lightning-button variant="Neutral"
+                                                                            title="Onay Geçmişi"
+                                                                            icon-name="utility:bookmark"
+                                                                            value="bayiBordro"
+                                                                            onclick={handleDataButtonClick}
+                                                                            data-related-id={child.Id}
+                                                                            data-parent-id={data.Id}>
+                                                                        </lightning-button>
+                                                                    </template>
+                                                                </td>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <lightning-layout>
+                    <lightning-layout-item size="9" padding="around-small">
+                    </lightning-layout-item>
+                    <lightning-layout-item size="3" padding="around-small">
+                        <ul class="slds-list_horizontal slds-has-inline-block-links_space slds-m-top_xx-large">
+                            <li style="margin-left: 1%;">
+                                <lightning-button variant="brand" class="lightning-button-element noTopMargin" label="Taslak Olarak Kaydet" value="true"
+                                    onclick={handleSaveClick}>
+                                </lightning-button>
+                            </li>
+                            <li style="margin-left: 1%;">
+                                <lightning-button variant="destructive-text" class="lightning-button-element noTopMargin" label="Onaya Gönder" value="false"
+                                    onclick={handleSaveClick}>
+                                </lightning-button>
+                            </li>
+                        </ul>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </article>
+
+        </template>
+    </div>
+    <template if:true={showBayiBordroModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-var-p-around_medium slds-hyphenate">Bayi Bordroları
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    {historyBayiInfo}
+                    <br>
+                    <br>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                        aria-labelledby="element-with-table-label other-element-with-table-label">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Opportunity Name">Bordro Tutar</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Account Name">Ortalama Vade</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Close Date">Açıklama</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Stage">#</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={bordroHistoryDataList} for:item="child" for:index="ind">
+
+                                <tr class="slds-hint-parent" key={child.entryId}>
+                                    <td data-label="Account Name">
+                                        <div class="slds-truncate" title="Tutar">
+                                            <lightning-formatted-number value={child.bordroTutar}
+                                                maximum-fraction-digits="2">
+                                            </lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div class="slds-truncate" title="Ortalama Vade">
+                                            {child.ortalamaVade}
+                                        </div>
+                                    </td>
+                                    <td data-label="Prospecting">
+                                        <div class="slds-truncate" title="Açıklama">
+                                            {child.aciklama}
+                                        </div>
+                                    </td>
+                                    <td data-label="İşlem">
+                                        <div class="slds-truncate">
+                                            <template if:true={child.isHistoryExist}>
+                                                <lightning-button variant="Neutral" title="Onay Geçmişi"
+                                                    icon-name="utility:bookmark" value="history"
+                                                    onclick={handleDataButtonClick} data-related-id={child.entryId}>
+                                                </lightning-button>
+                                            </template>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+
+                        </tbody>
+                    </table>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Cancel"
+                        onclick={closeModal}
+                        data-key="bayiBordro"
+                        class="lightning-button-element slds-m-around_small noTopMargin"
+                    >
+                    </lightning-button> 
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showHistoryModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_medium">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-04" class="slds-var-p-around_medium slds-hyphenate">Bordro Onay Geçmişi
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-4">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                        aria-labelledby="element-with-table-label other-element-with-table-label">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Bayi Kodu">Bayi Kodu</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Onaylayan Kullanıcı">Onaylayan Kullanıcı</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="İşlem Tarihi">İşlem Tarihi</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Onaylama Durumu">Onaylama Durumu</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Açıklama">Açıklama</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={historyDataList} for:item="child">
+                                <tr class="slds-hint-parent" key={child.Id}>
+                                    <td data-label="Account Name">
+                                        <div class="slds-truncate" title="Bayi Kodu">
+                                            {child.RC_Bordro_Entry_Id__r.RC_Account__r.RC_SAP_ID__c}
+                                        </div>
+                                    </td>
+                                    <td data-label="Close Date">
+                                        <div class="slds-truncate" title="Onaylayan Kullanıcı">
+                                            {child.CreatedBy.Name}
+                                        </div>
+                                    </td>
+                                    <td data-label="İşlem Tarihi">
+                                        {child.CreatedDate}
+                                    </td>
+                                    <td data-label="Onaylama Durumu">
+                                        <div class="slds-truncate">
+                                            {child.RC_Approval_Status__r.RC_Text__c}
+                                        </div>
+                                    </td>
+                                    <td data-label="Açıklama">
+                                        <div class="slds-truncate">
+                                            {child.RC_Description__c}
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Cancel"
+                        onclick={closeModal}
+                        data-key="history"
+                        class="lightning-button-element slds-m-around_small noTopMargin"
+                    >
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={openPermissionModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                    <p><b>Seçilen kayıt silinecektir.</b></p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="OK"
+                        onclick={handleDeleteRecord}
+                        class="lightning-button-element slds-m-around_small noTopMargin"
+                    >
+                    </lightning-button>
+                    <lightning-button
+                        label="Cancel"
+                        onclick={closeModal}
+                        data-key="permission"
+                        class="lightning-button-element slds-m-around_small noTopMargin"
+                    >
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={showAddExtraEntry}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-05" class="slds-var-p-around_large slds-hyphenate">{addEntryBayiInfo}
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-3">
+                    Yeni Kayıt
+                    <br>
+                    <br>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="form-element-03">
+                            Bordro Tutar
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-input variant="label-hidden" label="Tutar" formatter="currency" type="number"
+                                value={addExtraData.tutar} name="addExtraInputCurrency"
+                                onchange={handleInputCurrencyChange}></lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="form-element-03">
+                            Uygulama Kanalı
+                        </label>
+                        <div class="slds-form-element__control">
+                            {addExtraData.krediKontrolID} - {addExtraData.krediKontrolCode}
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="form-element-03">
+                            Ödeme Koşulu
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-combobox name="formOdemeKosul" label="Ödeme Koşulu" variant="label-hidden"
+                                value={addExtraData.odemeKosul} options={addExtraData.odemeKosulOptions}
+                                disabled={addExtraData.readonly}>
+                            </lightning-combobox>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="form-element-03">
+                            Bağlantı Başlangıç Tarihi
+                        </label>
+                        <div class="slds-form-element__control">
+                            {addExtraData.baglantiBaslangicTarihFormatted}
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="form-element-03">
+                            Bordro Vadesi
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-input type="date" name="addExtraDatePicker" label="Başlangıç Date"
+                                variant="label-hidden" date-style="short" value={addExtraData.cekVade}
+                                min={addExtraData.minVade} max={addExtraData.maxVade} disabled={addExtraData.readonly}
+                                onchange={handleDatePickerSelect}>
+                            </lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-form-element">
+                        <label class="slds-form-element__label" for="form-element-03">
+                            Açıklama
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-textarea name="addExtraTextArea" label="Açıklama" variant="label-hidden"
+                                value={addExtraData.aciklama} onchange={handleTextAreaSelect}>
+                            </lightning-textarea>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Kaydet ve Onaya Gönder"
+                        onclick={handleDataButtonClick}
+                        value="saveEntry"
+                        class="lightning-button-element slds-m-around_small noTopMargin"
+                    >
+                    </lightning-button> 
+                    <lightning-button
+                        label="Cancel"
+                        onclick={closeModal}
+                        data-key="addEntry"
+                        class="lightning-button-element slds-m-around_small noTopMargin"
+                    >
+                    </lightning-button> 
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
